@@ -74,4 +74,6 @@ HTML:
 
 ## Live Demo
 
-You can view a live demo and generate your own snippets by opening the demo.html file in your browser.
+You can view a live demo and generate your own snippets by opening the demo.html file in your browser, or here:
+
+https://ericfransen.github.io/js-text-obfuscator/demo.html
