@@ -61,9 +61,37 @@
             </div>
         </div>
 
-        <!-- === Technique 1: "Click to Reveal" === -->
+        <!-- === Technique 1: "SVG Path Data" === -->
         <div class="border-t pt-6 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-700">Technique 1: "Click to Reveal" (Recommended)</h2>
+            <h2 class="text-xl font-semibold text-gray-700">Technique 1: "SVG Path Data" (High Security)</h2>
+            <p class="text-gray-600 text-sm">
+                Converts text into vector shapes. 
+                <strong>Zero JavaScript required</strong> on your site. 
+                Perfect for static sites.
+            </p>
+            
+            <div>
+                <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
+                <div id="svg-demo-container" class="mt-2 p-4 bg-orange-50 rounded-lg flex justify-center items-center min-h-[70px]">
+                    <!-- Live demo will be injected here -->
+                    <span class="text-gray-400 text-sm">Loading font engine...</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                <pre class="mt-2">
+                    <button class="copy-btn" data-target="svg-code">Copy</button>
+                    <code id="svg-code">
+&lt;!-- Enter text above to generate code --&gt;
+                    </code>
+                </pre>
+            </div>
+        </div>
+
+        <!-- === Technique 2: "Click to Reveal" === -->
+        <div class="border-t pt-6 space-y-4">
+            <h2 class="text-xl font-semibold text-gray-700">Technique 2: "Click to Reveal" (Recommended)</h2>
             
             <div>
                 <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
@@ -83,9 +111,9 @@
             </div>
         </div>
         
-        <!-- === Technique 2: "Canvas Rendering" === -->
+        <!-- === Technique 3: "Canvas Rendering" === -->
         <div class="border-t pt-6 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-700">Technique 2: "Canvas Rendering" (Harder to Scrape)</h2>
+            <h2 class="text-xl font-semibold text-gray-700">Technique 3: "Canvas Rendering" (Harder to Scrape)</h2>
             
              <div>
                 <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
@@ -106,9 +134,9 @@
             </div>
         </div>
 
-        <!-- === Technique 3: "CSS Reversal" === -->
+        <!-- === Technique 4: "CSS Reversal" === -->
         <div class="border-t pt-6 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-700">Technique 3: "CSS Reversal" (Better UX)</h2>
+            <h2 class="text-xl font-semibold text-gray-700">Technique 4: "CSS Reversal" (Better UX)</h2>
             
              <div>
                 <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
@@ -122,50 +150,6 @@
                 <pre class="mt-2">
                     <button class="copy-btn" data-target="css-code">Copy</button>
                     <code id="css-code">
-&lt;!-- Enter text above to generate code --&gt;
-                    </code>
-                </pre>
-            </div>
-        </div>
-
-        <!-- === Technique 4: "Honeypot Field" === -->
-        <div class="border-t pt-6 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-700">Technique 4: "Honeypot Field" (Bot Trap)</h2>
-            <p class="text-gray-600 text-sm">Paste this hidden field into your forms. If it gets filled out, it's a bot.</p>
-            
-            <div>
-                <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
-                <pre class="mt-2">
-                    <button class="copy-btn" data-target="honey-code">Copy</button>
-                    <code id="honey-code">
-&lt;!-- Honeypot snippet will appear here --&gt;
-                    </code>
-                </pre>
-            </div>
-        </div>
-
-        <!-- === Technique 5: "SVG Path Data" === -->
-        <div class="border-t pt-6 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-700">Technique 5: "SVG Path Data" (High Security)</h2>
-            <p class="text-gray-600 text-sm">
-                Converts text into vector shapes. 
-                <strong>Zero JavaScript required</strong> on your site. 
-                Perfect for static sites.
-            </p>
-            
-            <div>
-                <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
-                <div id="svg-demo-container" class="mt-2 p-4 bg-orange-50 rounded-lg flex justify-center items-center min-h-[70px]">
-                    <!-- Live demo will be injected here -->
-                    <span class="text-gray-400 text-sm">Loading font engine...</span>
-                </div>
-            </div>
-
-            <div>
-                <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
-                <pre class="mt-2">
-                    <button class="copy-btn" data-target="svg-code">Copy</button>
-                    <code id="svg-code">
 &lt;!-- Enter text above to generate code --&gt;
                     </code>
                 </pre>
@@ -298,8 +282,6 @@
             const cssCode = document.getElementById('css-code');
             const cssDemoContainer = document.getElementById('css-demo-container');
             
-            const honeyCode = document.getElementById('honey-code');
-            
             const svgCode = document.getElementById('svg-code');
             const svgDemoContainer = document.getElementById('svg-demo-container');
             
@@ -321,21 +303,12 @@
             function updateSnippets() {
                 const rawText = rawTextInput.value;
                 
-                // --- 4. Update Honeypot (Always visible) ---
-                const honeySnippet = `<!-- HONEYPOT: Trap for bots -->
-<div style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1;">
-    <label for="website_honeypot">Website</label>
-    <input type="text" id="website_honeypot" name="website_honeypot" tabindex="-1" autocomplete="off">
-</div>`;
-                honeyCode.innerHTML = escapeHTML(honeySnippet.replace(/^\n|\n$/g, ''));
-
-
                 if (!rawText) {
                     // Reset to default
-                    clickCode.innerHTML = `<!-- Enter text above to generate code -->`;
-                    canvasCode.innerHTML = `<!-- Enter text above to generate code -->`;
-                    cssCode.innerHTML = `<!-- Enter text above to generate code -->`;
-                    svgCode.innerHTML = `<!-- Enter text above to generate code -->`;
+                    clickCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    canvasCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    cssCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    svgCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
                     
                     clickDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
                     cssDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
@@ -350,12 +323,12 @@
                 const b64text = btoa(rawText);
                 
                 // --- 1. Update Click-to-Reveal ---
-                const clickSnippet = `<a href="#"
+                const clickSnippet = `&lt;a href="#"
    class="..."
    data-obfuscate="click"
-   data-b64-text="${b64text}">
+   data-b64-text="${b64text}"&gt;
    Click to Show Text
-</a>`;
+&lt;/a&gt;`;
                 clickCode.innerHTML = escapeHTML(clickSnippet.replace(/^\n|\n$/g, ''));
                 
                 // Update live demo (by replacing it)
@@ -368,15 +341,15 @@
                 const lines = rawText.split('\n').length;
                 const canvasHeight = Math.max(lines * 20 + 20, 40);
 
-                const canvasSnippet = `<canvas
+                const canvasSnippet = `&lt;canvas
     data-obfuscate="canvas"
     data-b64-text="${b64text}"
     data-font="18px Arial"
     data-color="#374151"
     width="300"
     height="${canvasHeight}"
-    class="rounded-md">
-</canvas>`;
+    class="rounded-md"&gt;
+&lt;/canvas&gt;`;
                 canvasCode.innerHTML = escapeHTML(canvasSnippet.replace(/^\n|\n$/g, ''));
                 
                 // Update live demo (by updating data and redrawing)
@@ -387,9 +360,9 @@
 
                 // --- 3. Update CSS Reversal ---
                 const reversedText = reverseString(rawText);
-                const cssSnippet = `<span style="unicode-bidi: bidi-override; direction: rtl;">
+                const cssSnippet = `&lt;span style="unicode-bidi: bidi-override; direction: rtl;"&gt;
   ${reversedText}
-</span>`;
+&lt;/span&gt;`;
                 cssCode.innerHTML = escapeHTML(cssSnippet.replace(/^\n|\n$/g, ''));
 
                 // Update live demo
@@ -412,8 +385,7 @@
                         if (box.x2 > maxWidth) maxWidth = box.x2;
                         
                         // Add path element
-                        svgPaths += `  ${path.toSVG(2)}
-`; // 2 decimal precision
+                        svgPaths += `  ${path.toSVG(2)}\n`; // 2 decimal precision
                         svgHeight = y + 10; // Update height
                     });
                     
