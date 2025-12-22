@@ -1,4 +1,3 @@
-
 # Lightweight Text Obfuscator
 
 - A ultra-lightweight copy-paste repository for effective text obfuscation techniques.
@@ -14,16 +13,16 @@
 | **Click-to-Reveal** | Low | High | Minimal |
 | **Canvas Render** | Moderate | Very Low | Low |
 | **CSS Reversal** | Moderate | High | Moderate |
+| **SVG Path Data** | High | Low | High (Generation only) |
 | **Cloudflare Turnstile** | Very High | High | High (API req) |
-| **SVG Path Data** | High | Low | High |
 
 **Pros & Cons:**
 
 - **Click-to-Reveal:** Best for accessibility, but weak against scrapers that can execute JS.
-- **Canvas Render:** Strong against static scraping, but terrible for accessibility (screen readers cannot read it) and vulnerable to OCR.
+- **Canvas Render:** Strong against static scraping, but terrible for accessibility (screen readers cannot read this).
 - **CSS Reversal:** Good balance of UX and bot deterrence (confuses DOM scrapers), but advanced bots can see through it.
+- **SVG Path Data:** Extremely hard to scrape without OCR. Zero JavaScript required on the target site.
 - **Cloudflare Turnstile:** The gold standard for protection, but requires an API key and external dependency.
-- **SVG Path Data:** Extremely hard to scrape without OCR, but very complex to implement (requires font parsing) and poor accessibility.
 
 ## Techniques Included
 
@@ -45,6 +44,14 @@
 ### 4. Honeypot Field (Bot Trap)
 - A hidden input field that users cannot see but bots might fill out.
 - **Usage:** Add this to your forms. If the backend receives a value in this field, the submission is from a bot.
+
+### 5. SVG Path Data (High Security)
+- Converts your text into vector shapes (`<path>` elements).
+- **Pros:** 
+    - **No JavaScript required** on the target site.
+    - Scales perfectly (Retina/High DPI).
+    - Can be styled with CSS (`fill: currentColor`).
+- **Cons:** Not copy-pasteable by users (unless you wrap it in a custom script). Screen readers need `aria-label`.
 
 ## How to Use
 
@@ -103,6 +110,16 @@ Paste this inside your `<form>` tags.
     <label for="website_honeypot">Website</label>
     <input type="text" id="website_honeypot" name="website_honeypot" tabindex="-1" autocomplete="off">
 </div>
+```
+
+### Snippet 5: SVG Path Data
+
+Generates a vector image of your text. Zero dependencies.
+
+```html
+<svg viewBox="0 0 200 40" width="200" height="40" role="img" aria-label="Contact Information">
+  <path d="M10 10 ... (vector data) ..." fill="currentColor" />
+</svg>
 ```
 
 ## Live Demo

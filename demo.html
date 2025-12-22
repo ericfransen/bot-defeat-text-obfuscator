@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Interactive Text Obfuscator Demo</title>
     <!-- Load Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load opentype.js for SVG Path generation -->
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
     <style>
         /* Simple styling for the code block */
         pre {
@@ -142,6 +144,34 @@
             </div>
         </div>
 
+        <!-- === Technique 5: "SVG Path Data" === -->
+        <div class="border-t pt-6 space-y-4">
+            <h2 class="text-xl font-semibold text-gray-700">Technique 5: "SVG Path Data" (High Security)</h2>
+            <p class="text-gray-600 text-sm">
+                Converts text into vector shapes. 
+                <strong>Zero JavaScript required</strong> on your site. 
+                Perfect for static sites.
+            </p>
+            
+            <div>
+                <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
+                <div id="svg-demo-container" class="mt-2 p-4 bg-orange-50 rounded-lg flex justify-center items-center min-h-[70px]">
+                    <!-- Live demo will be injected here -->
+                    <span class="text-gray-400 text-sm">Loading font engine...</span>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                <pre class="mt-2">
+                    <button class="copy-btn" data-target="svg-code">Copy</button>
+                    <code id="svg-code">
+&lt;!-- Enter text above to generate code --&gt;
+                    </code>
+                </pre>
+            </div>
+        </div>
+
     </div>
 
     <!-- 
@@ -269,27 +299,48 @@
             const cssDemoContainer = document.getElementById('css-demo-container');
             
             const honeyCode = document.getElementById('honey-code');
+            
+            const svgCode = document.getElementById('svg-code');
+            const svgDemoContainer = document.getElementById('svg-demo-container');
+            
+            let loadedFont = null;
+
+            // Load Font for SVG Generation
+            opentype.load('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf', function(err, font) {
+                if (err) {
+                    console.error('Font could not be loaded: ' + err);
+                    svgDemoContainer.innerHTML = '<span class="text-red-500">Error loading font engine. Check console.</span>';
+                } else {
+                    loadedFont = font;
+                    svgDemoContainer.innerHTML = '<span class="text-gray-400">Font loaded. Enter text above.</span>';
+                    // Trigger update if text is already present
+                    if (rawTextInput.value) updateSnippets();
+                }
+            });
 
             function updateSnippets() {
                 const rawText = rawTextInput.value;
                 
                 // --- 4. Update Honeypot (Always visible) ---
-                const honeySnippet = `&lt;!-- HONEYPOT: Trap for bots --&gt;
-&lt;div style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1;"&gt;
-    &lt;label for="website_honeypot"&gt;Website&lt;/label&gt;
-    &lt;input type="text" id="website_honeypot" name="website_honeypot" tabindex="-1" autocomplete="off"&gt;
-&lt;/div&gt;`;
+                const honeySnippet = `<!-- HONEYPOT: Trap for bots -->
+<div style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1;">
+    <label for="website_honeypot">Website</label>
+    <input type="text" id="website_honeypot" name="website_honeypot" tabindex="-1" autocomplete="off">
+</div>`;
                 honeyCode.innerHTML = escapeHTML(honeySnippet.replace(/^\n|\n$/g, ''));
 
 
                 if (!rawText) {
                     // Reset to default
-                    clickCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
-                    canvasCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
-                    cssCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    clickCode.innerHTML = `<!-- Enter text above to generate code -->`;
+                    canvasCode.innerHTML = `<!-- Enter text above to generate code -->`;
+                    cssCode.innerHTML = `<!-- Enter text above to generate code -->`;
+                    svgCode.innerHTML = `<!-- Enter text above to generate code -->`;
                     
                     clickDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
                     cssDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
+                    
+                    if (loadedFont) svgDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
                     
                     canvasDemo.dataset.b64Text = "";
                     drawCanvas(canvasDemo); // Clear canvas
@@ -299,33 +350,33 @@
                 const b64text = btoa(rawText);
                 
                 // --- 1. Update Click-to-Reveal ---
-                const clickSnippet = `&lt;a href="#"
+                const clickSnippet = `<a href="#"
    class="..."
    data-obfuscate="click"
-   data-b64-text="${b64text}"&gt;
+   data-b64-text="${b64text}">
    Click to Show Text
-&lt;/a&gt;`;
+</a>`;
                 clickCode.innerHTML = escapeHTML(clickSnippet.replace(/^\n|\n$/g, ''));
                 
                 // Update live demo (by replacing it)
                 clickDemoContainer.innerHTML = ''; // Clear
                 clickDemoContainer.appendChild(createClickButton(b64text));
                 
-                
+
                 // --- 2. Update Canvas ---
                 // Estimate lines to set a reasonable default height in snippet
                 const lines = rawText.split('\n').length;
                 const canvasHeight = Math.max(lines * 20 + 20, 40);
 
-                const canvasSnippet = `&lt;canvas
+                const canvasSnippet = `<canvas
     data-obfuscate="canvas"
     data-b64-text="${b64text}"
     data-font="18px Arial"
     data-color="#374151"
     width="300"
     height="${canvasHeight}"
-    class="rounded-md"&gt;
-&lt;/canvas&gt;`;
+    class="rounded-md">
+</canvas>`;
                 canvasCode.innerHTML = escapeHTML(canvasSnippet.replace(/^\n|\n$/g, ''));
                 
                 // Update live demo (by updating data and redrawing)
@@ -336,13 +387,49 @@
 
                 // --- 3. Update CSS Reversal ---
                 const reversedText = reverseString(rawText);
-                const cssSnippet = `&lt;span style="unicode-bidi: bidi-override; direction: rtl;"&gt;
+                const cssSnippet = `<span style="unicode-bidi: bidi-override; direction: rtl;">
   ${reversedText}
-&lt;/span&gt;`;
+</span>`;
                 cssCode.innerHTML = escapeHTML(cssSnippet.replace(/^\n|\n$/g, ''));
 
                 // Update live demo
                 cssDemoContainer.innerHTML = `<span class="text-lg font-medium text-gray-800" style="unicode-bidi: bidi-override; direction: rtl;">${reversedText}</span>`;
+
+                // --- 5. Update SVG Path Data ---
+                if (loadedFont) {
+                    const fontSize = 24;
+                    // Simple logic: split lines, generate path for each
+                    const textLines = rawText.split('\n');
+                    let svgPaths = '';
+                    let svgHeight = 0;
+                    let maxWidth = 0;
+
+                    textLines.forEach((line, index) => {
+                        const y = (index + 1) * (fontSize * 1.2); // Line height
+                        const path = loadedFont.getPath(line, 0, y, fontSize);
+                        // Measure width
+                        const box = path.getBoundingBox();
+                        if (box.x2 > maxWidth) maxWidth = box.x2;
+                        
+                        // Add path element
+                        svgPaths += `  ${path.toSVG(2)}
+`; // 2 decimal precision
+                        svgHeight = y + 10; // Update height
+                    });
+                    
+                    // Construct full SVG
+                    // Add some padding
+                    const finalWidth = Math.ceil(maxWidth + 10);
+                    const finalHeight = Math.ceil(svgHeight);
+                    
+                    const svgString = `<svg viewBox="0 0 ${finalWidth} ${finalHeight}" width="${finalWidth}" height="${finalHeight}" role="img" aria-label="Contact Information">
+${svgPaths}</svg>`;
+                    
+                    // Update Code
+                    svgCode.innerHTML = escapeHTML(svgString);
+                    // Update Demo
+                    svgDemoContainer.innerHTML = svgString;
+                }
             }
 
             // --- Initial State (for page load) ---
@@ -355,9 +442,50 @@
             
             // Activate static "canvas" elements
             document.querySelectorAll('[data-obfuscate="canvas"]:not([data-b64-text=""])').forEach(drawCanvas);
-            
+
+
+            // --- Clipboard Copy Logic ---
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const codeElement = document.getElementById(targetId);
+                    
+                    // Create a temporary textarea to hold the text
+                    const textArea = document.createElement('textarea');
+                    
+                    // We need to "unescape" the HTML for the clipboard
+                    textArea.innerHTML = codeElement.innerHTML
+                        .replace(/&lt;/g, '<')
+                        .replace(/&gt;/g, '>')
+                        .replace(/&amp;/g, '&');
+                        
+                    textArea.style.position = 'fixed'; // Hide it
+                    textArea.style.opacity = 0;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    
+                    try {
+                        // Use execCommand for broader compatibility in iFrames
+                        document.execCommand('copy');
+                        button.textContent = 'Copied!';
+                        button.classList.add('copied');
+                    } catch (err) {
+                        console.error('Failed to copy text: ', err);
+                        button.textContent = 'Error';
+                    }
+                    
+                    document.body.removeChild(textArea);
+                    
+                    // Reset button text
+                    setTimeout(() => {
+                        button.textContent = 'Copy';
+                        button.classList.remove('copied');
+                    }, 2000);
+                });
+            });
+
+        });
+    </script>
 
 </body>
 </html>
-
-
