@@ -83,7 +83,7 @@
         
         <!-- === Technique 2: "Canvas Rendering" === -->
         <div class="border-t pt-6 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-700">Technique 2: "Canvas Rendering"</h2>
+            <h2 class="text-xl font-semibold text-gray-700">Technique 2: "Canvas Rendering" (Harder to Scrape)</h2>
             
              <div>
                 <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
@@ -99,6 +99,44 @@
                     <button class="copy-btn" data-target="canvas-code">Copy</button>
                     <code id="canvas-code">
 &lt;!-- Enter text above to generate code --&gt;
+                    </code>
+                </pre>
+            </div>
+        </div>
+
+        <!-- === Technique 3: "CSS Reversal" === -->
+        <div class="border-t pt-6 space-y-4">
+            <h2 class="text-xl font-semibold text-gray-700">Technique 3: "CSS Reversal" (Better UX)</h2>
+            
+             <div>
+                <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
+                <div id="css-demo-container" class="mt-2 p-4 bg-indigo-50 rounded-lg flex justify-center items-center min-h-[70px]">
+                    <!-- Live demo will be injected here -->
+                </div>
+            </div>
+
+            <div>
+                <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                <pre class="mt-2">
+                    <button class="copy-btn" data-target="css-code">Copy</button>
+                    <code id="css-code">
+&lt;!-- Enter text above to generate code --&gt;
+                    </code>
+                </pre>
+            </div>
+        </div>
+
+        <!-- === Technique 4: "Honeypot Field" === -->
+        <div class="border-t pt-6 space-y-4">
+            <h2 class="text-xl font-semibold text-gray-700">Technique 4: "Honeypot Field" (Bot Trap)</h2>
+            <p class="text-gray-600 text-sm">Paste this hidden field into your forms. If it gets filled out, it's a bot.</p>
+            
+            <div>
+                <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                <pre class="mt-2">
+                    <button class="copy-btn" data-target="honey-code">Copy</button>
+                    <code id="honey-code">
+&lt;!-- Honeypot snippet will appear here --&gt;
                     </code>
                 </pre>
             </div>
@@ -120,6 +158,11 @@
                       .replace(/'/g, '&#039;');
         }
 
+        // --- Helper function to reverse a string ---
+        function reverseString(str) {
+            return str.split('').reverse().join('');
+        }
+
         // --- Helper function to draw on canvas (handles multi-line) ---
         function drawCanvas(canvas) {
             const b64text = canvas.dataset.b64Text;
@@ -137,11 +180,9 @@
             const lines = b64text ? atob(b64text).split('\n') : [];
 
             // Use logical width from HTML attribute (e.g., 300)
-            // We use canvas.getAttribute to get the HTML value, not canvas.width (which is backing store)
             const logicalWidth = parseInt(canvas.getAttribute('width'), 10) || 300; 
             
             // Calculate logical height
-            // This corrects a min-height inconsistency from the previous file.
             const logicalHeight = Math.max(lineHeight * lines.length + 20, 40); // +20 padding, min 40px
 
             // 2. Set backing store size (scaled by DPR)
@@ -223,15 +264,33 @@
             
             const canvasCode = document.getElementById('canvas-code');
             const canvasDemo = document.getElementById('canvas-demo');
+            
+            const cssCode = document.getElementById('css-code');
+            const cssDemoContainer = document.getElementById('css-demo-container');
+            
+            const honeyCode = document.getElementById('honey-code');
 
             function updateSnippets() {
                 const rawText = rawTextInput.value;
                 
+                // --- 4. Update Honeypot (Always visible) ---
+                const honeySnippet = `&lt;!-- HONEYPOT: Trap for bots --&gt;
+&lt;div style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1;"&gt;
+    &lt;label for="website_honeypot"&gt;Website&lt;/label&gt;
+    &lt;input type="text" id="website_honeypot" name="website_honeypot" tabindex="-1" autocomplete="off"&gt;
+&lt;/div&gt;`;
+                honeyCode.innerHTML = escapeHTML(honeySnippet.replace(/^\n|\n$/g, ''));
+
+
                 if (!rawText) {
                     // Reset to default
                     clickCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
                     canvasCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    cssCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    
                     clickDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
+                    cssDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
+                    
                     canvasDemo.dataset.b64Text = "";
                     drawCanvas(canvasDemo); // Clear canvas
                     return;
@@ -252,7 +311,7 @@
                 clickDemoContainer.innerHTML = ''; // Clear
                 clickDemoContainer.appendChild(createClickButton(b64text));
                 
-
+                
                 // --- 2. Update Canvas ---
                 // Estimate lines to set a reasonable default height in snippet
                 const lines = rawText.split('\n').length;
@@ -273,6 +332,17 @@
                 canvasDemo.dataset.b64Text = b64text;
                 canvasDemo.width = 300; // Reset width (in case)
                 drawCanvas(canvasDemo);
+
+
+                // --- 3. Update CSS Reversal ---
+                const reversedText = reverseString(rawText);
+                const cssSnippet = `&lt;span style="unicode-bidi: bidi-override; direction: rtl;"&gt;
+  ${reversedText}
+&lt;/span&gt;`;
+                cssCode.innerHTML = escapeHTML(cssSnippet.replace(/^\n|\n$/g, ''));
+
+                // Update live demo
+                cssDemoContainer.innerHTML = `<span class="text-lg font-medium text-gray-800" style="unicode-bidi: bidi-override; direction: rtl;">${reversedText}</span>`;
             }
 
             // --- Initial State (for page load) ---
@@ -280,57 +350,12 @@
             rawTextInput.addEventListener('input', updateSnippets); // Run on text change
 
             // --- Activate all OTHER obfuscated elements on the page ---
-            // (This script will also power any static elements you paste elsewhere)
-            
             // Activate static "click" elements
             document.querySelectorAll('[data-obfuscate="click"]:not([data-b64-text=""])').forEach(attachClickRevealListener);
             
             // Activate static "canvas" elements
             document.querySelectorAll('[data-obfuscate="canvas"]:not([data-b64-text=""])').forEach(drawCanvas);
-
-
-            // --- Clipboard Copy Logic ---
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const targetId = button.dataset.target;
-                    const codeElement = document.getElementById(targetId);
-                    
-                    // Create a temporary textarea to hold the text
-                    const textArea = document.createElement('textarea');
-                    
-                    // We need to "unescape" the HTML for the clipboard
-                    textArea.innerHTML = codeElement.innerHTML
-                        .replace(/&lt;/g, '<')
-                        .replace(/&gt;/g, '>')
-                        .replace(/&amp;/g, '&');
-                        
-                    textArea.style.position = 'fixed'; // Hide it
-                    textArea.style.opacity = 0;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    
-                    try {
-                        // Use execCommand for broader compatibility in iFrames
-                        document.execCommand('copy');
-                        button.textContent = 'Copied!';
-                        button.classList.add('copied');
-                    } catch (err) {
-                        console.error('Failed to copy text: ', err);
-                        button.textContent = 'Error';
-                    }
-                    
-                    document.body.removeChild(textArea);
-                    
-                    // Reset button text
-                    setTimeout(() => {
-                        button.textContent = 'Copy';
-                        button.classList.remove('copied');
-                    }, 2000);
-                });
-            });
-
-        });
-    </script>
+            
 
 </body>
 </html>
