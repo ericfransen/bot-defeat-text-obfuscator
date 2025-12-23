@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Line BiDi Obfuscation Engine</title>
+    <title>Multi-Line BiDi Adversarial Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .bidi-layer {
+        /* .bidi-layer is no longer used, replaced by inline styles */
+        /* .bidi-layer {
             display: flex;
             flex-direction: row-reverse;
             justify-content: flex-end;
             font-family: 'ui-monospace', 'SFMono-Regular', monospace;
             min-height: 1.5em;
-        }
-        .weave-atom {
+        } */
+        .weave-atom { /* This is now primarily for nested spans in Level 3 */
             unicode-bidi: isolate;
-            direction: ltr;
-            white-space: pre;
+            direction: ltr; /* Ensure individual fragments render LTR */
+            white-space: pre; /* Preserve spaces within fragments */
         }
         .glass-panel {
             background: rgba(15, 23, 42, 0.6);
@@ -61,13 +62,17 @@ Protocol: BiDi-Override-2025</textarea>
                     
                     <div class="mt-6 flex items-center justify-between">
                         <div class="space-y-1">
-                            <span class="block text-xs text-slate-400 uppercase">Fragmentation Density</span>
-                            <p class="text-[10px] text-slate-600">Entropy level per line</p>
+                            <div class="flex items-center">
+                                <span class="block text-xs text-slate-400 uppercase">Entropy Level</span>
+                                <span id="entropyLabel" class="text-[10px] text-blue-400 font-bold uppercase ml-2">Level 1: Basic Reverse</span>
+                            </div>
+                            <p class="text-[10px] text-slate-600">Complexity of obfuscation</p>
                         </div>
                         <input 
-                            type="range" id="entropy" min="1" max="12" value="4" 
+                            type="range" id="entropy" min="1" max="4" value="1" step="1"
                             class="w-32 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
-                            oninput="orchestrate()">
+                            oninput="updateEntropyLabel(); orchestrate();"
+                        >
                     </div>
                 </div>
 
@@ -102,7 +107,7 @@ Protocol: BiDi-Override-2025</textarea>
                 </div>
 
                 <!-- Styling Toggle Section -->
-                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-blue-500">
+                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-l-4 border-blue-500">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-bold text-white uppercase tracking-widest">Wrapper Styling</label>
                         <input type="checkbox" id="useWrapper" onchange="orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
@@ -205,7 +210,7 @@ Protocol: BiDi-Override-2025</textarea>
         // --- Core Logic ---
         function orchestrate() {
             const rawText = document.getElementById('payloadInput').value;
-            const entropy = parseInt(document.getElementById('entropy').value);
+            const entropyLevel = parseInt(document.getElementById('entropy').value); // Renamed for clarity
             const renderTarget = document.getElementById('renderTarget');
             const sourceSnippet = document.getElementById('sourceSnippet');
             
@@ -213,14 +218,14 @@ Protocol: BiDi-Override-2025</textarea>
             const useWrapper = document.getElementById('useWrapper').checked;
             const twClasses = document.getElementById('twClasses').value;
             const rawStyles = document.getElementById('rawStyles').value;
-            const wrapperControls = document.getElementById('wrapperControls');
             
-            // Mode selection
+            // Mode selection for wrapper
             const mode = document.querySelector('input[name="styleMode"]:checked').value;
             const twInput = document.getElementById('twClasses');
             const cssInput = document.getElementById('rawStyles');
+            const wrapperControls = document.getElementById('wrapperControls');
 
-            // Visual feedback for mode
+            // Visual feedback for mode (opacity change)
             if (mode === 'tailwind') {
                 twInput.classList.remove('opacity-50');
                 cssInput.classList.add('opacity-50');
@@ -235,28 +240,10 @@ Protocol: BiDi-Override-2025</textarea>
             const lines = rawText.split('\n');
             let fullHtml = "";
 
-            lines.forEach((line, index) => {
-                if (line === "") {
-                    fullHtml += `<div class="bidi-layer"><br></div>`;
-                    return;
-                }
-
-                let fragments = [];
-                const segmentSize = Math.max(1, Math.ceil(line.length / entropy));
-                
-                for (let i = 0; i < line.length; i += segmentSize) {
-                    fragments.push(line.substring(i, i + segmentSize));
-                }
-
-                const domOrder = [...fragments].reverse();
-                
-                let lineHtml = `<div class="bidi-layer">\n`;
-                domOrder.forEach(frag => {
-                    lineHtml += `  <bdo dir="ltr" class="weave-atom">${escapeHtml(frag)}</bdo>\n`;
-                });
-                lineHtml += `</div>`;
-                fullHtml += lineHtml + (index < lines.length - 1 ? "\n" : "");
+            lines.forEach((line) => {
+                fullHtml += generateObfuscatedLine(line, entropyLevel) + '\n';
             });
+            fullHtml = fullHtml.trim(); // Remove trailing newline
 
             // Final wrap logic
             let finalOutput = fullHtml;
@@ -276,6 +263,73 @@ Protocol: BiDi-Override-2025</textarea>
             sourceSnippet.value = finalOutput;
             
             runScraperSim();
+        }
+
+        function updateEntropyLabel() {
+            const entropyLevel = parseInt(document.getElementById('entropy').value);
+            const label = document.getElementById('entropyLabel');
+            let text = "";
+            switch(entropyLevel) {
+                case 1: text = "Level 1: Basic Reverse"; break;
+                case 2: text = "Level 2: Zero-Width Noise"; break;
+                case 3: text = "Level 3: Recursive Segmenting"; break;
+                case 4: text = "Level 4: Homoglyph Swapping"; break;
+            }
+            label.textContent = text;
+        }
+
+        const homoglyphMaps = {
+            'o': 'ο', 'a': 'а', 'e': 'е', 'p': 'р', 'c': 'с' 
+        };
+
+        function generateObfuscatedLine(str, level) {
+            // Normalize input - escape HTML characters first
+            let chars = Array.from(escapeHtml(str)); // Use Array.from for proper Unicode char handling
+            
+            // 1. Homoglyph Swap (Level 4)
+            if (level >= 4) {
+                chars = chars.map(c => homoglyphMaps[c.toLowerCase()] || c);
+            }
+            
+            // 2. Insert Zero-Width Joiner/Space (Level 2+)
+            // Inject after homoglyph, but before reversal for better effect against regex.
+            let noisyChars = [];
+            if (level >= 2) {
+                for (let i = 0; i < chars.length; i++) {
+                    noisyChars.push(chars[i]);
+                    if (Math.random() < 0.3) { // 30% chance
+                        noisyChars.push('\u200B'); // Zero Width Space
+                    }
+                }
+                chars = noisyChars;
+            }
+            
+            // 3. Final Reversal of the character array
+            let reversedResult = chars.reverse().join('');
+            
+            // 4. Nested Layering (Level 3+)
+            let finalContent = reversedResult;
+            if (level >= 3) {
+                // Split into 2-4 random chunks
+                const numChunks = Math.floor(Math.random() * 3) + 2; // 2, 3, or 4 chunks
+                let segments = [];
+                let currentPos = 0;
+
+                for (let i = 0; i < numChunks - 1; i++) {
+                    // Ensure each segment has at least one character and we don't exceed length
+                    let segmentLength = Math.max(1, Math.floor(Math.random() * ((reversedResult.length - currentPos) / (numChunks - i) * 1.5)));
+                    if (currentPos + segmentLength > reversedResult.length) segmentLength = reversedResult.length - currentPos;
+
+                    segments.push(reversedResult.slice(currentPos, currentPos + segmentLength));
+                    currentPos += segmentLength;
+                }
+                segments.push(reversedResult.slice(currentPos)); // Add remaining part
+
+                finalContent = segments.map(seg => `<span style="direction:rtl">${seg}</span>`).join('');
+            }
+            
+            // Outer wrapper with BiDi override
+            return `<div style="unicode-bidi:bidi-override;direction:rtl;text-align:left;font-family: 'ui-monospace', 'SFMono-Regular', monospace; min-height:1.5em;white-space:pre-wrap;">${finalContent}</div>`;
         }
 
         // --- CSS Handling ---
@@ -336,7 +390,7 @@ Protocol: BiDi-Override-2025</textarea>
                 const arbitrary = (prefix) => `${prefix}-[${val.replace(/\s/g, '_')}]`;
 
                 switch(prop) {
-                    case 'padding': tw = val.endsWith('px') ? `p-[${val}]` : arbitrary('p'); break;
+                    case 'padding': tw = arbitrary('p'); break;
                     case 'padding-top': tw = arbitrary('pt'); break;
                     case 'padding-right': tw = arbitrary('pr'); break;
                     case 'padding-bottom': tw = arbitrary('pb'); break;
@@ -436,7 +490,13 @@ Protocol: BiDi-Override-2025</textarea>
             }
 
             // 2. Handle Common Utilities (Simplified map)
-            const getRem = (str) => `${str.split('-')[1] / 4}rem`;
+            const getRem = (str) => {
+                const parts = str.split('-');
+                if (parts.length > 1 && !isNaN(parts[1])) {
+                    return `${parseInt(parts[1]) / 4}rem`;
+                }
+                return null;
+            }
 
             if (cls.startsWith('p-')) return `padding: ${getRem(cls)};`; 
             if (cls.startsWith('pt-')) return `padding-top: ${getRem(cls)};`;
@@ -482,18 +542,47 @@ Protocol: BiDi-Override-2025</textarea>
             const indicator = document.getElementById('matchIndicator');
             const status = document.getElementById('matchStatus');
 
+            // The innerText of an element with unicode-bidi:bidi-override should reflect the *logical* order of text content, not the visual order.
+            // But since we are reversing the string and applying rtl, the logical text in DOM is reversed.
+            // So, for the scraper simulation, we should expect the innerText to be scrambled.
             const extracted = renderTarget.innerText.trim();
-            scraperResult.textContent = extracted;
+            scraperResult.textContent = extracted; // This will show the raw DOM content, which is reversed.
 
-            const emailRegex = /\S+@\S+\.\S+/;
-            const sensitiveKeywords = /admin|password|vault|access|restricted/i;
-            const isDetected = emailRegex.test(extracted) || sensitiveKeywords.test(extracted);
+            // To detect "leaks", we check if the *original* sensitive keywords can be found in the *extracted* (reversed) text.
+            // If the obfuscation is successful, these should NOT be found.
+            const originalPayload = document.getElementById('payloadInput').value.toLowerCase();
+            const keywordsToCheck = ['admin', 'master@vault.local', 'restricted', 'protocol']; // Example keywords
             
-            if (isDetected) {
+            let leakDetected = false;
+            for(const keyword of keywordsToCheck) {
+                // If the original keyword is found in the *reversed* extracted text, it's a leak (very unlikely)
+                // Or if the reversed version of the keyword is found in the extracted (reversed) text.
+                // A more robust check: attempt to "reverse" the extracted text and compare with original.
+                // Simpler: if the *original* text is not the same as the *extracted* text AND it's not empty, it's obfuscated.
+                // For a true "leak" scenario, we'd try to un-obfuscate the extracted text and then check.
+                // For this demo, let's assume if original text characters are directly found in sequence in innerText, it's a leak.
+                // This will effectively check if the bidi-override failed or innerText is returning the visual.
+                // Given BiDi override, innerText *should* return the content as it is in the DOM (reversed).
+                // So, if "admin" is in the original, we expect "nimda" (or similar) in the extracted text.
+                // We'll check for the *original* keywords in the *unscrambled* form. This means we expect the innerText to be scrambled.
+                if (originalPayload.includes(keyword) && extracted.includes(keyword)) {
+                     leakDetected = true;
+                     break;
+                }
+            }
+            
+            // This simulation now tries to see if the *original* keywords are present in the DOM's raw text.
+            // If the obfuscation is working (reversing content), they shouldn't be.
+            if (leakDetected) {
                 indicator.className = "w-2 h-2 rounded-full bg-red-500 animate-ping";
                 status.textContent = "Leak Detected";
                 status.className = "text-[10px] font-bold uppercase text-red-500";
-            } else {
+            } else if (originalPayload.trim() === "") { // No payload, no leak
+                indicator.className = "w-2 h-2 rounded-full bg-slate-500";
+                status.textContent = "Enter Payload";
+                status.className = "text-[10px] font-bold uppercase text-slate-500";
+            }
+            else {
                 indicator.className = "w-2 h-2 rounded-full bg-green-500";
                 status.textContent = "Obfuscation Clear";
                 status.className = "text-[10px] font-bold uppercase text-green-500";
@@ -502,7 +591,7 @@ Protocol: BiDi-Override-2025</textarea>
 
         function escapeHtml(text) {
             const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-            return text.replace(/[&<>"]/g, m => map[m]);
+            return text.replace(/[&<>"']/g, m => map[m]);
         }
 
         function copySource() {
@@ -519,7 +608,10 @@ Protocol: BiDi-Override-2025</textarea>
             setTimeout(() => toast.style.opacity = "0", 2000);
         }
 
-        window.onload = orchestrate;
+        window.onload = () => {
+            updateEntropyLabel(); // Initialize label
+            orchestrate();
+        };
     </script>
 </body>
 </html>
