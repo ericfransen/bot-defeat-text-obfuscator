@@ -123,7 +123,7 @@ Protocol: BiDi-Override-2025</textarea>
                 </div>
 
                 <!-- Styling Toggle Section -->
-                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-l-4 border-blue-500">
+                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-blue-500">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-bold text-white uppercase tracking-widest">Wrapper Styling</label>
                         <input type="checkbox" id="useWrapper" onchange="orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
@@ -164,6 +164,30 @@ Protocol: BiDi-Override-2025</textarea>
                                 class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none resize-y code-editor focus:border-blue-500 transition-colors"
                             ></textarea>
                             <p id="cssError" class="text-[10px] text-red-400 hidden">Malformed CSS detected</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security & A11y Ratings -->
+                <div class="glass-panel p-6 rounded-3xl shadow-xl border-teal-500">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Bot Defeat Probability</span>
+                            <div class="flex items-center gap-2">
+                                <div id="botRatingBar" class="h-2 w-16 bg-slate-800 rounded-full overflow-hidden">
+                                    <div id="botRatingFill" class="h-full bg-teal-500 w-1/4 transition-all duration-500"></div>
+                                </div>
+                                <span id="botRatingText" class="text-xs font-bold text-teal-400">Low</span>
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Accessibility Score</span>
+                            <div class="flex items-center gap-2">
+                                <div id="a11yRatingBar" class="h-2 w-16 bg-slate-800 rounded-full overflow-hidden">
+                                    <div id="a11yRatingFill" class="h-full bg-yellow-500 w-1/4 transition-all duration-500"></div>
+                                </div>
+                                <span id="a11yRatingText" class="text-xs font-bold text-yellow-400">Poor</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -300,7 +324,56 @@ Protocol: BiDi-Override-2025</textarea>
             renderTarget.innerHTML = finalOutput;
             sourceSnippet.value = finalOutput;
             
-            runScraperSim();
+            const leak = runScraperSim();
+            updateRatings(leak);
+        }
+
+        function updateRatings(leakDetected) {
+            const level = parseInt(document.getElementById('entropy').value);
+            const botBar = document.getElementById('botRatingFill');
+            const botText = document.getElementById('botRatingText');
+            const a11yBar = document.getElementById('a11yRatingFill');
+            const a11yText = document.getElementById('a11yRatingText');
+
+            // Bot Defeat Ratings
+            // Granular logic: Base score + Penalty for leaks
+            let botW = 25; 
+            let botT = 'Low'; 
+            let botC = 'bg-red-500';
+
+            if (level === 2) { botW = 50; botT = 'Medium'; botC = 'bg-yellow-500'; }
+            if (level === 3) { botW = 85; botT = 'High'; botC = 'bg-teal-500'; }
+            if (level === 4) { botW = 100; botT = 'Critical'; botC = 'bg-purple-500'; }
+
+            // Apply Leak Penalty
+            if (leakDetected && level < 4) {
+                 // Drastic penalty
+                 botW = Math.max(10, botW - 40);
+                 botT = 'Compromised';
+                 botC = 'bg-red-600';
+            } else if (!leakDetected && level > 1) {
+                // Boost for no leak if level is decent
+                if (level === 2) { botW = 65; botT = 'Medium High'; botC = 'bg-yellow-400'; }
+                if (level === 3) { botW = 95; botT = 'Very High'; botC = 'bg-teal-400'; }
+            }
+
+            // Stringify
+            botBar.style.width = `${botW}%`;
+            botBar.className = `h-full ${botC} transition-all duration-500`;
+            botText.textContent = botT;
+            botText.className = `text-xs font-bold ${botC.replace('bg-', 'text-')}`;
+
+            // Accessibility Ratings
+            let a11yW = '10%'; let a11yT = 'Unusable'; let a11yC = 'bg-red-600';
+            if (level === 1) { a11yW = '30%'; a11yT = 'Poor (Reversed DOM)'; a11yC = 'bg-orange-500'; }
+            if (level === 2) { a11yW = '20%'; a11yT = 'Poor (Noise)'; a11yC = 'bg-orange-600'; }
+            if (level === 3) { a11yW = '5%'; a11yT = 'Unusable (BiDi)'; a11yC = 'bg-red-600'; }
+            if (level === 4) { a11yW = '90%'; a11yT = 'Good (Interactive)'; a11yC = 'bg-green-500'; }
+
+            a11yBar.style.width = a11yW;
+            a11yBar.className = `h-full ${a11yC} transition-all duration-500`;
+            a11yText.textContent = a11yT;
+            a11yText.className = `text-xs font-bold ${a11yC.replace('bg-', 'text-')}`;
         }
 
         function updateEntropyLabel() {
@@ -322,7 +395,7 @@ Protocol: BiDi-Override-2025</textarea>
             switch(entropyLevel) {
                 case 1: text = "Low: Standard BiDi"; break;
                 case 2: text = "Medium: BiDi + Noise"; break;
-                case 3: text = "High: Sandwich + Homoglyphs"; break;
+                case 3: text = "High: BiDi + Homoglyphs"; break;
                 case 4: text = "Extreme: Interaction Gate"; break;
             }
             label.textContent = text;
@@ -338,6 +411,13 @@ Protocol: BiDi-Override-2025</textarea>
             'E': 'Е'  // Cyrillic Capital Ie
         };
 
+        const mirrorMap = {
+            '(': ')', ')': '(',
+            '{': '}', '}': '{',
+            '[': ']', ']': '[',
+            '<': '>', '>': '<'
+        };
+
         function generateObfuscatedLine(str, level, density) {
             // Step 1: Work with raw characters first
             let rawChars = Array.from(str); 
@@ -345,6 +425,9 @@ Protocol: BiDi-Override-2025</textarea>
             // Level 3: Homoglyph Swapping (Conservative)
             if (level >= 3) {
                 rawChars = rawChars.map(c => {
+                    // Mirror brackets for BiDi Reversal Correctness
+                    if (mirrorMap[c]) return mirrorMap[c];
+
                     // 50% chance to swap if a match exists
                     if (Math.random() > 0.5 && homoglyphMaps[c]) {
                         return homoglyphMaps[c];
@@ -363,17 +446,20 @@ Protocol: BiDi-Override-2025</textarea>
             if (level === 3) {
                 // 1. Inject Noise (Standard for High)
                 // Use &#8203; as a discrete atom
+                // Density-dependent noise: Right (12) = High Noise (~60%), Left (1) = Low Noise (~5%)
+                const noiseProb = density * 0.05;
+
                 let noisy = [];
                 atoms.forEach(a => {
                     noisy.push(a);
-                    if(Math.random() > 0.7) noisy.push('&#8203;'); 
+                    if(Math.random() < noiseProb) noisy.push('&#8203;'); 
                 });
                 
                 // 2. Reverse the ATOMS array (not the string)
                 const reversedAtoms = noisy.reverse();
                 
                 // 3. Sandwich Split (Chunks determined by density slider)
-                // Range 1-12 -> map to roughly 2-6 chunks
+                // Range 1-12 -> map to roughly 2-6 chunks (Right = More chunks = Higher Frag)
                 const numChunks = Math.max(2, Math.ceil(density / 2));
                 
                 let segments = [];
@@ -403,9 +489,13 @@ Protocol: BiDi-Override-2025</textarea>
             let fragments = [];
             let i = 0;
             while(i < atoms.length) {
-                // Base size = density. Jitter +/- 50%
-                let jitter = Math.floor(Math.random() * density) - (density/2);
-                let size = Math.max(1, density + jitter);
+                // Inverted Logic: Right (High Density) -> Small Chunks
+                // Range 1-12. 
+                // Density 1 (Left) -> Size ~13 (Low Frag)
+                // Density 12 (Right) -> Size ~2 (High Frag)
+                const baseSize = Math.max(1, 14 - density);
+                let jitter = Math.floor(Math.random() * (baseSize / 2)) - (baseSize / 4);
+                let size = Math.max(1, baseSize + jitter);
                 
                 let chunk = atoms.slice(i, i + size);
                 
@@ -668,6 +758,8 @@ Protocol: BiDi-Override-2025</textarea>
                 status.textContent = "Obfuscation Clear";
                 status.className = "text-[10px] font-bold uppercase text-green-500";
             }
+            
+            return leakDetected;
         }
 
         function escapeHtml(text) {
