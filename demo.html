@@ -89,6 +89,22 @@ Protocol: BiDi-Override-2025</textarea>
                                 oninput="orchestrate()"
                             >
                         </div>
+
+                        <!-- Smart Actions -->
+                        <div class="pt-6 border-t border-slate-800 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="space-y-1">
+                                    <span class="block text-xs text-blue-400 font-bold uppercase tracking-widest">Smart Interactions</span>
+                                    <p class="text-[10px] text-slate-600">Click-to-Action Wrapper</p>
+                                </div>
+                                <input type="checkbox" id="enableActions" onchange="toggleActions(); orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
+                            </div>
+                            <div id="actionControls" class="grid grid-cols-3 gap-2 opacity-50 pointer-events-none transition-opacity">
+                                <button onclick="setAction('copy')" class="action-btn active text-[10px] font-bold uppercase py-2 bg-blue-600 text-white rounded transition hover:bg-blue-500 ring-2 ring-blue-400" data-type="copy">Copy</button>
+                                <button onclick="setAction('mailto')" class="action-btn text-[10px] font-bold uppercase py-2 bg-slate-800 text-slate-400 rounded transition hover:bg-slate-700" data-type="mailto">Email</button>
+                                <button onclick="setAction('tel')" class="action-btn text-[10px] font-bold uppercase py-2 bg-slate-800 text-slate-400 rounded transition hover:bg-slate-700" data-type="tel">Call</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -306,6 +322,45 @@ Protocol: BiDi-Override-2025</textarea>
             }
             
             fullHtml = fullHtml.trim();
+
+            // --- Smart Actions Wrapper ---
+            // Don't apply if Level 4 (already interactive)
+            const enableActions = document.getElementById('enableActions').checked;
+            if (enableActions && entropyLevel < 4) {
+                const activeBtn = document.querySelector('.action-btn.active');
+                const actionType = activeBtn ? activeBtn.dataset.type : 'copy';
+                // Base64 encode the RAW payload (unescaped)
+                const b64 = btoa(unescape(encodeURIComponent(rawText)));
+                
+                let onclick = "";
+                let icon = "";
+                
+                // SVG Icons
+                const iconCopy = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+                const iconMail = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
+                const iconTel = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
+
+                if (actionType === 'copy') {
+                    onclick = `navigator.clipboard.writeText(decodeURIComponent(escape(atob('${b64}'))));`;
+                    icon = iconCopy;
+                } else if (actionType === 'mailto') {
+                    onclick = `window.location.href='mailto:'+decodeURIComponent(escape(atob('${b64}')))`;
+                    icon = iconMail;
+                } else if (actionType === 'tel') {
+                    onclick = `window.location.href='tel:'+decodeURIComponent(escape(atob('${b64}')))`;
+                    icon = iconTel;
+                }
+
+                // Wrap content
+                fullHtml = `<div style="cursor:pointer; display:flex; align-items:center; gap:0.5rem;" class="group" onclick="${onclick}">
+    <div style="flex-grow:1;">
+${fullHtml}
+    </div>
+    <div style="opacity:0; transition:opacity 0.2s;" class="group-hover:opacity-100">
+        ${icon}
+    </div>
+</div>`;
+            }
 
             // Final wrap logic
             let finalOutput = fullHtml;
@@ -779,6 +834,28 @@ Protocol: BiDi-Override-2025</textarea>
             const toast = document.getElementById('toast');
             toast.style.opacity = "1";
             setTimeout(() => toast.style.opacity = "0", 2000);
+        }
+
+        // --- Smart Actions ---
+        function toggleActions() {
+            const enabled = document.getElementById('enableActions').checked;
+            const controls = document.getElementById('actionControls');
+            controls.style.opacity = enabled ? "1" : "0.5";
+            controls.style.pointerEvents = enabled ? "auto" : "none";
+        }
+
+        function setAction(type) {
+            const btns = document.querySelectorAll('.action-btn');
+            btns.forEach(b => {
+                if(b.dataset.type === type) {
+                    b.classList.add('active', 'bg-blue-600', 'text-white', 'ring-2', 'ring-blue-400');
+                    b.classList.remove('bg-slate-800', 'text-slate-400');
+                } else {
+                    b.classList.remove('active', 'bg-blue-600', 'text-white', 'ring-2', 'ring-blue-400');
+                    b.classList.add('bg-slate-800', 'text-slate-400');
+                }
+            });
+            orchestrate();
         }
 
         window.onload = () => {
