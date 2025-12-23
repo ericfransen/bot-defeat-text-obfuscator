@@ -38,8 +38,8 @@
 
     <div class="max-w-7xl mx-auto">
         <header class="mb-10 border-b border-slate-800 pb-8">
-            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Adversarial Weave <span class="text-blue-500">v2.7</span></h1>
-            <p class="text-slate-500 mt-2 font-mono text-sm tracking-widest uppercase">Multi-line Atomic Fragmentation Engine</p>
+            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Bot Defeat Text Obfuscator<span class="text-blue-500">v2</span></h1>
+            <p class="text-slate-500 mt-2 font-mono text-sm tracking-widest uppercase">Multi-line Atomic Obfuscation Engine</p>
         </header>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
@@ -117,12 +117,13 @@ Protocol: BiDi-Override-2025</textarea>
                             <button onclick="copySource()" class="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded font-bold transition">COPY SNIPPET</button>
                         </div>
                     </div>
-                    <textarea 
+                    <pre 
                         id="sourceSnippet" 
-                        class="w-full h-80 bg-black/40 p-6 text-blue-300/70 font-mono text-xs focus:outline-none resize-none leading-relaxed"
+                        class="w-full h-80 bg-black/40 p-6 text-white font-mono text-xs focus:outline-none resize-none leading-relaxed overflow-auto whitespace-pre-wrap"
+                        contenteditable="true"
                         oninput="manualOverride()"
                         spellcheck="false"
-                    ></textarea>
+                    ></pre>
                 </div>
             </div>
 
@@ -258,12 +259,57 @@ Protocol: BiDi-Override-2025</textarea>
         Launch Legacy V1
     </a>
 
-    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-8 py-3 rounded-full text-xs font-bold shadow-2xl opacity-0 transition-opacity pointer-events-none uppercase tracking-widest">
-        Copied to clipboard
-    </div>
-
     <script>
         // --- Core Logic ---
+        function triggerFeedback(el) {
+            // 1. Text Pulse (Burnt Orange)
+            const originalColor = el.style.color || 'inherit';
+            el.style.transition = 'color 0.1s ease'; 
+            el.style.color = '#c2410c'; // Burnt Orange (orange-700)
+            
+            // 2. Create "Copied!" Overlay (Pill Shape)
+            const feedback = document.createElement('div');
+            feedback.textContent = 'Copied!';
+            feedback.style.position = 'absolute';
+            feedback.style.top = '-25px';
+            feedback.style.left = '50%';
+            feedback.style.transform = 'translateX(-50%)';
+            
+            // Pill Styling
+            feedback.style.padding = '4px 12px';
+            feedback.style.borderRadius = '9999px';
+            feedback.style.backgroundColor = '#111827'; // Dark Gray (gray-900)
+            feedback.style.color = '#ffffff'; // White text
+            feedback.style.fontSize = '10px';
+            feedback.style.fontWeight = 'bold';
+            feedback.style.textTransform = 'uppercase';
+            feedback.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.5)';
+            
+            feedback.style.pointerEvents = 'none';
+            feedback.style.opacity = '0';
+            // Only fade in
+            feedback.style.transition = 'opacity 0.2s ease-in, top 0.2s ease-out';
+            
+            el.style.position = el.style.position || 'relative';
+            el.appendChild(feedback);
+
+            // Animate In
+            requestAnimationFrame(() => {
+                feedback.style.opacity = '1';
+                feedback.style.top = '-35px';
+            });
+
+            // Pulse revert at 250ms
+            setTimeout(() => {
+                el.style.color = originalColor;
+            }, 450);
+
+            // Instant removal at 500ms
+            setTimeout(() => {
+                feedback.remove();
+            }, 500);
+        }
+
         function orchestrate() {
             const rawText = document.getElementById('payloadInput').value;
             const entropyLevel = parseInt(document.getElementById('entropy').value);
@@ -322,26 +368,27 @@ Protocol: BiDi-Override-2025</textarea>
             }
             
             fullHtml = fullHtml.trim();
+            
+            // Prepare distinct versions for Render vs Source
+            let rawFinal = fullHtml;
+            let highlightedFinal = escapeHtml(fullHtml); // Core logic is white
 
             // --- Smart Actions Wrapper ---
-            // Don't apply if Level 4 (already interactive)
             const enableActions = document.getElementById('enableActions').checked;
             if (enableActions && entropyLevel < 4) {
                 const activeBtn = document.querySelector('.action-btn.active');
                 const actionType = activeBtn ? activeBtn.dataset.type : 'copy';
-                // Base64 encode the RAW payload (unescaped)
                 const b64 = btoa(unescape(encodeURIComponent(rawText)));
                 
                 let onclick = "";
                 let icon = "";
                 
-                // SVG Icons
                 const iconCopy = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
                 const iconMail = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
                 const iconTel = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
 
                 if (actionType === 'copy') {
-                    onclick = `navigator.clipboard.writeText(decodeURIComponent(escape(atob('${b64}'))));`;
+                    onclick = `navigator.clipboard.writeText(decodeURIComponent(escape(atob('${b64}')))); triggerFeedback(this);`;
                     icon = iconCopy;
                 } else if (actionType === 'mailto') {
                     onclick = `window.location.href='mailto:'+decodeURIComponent(escape(atob('${b64}')))`;
@@ -351,19 +398,19 @@ Protocol: BiDi-Override-2025</textarea>
                     icon = iconTel;
                 }
 
-                // Wrap content
-                fullHtml = `<div style="cursor:pointer; display:flex; align-items:center; gap:0.5rem;" class="group" onclick="${onclick}">
-    <div style="flex-grow:1;">
-${fullHtml}
-    </div>
+                const wrapStart = `<div style="cursor:pointer; display:flex; align-items:center; gap:0.5rem;" class="group" onclick="${onclick}">
+    <div style="flex-grow:1;">\n`;
+                const wrapEnd = `\n    </div>
     <div style="opacity:0; transition:opacity 0.2s;" class="group-hover:opacity-100">
         ${icon}
     </div>
 </div>`;
+
+                rawFinal = wrapStart + rawFinal + wrapEnd;
+                highlightedFinal = `<span class="text-yellow-400">${escapeHtml(wrapStart)}</span>${highlightedFinal}<span class="text-yellow-400">${escapeHtml(wrapEnd)}</span>`;
             }
 
-            // Final wrap logic
-            let finalOutput = fullHtml;
+            // --- Style Wrapper Logic ---
             if (useWrapper) {
                 let wrapperTag = '<div';
                 if (mode === 'tailwind' && twClasses.trim()) {
@@ -373,11 +420,15 @@ ${fullHtml}
                 }
                 wrapperTag += '>';
                 
-                finalOutput = `${wrapperTag}\n${fullHtml}\n</div>`;
+                const styleStart = `${wrapperTag}\n`;
+                const styleEnd = `\n</div>`;
+                
+                rawFinal = styleStart + rawFinal + styleEnd;
+                highlightedFinal = `<span class="text-purple-400">${escapeHtml(styleStart)}</span>${highlightedFinal}<span class="text-purple-400">${escapeHtml(styleEnd)}</span>`;
             }
 
-            renderTarget.innerHTML = finalOutput;
-            sourceSnippet.value = finalOutput;
+            renderTarget.innerHTML = rawFinal;
+            sourceSnippet.innerHTML = highlightedFinal;
             
             const leak = runScraperSim();
             updateRatings(leak);
@@ -419,10 +470,21 @@ ${fullHtml}
             botText.className = `text-xs font-bold ${botC.replace('bg-', 'text-')}`;
 
             // Accessibility Ratings
+            const actionsEnabled = document.getElementById('enableActions').checked;
+            
             let a11yW = '10%'; let a11yT = 'Unusable'; let a11yC = 'bg-red-600';
+            
             if (level === 1) { a11yW = '30%'; a11yT = 'Poor (Reversed DOM)'; a11yC = 'bg-orange-500'; }
             if (level === 2) { a11yW = '20%'; a11yT = 'Poor (Noise)'; a11yC = 'bg-orange-600'; }
             if (level === 3) { a11yW = '5%'; a11yT = 'Unusable (BiDi)'; a11yC = 'bg-red-600'; }
+            
+            // Boost if Actions Enabled
+            if (actionsEnabled && level < 4) {
+                 a11yW = '60%'; 
+                 a11yT = 'Fair (Actionable)'; 
+                 a11yC = 'bg-yellow-400';
+            }
+            
             if (level === 4) { a11yW = '90%'; a11yT = 'Good (Interactive)'; a11yC = 'bg-green-500'; }
 
             a11yBar.style.width = a11yW;
@@ -770,9 +832,10 @@ ${fullHtml}
 
         // --- Other Utilities ---
         function manualOverride() {
-            const manualHtml = document.getElementById('sourceSnippet').value;
+            const manualHtml = document.getElementById('sourceSnippet').innerText;
             document.getElementById('renderTarget').innerHTML = manualHtml;
-            runScraperSim();
+            const leak = runScraperSim();
+            updateRatings(leak);
         }
 
         function runScraperSim() {
@@ -823,17 +886,13 @@ ${fullHtml}
         }
 
         function copySource() {
-            const text = document.getElementById('sourceSnippet').value;
+            const text = document.getElementById('sourceSnippet').innerText;
             const el = document.createElement('textarea');
             el.value = text;
             document.body.appendChild(el);
             el.select();
             document.execCommand('copy');
             document.body.removeChild(el);
-
-            const toast = document.getElementById('toast');
-            toast.style.opacity = "1";
-            setTimeout(() => toast.style.opacity = "0", 2000);
         }
 
         // --- Smart Actions ---
