@@ -104,28 +104,41 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-blue-900">Ratings:</h3>
-                            <div class="mt-1 flex items-center justify-between">
-                                <span class="text-blue-800">Bot Defeat:</span>
+                            <div class="mt-1 flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Bot Defeat:</span>
                                 <span class="font-bold text-green-700">5/5 (High)</span>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-blue-800">Accessibility (A11y):</span>
+                            <div class="flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Accessibility (A11y):</span>
                                 <span class="font-bold text-red-600">1/5 (Low)</span>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Custom Font Selection -->
+                    <div class="mt-4 pt-4 border-t border-blue-200">
+                        <label for="font-url" class="block text-sm font-bold text-blue-900 mb-1">Custom Font URL (TTF/OTF):</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="font-url" value="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf" class="flex-1 text-sm border-gray-300 rounded-md p-2 border focus:ring-blue-500 focus:border-blue-500 text-gray-700" placeholder="https://example.com/font.ttf">
+                            <button id="load-font-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors">Load Font</button>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-1">Note: URL must support CORS (Cross-Origin Resource Sharing).</p>
                     </div>
                 </div>
 
                 <div>
                     <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
-                    <div id="svg-demo-container" class="mt-2 p-6 bg-white border border-gray-200 rounded-lg flex justify-center items-center min-h-[80px] shadow-sm">
+                    <div id="svg-demo-container" class="mt-2 p-6 bg-white border border-gray-200 rounded-lg flex justify-center items-center min-h-[80px] shadow-sm overflow-x-auto">
                         <span class="text-gray-400 text-sm">Loading font engine...</span>
                     </div>
                 </div>
 
                 <div>
-                    <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
-                    <pre class="mt-2"><button class="copy-btn" data-target="svg-code">Copy</button><code id="svg-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                        <button class="copy-btn-static bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-semibold hover:bg-gray-300 transition-colors" data-target="svg-code">Copy Code</button>
+                    </div>
+                    <pre class="relative"><code id="svg-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
                 </div>
             </div>
 
@@ -146,12 +159,12 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-blue-900">Ratings:</h3>
-                            <div class="mt-1 flex items-center justify-between">
-                                <span class="text-blue-800">Bot Defeat:</span>
+                            <div class="mt-1 flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Bot Defeat:</span>
                                 <span class="font-bold text-yellow-600">2/5 (Low)</span>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-blue-800">Accessibility (A11y):</span>
+                            <div class="flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Accessibility (A11y):</span>
                                 <span class="font-bold text-green-700">5/5 (High)</span>
                             </div>
                         </div>
@@ -166,8 +179,11 @@
                 </div>
 
                 <div>
-                    <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
-                    <pre class="mt-2"><button class="copy-btn" data-target="click-code">Copy</button><code id="click-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                        <button class="copy-btn-static bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-semibold hover:bg-gray-300 transition-colors" data-target="click-code">Copy Code</button>
+                    </div>
+                    <pre class="relative"><code id="click-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
                 </div>
             </div>
 
@@ -188,12 +204,12 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-blue-900">Ratings:</h3>
-                            <div class="mt-1 flex items-center justify-between">
-                                <span class="text-blue-800">Bot Defeat:</span>
+                            <div class="mt-1 flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Bot Defeat:</span>
                                 <span class="font-bold text-yellow-600">3/5 (Moderate)</span>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-blue-800">Accessibility (A11y):</span>
+                            <div class="flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Accessibility (A11y):</span>
                                 <span class="font-bold text-red-600">0/5 (Fail)</span>
                             </div>
                         </div>
@@ -208,8 +224,11 @@
                 </div>
 
                 <div>
-                    <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
-                    <pre class="mt-2"><button class="copy-btn" data-target="canvas-code">Copy</button><code id="canvas-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                        <button class="copy-btn-static bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-semibold hover:bg-gray-300 transition-colors" data-target="canvas-code">Copy Code</button>
+                    </div>
+                    <pre class="relative"><code id="canvas-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
                 </div>
             </div>
 
@@ -230,12 +249,12 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-blue-900">Ratings:</h3>
-                            <div class="mt-1 flex items-center justify-between">
-                                <span class="text-blue-800">Bot Defeat:</span>
+                            <div class="mt-1 flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Bot Defeat:</span>
                                 <span class="font-bold text-yellow-600">3/5 (Moderate)</span>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-blue-800">Accessibility (A11y):</span>
+                            <div class="flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Accessibility (A11y):</span>
                                 <span class="font-bold text-green-700">4/5 (Good)</span>
                             </div>
                         </div>
@@ -250,8 +269,11 @@
                 </div>
 
                 <div>
-                    <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
-                    <pre class="mt-2"><button class="copy-btn" data-target="css-code">Copy</button><code id="css-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                        <button class="copy-btn-static bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-semibold hover:bg-gray-300 transition-colors" data-target="css-code">Copy Code</button>
+                    </div>
+                    <pre class="relative"><code id="css-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
                 </div>
             </div>
 
@@ -402,19 +424,33 @@
             const svgCode = document.getElementById('svg-code');
             const svgDemoContainer = document.getElementById('svg-demo-container');
             
+            const fontUrlInput = document.getElementById('font-url');
+            const loadFontBtn = document.getElementById('load-font-btn');
+            
             let loadedFont = null;
 
-            // Load Font for SVG Generation
-            opentype.load('https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf', function(err, font) {
-                if (err) {
-                    console.error('Font could not be loaded: ' + err);
-                    svgDemoContainer.innerHTML = '<span class="text-red-500">Error loading font engine. Check console.</span>';
-                } else {
-                    loadedFont = font;
-                    svgDemoContainer.innerHTML = '<span class="text-gray-400">Font loaded. Enter text above.</span>';
-                    // Trigger update if text is already present
-                    if (rawTextInput.value) updateSnippets();
-                }
+            function loadFont(url) {
+                svgDemoContainer.innerHTML = '<span class="text-blue-500 text-sm">Loading font...</span>';
+                opentype.load(url, function(err, font) {
+                    if (err) {
+                        console.error('Font could not be loaded: ' + err);
+                        svgDemoContainer.innerHTML = '<span class="text-red-500 text-sm">Error loading font. URL might be blocked by CORS.</span>';
+                        loadedFont = null;
+                    } else {
+                        loadedFont = font;
+                        svgDemoContainer.innerHTML = '<span class="text-gray-400">Font loaded. Enter text above.</span>';
+                        if (rawTextInput.value) updateSnippets();
+                    }
+                });
+            }
+
+            // Initial Font Load
+            loadFont(fontUrlInput.value);
+
+            // Handle Font Button Click
+            loadFontBtn.addEventListener('click', () => {
+                const url = fontUrlInput.value.trim();
+                if(url) loadFont(url);
             });
 
             function updateSnippets() {
@@ -443,8 +479,7 @@
                 const clickSnippet = `&lt;a href="#"
    class="..."
    data-obfuscate="click"
-   data-b64-text="${b64text}"
-&gt;
+   data-b64-text="${b64text}"&gt;
    Click to Show Text
 &lt;/a&gt;`;
                 clickCode.innerHTML = escapeHTML(clickSnippet.replace(/^\n|\n$/g, ''));
@@ -466,8 +501,7 @@
     data-color="#374151"
     width="300"
     height="${canvasHeight}"
-    class="rounded-md"
-&gt;
+    class="rounded-md"&gt;
 &lt;/canvas&gt;`;
                 canvasCode.innerHTML = escapeHTML(canvasSnippet.replace(/^\n|\n$/g, ''));
                 
@@ -536,7 +570,7 @@ ${svgPaths}</svg>`;
 
 
             // --- Clipboard Copy Logic ---
-            document.querySelectorAll('.copy-btn').forEach(button => {
+            document.querySelectorAll('.copy-btn-static').forEach(button => {
                 button.addEventListener('click', () => {
                     const targetId = button.dataset.target;
                     const codeElement = document.getElementById(targetId);
@@ -558,20 +592,19 @@ ${svgPaths}</svg>`;
                     try {
                         // Use execCommand for broader compatibility in iFrames
                         document.execCommand('copy');
+                        const originalText = button.textContent;
                         button.textContent = 'Copied!';
-                        button.classList.add('copied');
+                        button.classList.add('bg-green-500', 'text-white');
+                        
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                            button.classList.remove('bg-green-500', 'text-white');
+                        }, 2000);
                     } catch (err) {
                         console.error('Failed to copy text: ', err);
-                        button.textContent = 'Error';
                     }
                     
                     document.body.removeChild(textArea);
-                    
-                    // Reset button text
-                    setTimeout(() => {
-                        button.textContent = 'Copy';
-                        button.classList.remove('copied');
-                    }, 2000);
                 });
             });
 
