@@ -27,18 +27,22 @@
             font-family: 'Consolas', 'Monaco', monospace;
             tab-size: 2;
         }
+        .invalid-css {
+            border-color: #ef4444 !important; /* red-500 */
+            color: #fca5a5 !important; /* red-300 */
+        }
     </style>
 </head>
 <body class="bg-[#020617] text-slate-300 min-h-screen p-6 md:p-12">
 
     <div class="max-w-7xl mx-auto">
         <header class="mb-10 border-b border-slate-800 pb-8">
-            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italicwdversarial Weave <span class="text-blue-500">v2.7</span></h1>
+            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Adversarial Weave <span class="text-blue-500">v2.7</span></h1>
             <p class="text-slate-500 mt-2 font-mono text-sm tracking-widest uppercase">Multi-line Atomic Fragmentation Engine</p>
         </header>
 
         <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
-            <!-- Input & Configuration -->
+            <!-- Left Column: Input & Source -->
             <div class="space-y-6">
                 <!-- Payload Input -->
                 <div class="glass-panel p-6 rounded-3xl shadow-2xl">
@@ -67,21 +71,78 @@ Protocol: BiDi-Override-2025</textarea>
                     </div>
                 </div>
 
+                <!-- Editable Source Snippet (Moved here) -->
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl">
+                    <div class="px-6 py-3 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Generated Source (Editable)</span>
+                        <div class="flex gap-2">
+                            <button onclick="orchestrate()" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded font-bold transition">RERUN / RESET</button>
+                            <button onclick="copySource()" class="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded font-bold transition">COPY SNIPPET</button>
+                        </div>
+                    </div>
+                    <textarea 
+                        id="sourceSnippet" 
+                        class="w-full h-80 bg-black/40 p-6 text-blue-300/70 font-mono text-xs focus:outline-none resize-none leading-relaxed"
+                        oninput="manualOverride()"
+                        spellcheck="false"
+                    ></textarea>
+                </div>
+            </div>
+
+            <!-- Right Column: Visuals & Styling -->
+            <div class="space-y-6">
+                <!-- Visual Render Tree -->
+                <div class="glass-panel rounded-3xl overflow-hidden border-2 border-blue-500/20 shadow-2xl">
+                    <div class="px-6 py-3 bg-blue-500/10 border-b border-blue-500/20">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Visual Render (Human View)</span>
+                    </div>
+                    <div id="renderTarget" class="p-8 bg-slate-900/20 min-h-[160px] text-white leading-relaxed text-lg">
+                        <!-- Injected -->
+                    </div>
+                </div>
+
                 <!-- Styling Toggle Section -->
-                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-l-4 border-blue-500">
+                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-blue-500">
                     <div class="flex items-center justify-between">
                         <label class="text-xs font-bold text-white uppercase tracking-widest">Wrapper Styling</label>
                         <input type="checkbox" id="useWrapper" onchange="orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
                     </div>
                     
                     <div id="wrapperControls" class="space-y-4 opacity-50 pointer-events-none transition-opacity">
+                        <!-- Mode Selection -->
+                        <div class="flex gap-4 mb-2">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="styleMode" value="tailwind" checked onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">Tailwind Mode</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="styleMode" value="css" onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">CSS Mode</span>
+                            </label>
+                        </div>
+
                         <div class="space-y-2">
-                            <span class="text-[10px] text-slate-500 uppercase font-bold">Tailwind Classes</span>
-                            <input type="text" id="twClasses" placeholder="p-4 bg-slate-900 rounded-lg" oninput="orchestrate()" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none">
+                            <span class="text-[10px] text-slate-500 uppercase font-bold">Tailwind Classes (Auto-Generated)</span>
+                            <input 
+                                type="text" 
+                                id="twClasses" 
+                                placeholder="p-4 bg-slate-900 rounded-lg" 
+                                oninput="handleTwInput(event)"
+                                onblur="handleTwInput(event)"
+                                class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none focus:border-blue-500 transition-colors"
+                            >
                         </div>
                         <div class="space-y-2">
                             <span class="text-[10px] text-slate-500 uppercase font-bold">Inline CSS Styles</span>
-                            <input type="text" id="rawStyles" placeholder="border: 1px solid #333;" oninput="orchestrate()" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none">
+                            <textarea 
+                                id="rawStyles" 
+                                rows="3"
+                                placeholder="padding: 1rem; border: 1px solid #333;" 
+                                onblur="validateAndSyncCss()"
+                                onkeydown="checkCssEnter(event)"
+                                class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none resize-y code-editor focus:border-blue-500 transition-colors"
+                            ></textarea>
+                            <p id="cssError" class="text-[10px] text-red-400 hidden">Malformed CSS detected</p>
                         </div>
                     </div>
                 </div>
@@ -104,36 +165,6 @@ Protocol: BiDi-Override-2025</textarea>
                             <span id="matchStatus" class="text-[10px] font-bold uppercase"></span>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Previews & Snippets -->
-            <div class="space-y-6">
-                <!-- Visual Render Tree -->
-                <div class="glass-panel rounded-3xl overflow-hidden border-2 border-blue-500/20 shadow-2xl">
-                    <div class="px-6 py-3 bg-blue-500/10 border-b border-blue-500/20">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Visual Render (Human View)</span>
-                    </div>
-                    <div id="renderTarget" class="p-8 bg-slate-900/20 min-h-[160px] text-white leading-relaxed text-lg">
-                        <!-- Injected -->
-                    </div>
-                </div>
-
-                <!-- Editable Source Snippet -->
-                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl">
-                    <div class="px-6 py-3 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Generated Source (Editable)</span>
-                        <div class="flex gap-2">
-                            <button onclick="orchestrate()" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded font-bold transition">RERUN / RESET</button>
-                            <button onclick="copySource()" class="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded font-bold transition">COPY SNIPPET</button>
-                        </div>
-                    </div>
-                    <textarea 
-                        id="sourceSnippet" 
-                        class="w-full h-80 bg-black/40 p-6 text-blue-300/70 font-mono text-xs focus:outline-none resize-none leading-relaxed"
-                        oninput="manualOverride()"
-                        spellcheck="false"
-                    ></textarea>
                 </div>
             </div>
         </div>
@@ -171,6 +202,7 @@ Protocol: BiDi-Override-2025</textarea>
     </div>
 
     <script>
+        // --- Core Logic ---
         function orchestrate() {
             const rawText = document.getElementById('payloadInput').value;
             const entropy = parseInt(document.getElementById('entropy').value);
@@ -182,6 +214,20 @@ Protocol: BiDi-Override-2025</textarea>
             const twClasses = document.getElementById('twClasses').value;
             const rawStyles = document.getElementById('rawStyles').value;
             const wrapperControls = document.getElementById('wrapperControls');
+            
+            // Mode selection
+            const mode = document.querySelector('input[name="styleMode"]:checked').value;
+            const twInput = document.getElementById('twClasses');
+            const cssInput = document.getElementById('rawStyles');
+
+            // Visual feedback for mode
+            if (mode === 'tailwind') {
+                twInput.classList.remove('opacity-50');
+                cssInput.classList.add('opacity-50');
+            } else {
+                twInput.classList.add('opacity-50');
+                cssInput.classList.remove('opacity-50');
+            }
             
             wrapperControls.style.opacity = useWrapper ? "1" : "0.5";
             wrapperControls.style.pointerEvents = useWrapper ? "auto" : "none";
@@ -215,9 +261,15 @@ Protocol: BiDi-Override-2025</textarea>
             // Final wrap logic
             let finalOutput = fullHtml;
             if (useWrapper) {
-                finalOutput = `<div class="${twClasses}" style="${rawStyles}">
-${fullHtml}
-</div>`;
+                let wrapperTag = '<div';
+                if (mode === 'tailwind' && twClasses.trim()) {
+                    wrapperTag += ` class="${twClasses}"`;
+                } else if (mode === 'css' && rawStyles.trim()) {
+                    wrapperTag += ` style="${rawStyles.replace(/\n/g, ' ')}"`;
+                }
+                wrapperTag += '>';
+                
+                finalOutput = `${wrapperTag}\n${fullHtml}\n</div>`;
             }
 
             renderTarget.innerHTML = finalOutput;
@@ -226,6 +278,198 @@ ${fullHtml}
             runScraperSim();
         }
 
+        // --- CSS Handling ---
+        function checkCssEnter(e) {
+            if(e.key === 'Enter') {
+                validateAndSyncCss();
+            }
+        }
+
+        function validateAndSyncCss() {
+            const cssInput = document.getElementById('rawStyles');
+            const twInput = document.getElementById('twClasses');
+            const errorMsg = document.getElementById('cssError');
+            
+            const cssText = cssInput.value;
+            
+            // 1. Basic Validation
+            const lines = cssText.split(/;|\n/);
+            let isValid = true;
+            for(let line of lines) {
+                line = line.trim();
+                if(line && !line.includes(':')) {
+                    isValid = false;
+                    break;
+                }
+            }
+
+            if (!isValid && cssText.trim() !== "") {
+                cssInput.classList.add('invalid-css');
+                errorMsg.classList.remove('hidden');
+            } else {
+                cssInput.classList.remove('invalid-css');
+                errorMsg.classList.add('hidden');
+                
+                // Only sync if valid
+                const twClasses = convertCssToTailwind(cssText);
+                if (twClasses !== twInput.value) {
+                    twInput.value = twClasses;
+                }
+            }
+
+            orchestrate();
+        }
+
+        function convertCssToTailwind(css) {
+            const mappings = [];
+            const rules = css.split(';').map(r => r.trim()).filter(r => r);
+            
+            rules.forEach(rule => {
+                const parts = rule.split(':');
+                if(parts.length < 2) return;
+                
+                const prop = parts[0].trim().toLowerCase();
+                const val = parts[1].trim();
+                
+                let tw = '';
+                // Simple Arbitrary Value Mapper
+                const arbitrary = (prefix) => `${prefix}-[${val.replace(/\s/g, '_')}]`;
+
+                switch(prop) {
+                    case 'padding': tw = val.endsWith('px') ? `p-[${val}]` : arbitrary('p'); break;
+                    case 'padding-top': tw = arbitrary('pt'); break;
+                    case 'padding-right': tw = arbitrary('pr'); break;
+                    case 'padding-bottom': tw = arbitrary('pb'); break;
+                    case 'padding-left': tw = arbitrary('pl'); break;
+                    
+                    case 'margin': tw = arbitrary('m'); break;
+                    case 'margin-top': tw = arbitrary('mt'); break;
+                    case 'margin-right': tw = arbitrary('mr'); break;
+                    case 'margin-bottom': tw = arbitrary('mb'); break;
+                    case 'margin-left': tw = arbitrary('ml'); break;
+
+                    case 'background-color':
+                    case 'background': tw = `bg-[${val}]`; break;
+                    case 'color': tw = `text-[${val}]`; break;
+                    case 'border-radius': tw = `rounded-[${val}]`; break;
+                    case 'border': tw = `border-[${val}]`; break;
+                    case 'width': tw = `w-[${val}]`; break;
+                    case 'height': tw = `h-[${val}]`; break;
+                    case 'font-size': tw = `text-[${val}]`; break;
+                    case 'font-weight': tw = `font-[${val}]`; break;
+                    case 'display': tw = val; break; // e.g. block, flex
+                    case 'text-align': tw = `text-${val}`; break; // e.g. text-center
+                    default: break;
+                }
+                
+                if(tw) mappings.push(tw);
+            });
+            return mappings.join(' ');
+        }
+
+        // --- Tailwind Handling ---
+        function handleTwInput(e) {
+            const val = e.target.value;
+            // Check for completion triggers: trailing space or blur event
+            if (e.type === 'blur' || (e.data === ' ' && val.endsWith(' '))) {
+                validateAndSyncTw();
+            }
+        }
+
+        function validateAndSyncTw() {
+            const twInput = document.getElementById('twClasses');
+            const cssInput = document.getElementById('rawStyles');
+            
+            const classes = twInput.value.trim().split(/\s+/);
+            const cssRules = [];
+            let allValid = true;
+
+            // Handle empty input
+            if (twInput.value.trim() === "") {
+                cssInput.value = "";
+                twInput.classList.remove('invalid-css');
+                orchestrate();
+                return;
+            }
+
+            classes.forEach(cls => {
+                if(!cls) return;
+                const rule = convertTwToCss(cls);
+                if (rule) {
+                    cssRules.push(rule);
+                } else {
+                    allValid = false;
+                }
+            });
+
+            // Validation Feedback
+            if (!allValid) {
+                twInput.classList.add('invalid-css'); // Reuse css error style
+            } else {
+                twInput.classList.remove('invalid-css');
+                // Sync to CSS
+                const newCss = cssRules.join('\n');
+                if (newCss !== cssInput.value.trim()) {
+                    cssInput.value = newCss;
+                }
+            }
+            
+            orchestrate();
+        }
+
+        function convertTwToCss(cls) {
+            // 1. Handle Arbitrary Values: p-[10px] -> padding: 10px
+            const arbMatch = cls.match(/^([a-z]+)-\[(.+)\]$/);
+            if (arbMatch) {
+                const prefix = arbMatch[1];
+                const val = arbMatch[2].replace(/_/g, ' ');
+                
+                const map = {
+                    'p': 'padding', 'pt': 'padding-top', 'pr': 'padding-right', 'pb': 'padding-bottom', 'pl': 'padding-left',
+                    'm': 'margin', 'mt': 'margin-top', 'mr': 'margin-right', 'mb': 'margin-bottom', 'ml': 'margin-left',
+                    'w': 'width', 'h': 'height',
+                    'bg': 'background-color', 'text': 'color', 
+                    'border': 'border', 'rounded': 'border-radius', 'font': 'font-weight'
+                };
+                
+                if (map[prefix]) return `${map[prefix]}: ${val};`;
+            }
+
+            // 2. Handle Common Utilities (Simplified map)
+            const getRem = (str) => `${str.split('-')[1] / 4}rem`;
+
+            if (cls.startsWith('p-')) return `padding: ${getRem(cls)};`; 
+            if (cls.startsWith('pt-')) return `padding-top: ${getRem(cls)};`;
+            if (cls.startsWith('pr-')) return `padding-right: ${getRem(cls)};`;
+            if (cls.startsWith('pb-')) return `padding-bottom: ${getRem(cls)};`;
+            if (cls.startsWith('pl-')) return `padding-left: ${getRem(cls)};`;
+
+            if (cls.startsWith('m-')) return `margin: ${getRem(cls)};`;
+            if (cls.startsWith('mt-')) return `margin-top: ${getRem(cls)};`;
+            if (cls.startsWith('mr-')) return `margin-right: ${getRem(cls)};`;
+            if (cls.startsWith('mb-')) return `margin-bottom: ${getRem(cls)};`;
+            if (cls.startsWith('ml-')) return `margin-left: ${getRem(cls)};`;
+
+            if (cls.startsWith('bg-')) return `background-color: var(--tw-${cls});`; // Fallback
+            
+            if (cls === 'flex') return 'display: flex;';
+            if (cls === 'block') return 'display: block;';
+            if (cls === 'hidden') return 'display: none;';
+            
+            if (cls.startsWith('text-')) {
+                if (['left', 'center', 'right', 'justify'].includes(cls.split('-')[1])) {
+                    return `text-align: ${cls.split('-')[1]};`;
+                }
+            }
+
+            if (cls === 'rounded') return 'border-radius: 0.25rem;';
+            if (cls === 'border') return 'border-width: 1px;';
+
+            return null; // Invalid/Unknown
+        }
+
+
+        // --- Other Utilities ---
         function manualOverride() {
             const manualHtml = document.getElementById('sourceSnippet').value;
             document.getElementById('renderTarget').innerHTML = manualHtml;
@@ -257,7 +501,7 @@ ${fullHtml}
         }
 
         function escapeHtml(text) {
-            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'" : '&#039;' };
+            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
             return text.replace(/[&<>"]/g, m => map[m]);
         }
 
