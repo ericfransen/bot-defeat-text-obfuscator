@@ -332,22 +332,29 @@ Protocol: BiDi-Override-2025</textarea>
         const homoglyphMaps = {
             'o': 'ο', // Greek Omicron
             'a': 'а', // Cyrillic Small A
-            'e': 'е'  // Cyrillic Small Ie
+            'e': 'е', // Cyrillic Small Ie
+            'O': 'Ο', // Greek Capital Omicron
+            'A': 'А', // Cyrillic Capital A
+            'E': 'Е'  // Cyrillic Capital Ie
         };
 
         function generateObfuscatedLine(str, level, density) {
-            let chars = Array.from(escapeHtml(str)); 
+            // Step 1: Work with raw characters first
+            let rawChars = Array.from(str); 
 
             // Level 3: Homoglyph Swapping (Conservative)
             if (level >= 3) {
-                chars = chars.map(c => {
+                rawChars = rawChars.map(c => {
                     // 50% chance to swap if a match exists
-                    if (Math.random() > 0.5 && homoglyphMaps[c.toLowerCase()]) {
-                        return homoglyphMaps[c.toLowerCase()];
+                    if (Math.random() > 0.5 && homoglyphMaps[c]) {
+                        return homoglyphMaps[c];
                     }
                     return c;
                 });
             }
+
+            // Step 2: Convert to HTML Atoms (Safe for splitting)
+            let atoms = rawChars.map(c => escapeHtml(c));
 
             // --- Construction Strategies ---
 
@@ -355,14 +362,15 @@ Protocol: BiDi-Override-2025</textarea>
             // Now bound to 'density' slider to match user expectation
             if (level === 3) {
                 // 1. Inject Noise (Standard for High)
+                // Use &#8203; as a discrete atom
                 let noisy = [];
-                chars.forEach(c => {
-                    noisy.push(c);
+                atoms.forEach(a => {
+                    noisy.push(a);
                     if(Math.random() > 0.7) noisy.push('&#8203;'); 
                 });
                 
-                // 2. Reverse entire string
-                const reversed = noisy.reverse().join('');
+                // 2. Reverse the ATOMS array (not the string)
+                const reversedAtoms = noisy.reverse();
                 
                 // 3. Sandwich Split (Chunks determined by density slider)
                 // Range 1-12 -> map to roughly 2-6 chunks
@@ -370,18 +378,19 @@ Protocol: BiDi-Override-2025</textarea>
                 
                 let segments = [];
                 let currentPos = 0;
-                const chunkBaseSize = Math.floor(reversed.length / numChunks);
+                const totalAtoms = reversedAtoms.length;
+                const chunkBaseSize = Math.floor(totalAtoms / numChunks);
 
                 for(let i=0; i<numChunks-1; i++) {
                     // Small jitter based on position, not random re-rolls
                     let len = chunkBaseSize;
-                    if (currentPos + len > reversed.length) len = reversed.length - currentPos;
+                    if (currentPos + len > totalAtoms) len = totalAtoms - currentPos;
                     if (len < 1) len = 1;
                     
-                    segments.push(reversed.substr(currentPos, len));
+                    segments.push(reversedAtoms.slice(currentPos, currentPos + len).join(''));
                     currentPos += len;
                 }
-                segments.push(reversed.substr(currentPos));
+                segments.push(reversedAtoms.slice(currentPos).join(''));
                 
                 // 4. Wrap each segment in dir=rtl
                 const innerHtml = segments.map(s => `<span style="direction:rtl">${s}</span>`).join('');
@@ -393,12 +402,12 @@ Protocol: BiDi-Override-2025</textarea>
             // Level 1 & 2: Fragmentation Strategy
             let fragments = [];
             let i = 0;
-            while(i < chars.length) {
+            while(i < atoms.length) {
                 // Base size = density. Jitter +/- 50%
                 let jitter = Math.floor(Math.random() * density) - (density/2);
                 let size = Math.max(1, density + jitter);
                 
-                let chunk = chars.slice(i, i + size);
+                let chunk = atoms.slice(i, i + size);
                 
                 // L2: Noise Injection
                 if (level === 2) {
