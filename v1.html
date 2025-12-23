@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Text Obfuscator Demo</title>
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load opentype.js for SVG Path generation -->
+    <script src="https://cdn.jsdelivr.net/npm/opentype.js@latest/dist/opentype.min.js"></script>
+    <style>
+        /* Simple styling for the code block */
+        pre {
+            background-color: #f4f4f5; /* gray-100 */
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            position: relative;
+        }
+        code {
+            font-family: 'Courier New', Courier, monospace;
+            color: #3f3f46; /* gray-700 */
+        }
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background-color: #e4e4e7; /* gray-200 */
+            color: #3f3f46;
+            border: none;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .copy-btn:hover {
+            background-color: #d4d4d8; /* gray-300 */
+        }
+        .copy-btn.copied {
+            background-color: #22c55e; /* green-500 */
+            color: white;
+        }
+        /* Tab active state */
+        .tab-btn.active {
+            border-bottom: 2px solid #2563eb; /* blue-600 */
+            color: #1f2937; /* gray-800 */
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans p-4 sm:p-8 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-4xl bg-white rounded-lg shadow-xl p-6 sm:p-8 space-y-8">
+        
+        <!-- === Generator Section === -->
+        <div>
+            <h1 class="text-3xl font-bold text-center text-gray-800">Interactive Text Obfuscator</h1>
+            <p class="text-center text-gray-600 mt-2">
+                Enter any text (email, phone, address) to generate obfuscated HTML snippets and see a live preview.
+            </p>
+            
+            <div class="mt-6">
+                <label for="raw-text" class="block text-sm font-medium text-gray-700">Enter Your Text Here:</label>
+                <textarea id="raw-text" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3 border" placeholder="e.g., contact@example.com&#10;or&#10;(123) 456-7890"></textarea>
+            </div>
+        </div>
+
+        <!-- === Tabs Navigation === -->
+        <div class="border-b border-gray-200">
+            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                <button class="tab-btn active whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-target="svg-panel">
+                    SVG Path Data
+                </button>
+                <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-target="click-panel">
+                    Click to Reveal
+                </button>
+                <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-target="canvas-panel">
+                    Canvas Rendering
+                </button>
+                <button class="tab-btn whitespace-nowrap py-4 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-target="css-panel">
+                    CSS Reversal
+                </button>
+            </nav>
+        </div>
+
+        <!-- === Tab Contents === -->
+        <div>
+            <!-- Panel 1: SVG Path Data -->
+            <div id="svg-panel" class="tab-panel space-y-6">
+                <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
+                    <h2 class="text-lg font-semibold text-blue-900">Technique: SVG Path Data</h2>
+                    <p class="text-sm text-blue-800 mt-1">Converts text into vector shapes using &lt;path&gt; elements. <strong>Zero JavaScript required</strong> on your site.</p>
+                    
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h3 class="font-bold text-blue-900">Pros & Cons:</h3>
+                            <ul class="list-disc list-inside text-blue-800 mt-1 space-y-1">
+                                <li><span class="text-green-600 font-bold">Pro:</span> Zero JS required on target site</li>
+                                <li><span class="text-green-600 font-bold">Pro:</span> Scales perfectly (Retina/HiDPI)</li>
+                                <li><span class="text-red-500 font-bold">Con:</span> Not selectable/copyable by users</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-900">Ratings:</h3>
+                            <div class="mt-1 flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Bot Defeat:</span>
+                                <span class="font-bold text-green-700">5/5 (High)</span>
+                            </div>
+                            <div class="flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Accessibility (A11y):</span>
+                                <span class="font-bold text-red-600">1/5 (Low)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Font Selection -->
+                    <div class="mt-4 pt-4 border-t border-blue-200">
+                        <label for="font-url" class="block text-sm font-bold text-blue-900 mb-1">Custom Font URL (TTF/OTF):</label>
+                        <div class="flex gap-2">
+                            <input type="text" id="font-url" value="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.66/fonts/Roboto/Roboto-Regular.ttf" class="flex-1 text-sm border-gray-300 rounded-md p-2 border focus:ring-blue-500 focus:border-blue-500 text-gray-700" placeholder="https://example.com/font.ttf">
+                            <button id="load-font-btn" class="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors">Load Font</button>
+                        </div>
+                        <p class="text-xs text-blue-600 mt-1">Note: URL must support CORS (Cross-Origin Resource Sharing).</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
+                    <div id="svg-demo-container" class="mt-2 p-6 bg-white border border-gray-200 rounded-lg flex justify-center items-center min-h-[80px] shadow-sm overflow-x-auto">
+                        <span class="text-gray-400 text-sm">Loading font engine...</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                        <button class="copy-btn-static bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-semibold hover:bg-gray-300 transition-colors" data-target="svg-code">Copy Code</button>
+                    </div>
+                    <pre class="relative"><code id="svg-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- Panel 2: Click to Reveal -->
+            <div id="click-panel" class="tab-panel hidden space-y-6">
+                 <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
+                    <h2 class="text-lg font-semibold text-blue-900">Technique: Click to Reveal</h2>
+                    <p class="text-sm text-blue-800 mt-1">Hides the text until a user manually interacts with the element.</p>
+                    
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h3 class="font-bold text-blue-900">Pros & Cons:</h3>
+                            <ul class="list-disc list-inside text-blue-800 mt-1 space-y-1">
+                                <li><span class="text-green-600 font-bold">Pro:</span> Fully accessible after click</li>
+                                <li><span class="text-green-600 font-bold">Pro:</span> Text is copyable</li>
+                                <li><span class="text-red-500 font-bold">Con:</span> Requires user interaction</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-900">Ratings:</h3>
+                            <div class="mt-1 flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Bot Defeat:</span>
+                                <span class="font-bold text-yellow-600">2/5 (Low)</span>
+                            </div>
+                            <div class="flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Accessibility (A11y):</span>
+                                <span class="font-bold text-green-700">5/5 (High)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
+                    <div id="click-demo-container" class="mt-2 p-6 bg-white border border-gray-200 rounded-lg flex justify-center items-center min-h-[80px] shadow-sm">
+                        <span class="text-gray-400">Preview appears here</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                        <button class="copy-btn-static bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-semibold hover:bg-gray-300 transition-colors" data-target="click-code">Copy Code</button>
+                    </div>
+                    <pre class="relative"><code id="click-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- Panel 3: Canvas Rendering -->
+            <div id="canvas-panel" class="tab-panel hidden space-y-6">
+                <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
+                    <h2 class="text-lg font-semibold text-blue-900">Technique: Canvas Rendering</h2>
+                    <p class="text-sm text-blue-800 mt-1">Renders text as pixels on an HTML Canvas. Effective against static scrapers.</p>
+                    
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h3 class="font-bold text-blue-900">Pros & Cons:</h3>
+                            <ul class="list-disc list-inside text-blue-800 mt-1 space-y-1">
+                                <li><span class="text-green-600 font-bold">Pro:</span> Hard for text-only scrapers (curl)</li>
+                                <li><span class="text-red-500 font-bold">Con:</span> Cannot be copied/selected</li>
+                                <li><span class="text-red-500 font-bold">Con:</span> Invisible to screen readers</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-900">Ratings:</h3>
+                            <div class="mt-1 flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Bot Defeat:</span>
+                                <span class="font-bold text-yellow-600">3/5 (Moderate)</span>
+                            </div>
+                            <div class="flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Accessibility (A11y):</span>
+                                <span class="font-bold text-red-600">0/5 (Fail)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
+                    <div class="mt-2 p-6 bg-white border border-gray-200 rounded-lg flex justify-center items-center min-h-[80px] shadow-sm">
+                        <canvas id="canvas-demo" data-obfuscate="canvas" data-font="18px Arial" data-color="#374151" class="rounded-md"></canvas>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                        <button class="copy-btn-static bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-semibold hover:bg-gray-300 transition-colors" data-target="canvas-code">Copy Code</button>
+                    </div>
+                    <pre class="relative"><code id="canvas-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
+                </div>
+            </div>
+
+            <!-- Panel 4: CSS Reversal -->
+            <div id="css-panel" class="tab-panel hidden space-y-6">
+                <div class="bg-blue-50 p-4 rounded-md border border-blue-100">
+                    <h2 class="text-lg font-semibold text-blue-900">Technique: CSS Reversal</h2>
+                    <p class="text-sm text-blue-800 mt-1">Renders text in reverse in the DOM but visually corrects it with CSS.</p>
+                    
+                    <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h3 class="font-bold text-blue-900">Pros & Cons:</h3>
+                            <ul class="list-disc list-inside text-blue-800 mt-1 space-y-1">
+                                <li><span class="text-green-600 font-bold">Pro:</span> Seamless UX (looks normal)</li>
+                                <li><span class="text-green-600 font-bold">Pro:</span> Copy-paste usually works</li>
+                                <li><span class="text-red-500 font-bold">Con:</span> Advanced bots can detect it</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-blue-900">Ratings:</h3>
+                            <div class="mt-1 flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Bot Defeat:</span>
+                                <span class="font-bold text-yellow-600">3/5 (Moderate)</span>
+                            </div>
+                            <div class="flex items-center justify-start gap-2">
+                                <span class="text-blue-800 w-32">Accessibility (A11y):</span>
+                                <span class="font-bold text-green-700">4/5 (Good)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
+                    <div id="css-demo-container" class="mt-2 p-6 bg-white border border-gray-200 rounded-lg flex justify-center items-center min-h-[80px] shadow-sm">
+                        <span class="text-gray-400">Preview appears here</span>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-end mb-2">
+                        <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
+                        <button class="copy-btn-static bg-gray-200 text-gray-700 px-3 py-1 rounded text-sm font-semibold hover:bg-gray-300 transition-colors" data-target="css-code">Copy Code</button>
+                    </div>
+                    <pre class="relative"><code id="css-code">&lt;!-- Enter text above to generate code --&gt;</code></pre>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Reusable Obfuscation Script -->
+    <script>
+        // --- Tab Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Deactivate all
+                    tabBtns.forEach(b => b.classList.remove('active', 'border-blue-600', 'text-blue-600'));
+                    tabPanels.forEach(p => p.classList.add('hidden'));
+                    
+                    // Activate clicked
+                    btn.classList.add('active');
+                    const targetId = btn.dataset.target;
+                    document.getElementById(targetId).classList.remove('hidden');
+                });
+            });
+        });
+
+        // --- Helper function to escape HTML for display in <code> blocks ---
+        function escapeHTML(str) {
+            return str.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#039;');
+        }
+
+        // --- Helper function to reverse a string ---
+        function reverseString(str) {
+            return str.split('').reverse().join('');
+        }
+
+        // --- Helper function to draw on canvas (handles multi-line) ---
+        function drawCanvas(canvas) {
+            const b64text = canvas.dataset.b64Text;
+            const ctx = canvas.getContext('2d');
+            
+            if (!ctx) return; // Exit if context isn't available
+
+            // --- HiDPI Scaling Fix (Start) ---
+            const dpr = window.devicePixelRatio || 1;
+            
+            // 1. Get base styles and calculate logical size
+            const styleFont = canvas.dataset.font || '20px Arial';
+            const fontSize = parseInt(styleFont.split('px')[0], 10) || 16;
+            const lineHeight = fontSize * 1.2;
+            const lines = b64text ? atob(b64text).split('\n') : [];
+
+            // Use logical width from HTML attribute (e.g., 300)
+            const logicalWidth = parseInt(canvas.getAttribute('width'), 10) || 300; 
+            
+            // Calculate logical height
+            const logicalHeight = Math.max(lineHeight * lines.length + 20, 40); // +20 padding, min 40px
+
+            // 2. Set backing store size (scaled by DPR)
+            canvas.width = logicalWidth * dpr;
+            canvas.height = logicalHeight * dpr;
+
+            // 3. Set DOM/CSS size (logical size)
+            canvas.style.width = `${logicalWidth}px`;
+            canvas.style.height = `${logicalHeight}px`;
+
+            // 4. Scale the context to match DPR
+            ctx.scale(dpr, dpr);
+            // --- HiDPI Scaling Fix (End) ---
+            
+            // Clear the canvas (now using logical dimensions)
+            ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+
+            if (!b64text) {
+                // Canvas is clear, just return
+                return;
+            }
+            
+            // Apply drawing styles (font must be set AFTER scaling)
+            ctx.font = styleFont;
+            ctx.fillStyle = canvas.dataset.color || '#374151';
+            ctx.textAlign = 'center';
+            
+            // Calculate starting Y to vertically center the whole block
+            const totalTextHeight = (lines.length - 1) * lineHeight;
+            let y = (logicalHeight / 2) - (totalTextHeight / 2); // Use logical height
+
+            ctx.textBaseline = 'middle'; // Align text vertically from its center
+
+            lines.forEach(line => {
+                ctx.fillText(line, logicalWidth / 2, y); // Use logical width
+                y += lineHeight;
+            });
+        }
+
+        // --- Helper function to create the "Click to Reveal" button ---
+        function createClickButton(b64text) {
+            const button = document.createElement('a');
+            button.href = "#";
+            button.className = "inline-block px-6 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors";
+            button.dataset.obfuscate = "click";
+            button.dataset.b64Text = b64text;
+            button.textContent = "Click to Show Text";
+            
+            // Attach the reveal listener
+            attachClickRevealListener(button);
+            return button;
+        }
+
+        // --- Helper function to attach the "click" listener ---
+        function attachClickRevealListener(target) {
+            target.addEventListener('click', function(e) {
+                e.preventDefault(); 
+                
+                const b64text = target.dataset.b64Text;
+                if (!b64text) return;
+                
+                const revealedText = atob(b64text);
+                
+                // Create a new element to hold the text
+                const textSpan = document.createElement('span');
+                textSpan.className = 'text-lg font-medium text-gray-800 whitespace-pre-wrap'; // pre-wrap to respect newlines
+                textSpan.textContent = revealedText;
+                
+                target.parentNode.replaceChild(textSpan, target);
+            });
+        }
+
+        // --- Main Generator Logic ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const rawTextInput = document.getElementById('raw-text');
+            
+            const clickCode = document.getElementById('click-code');
+            const clickDemoContainer = document.getElementById('click-demo-container');
+            
+            const canvasCode = document.getElementById('canvas-code');
+            const canvasDemo = document.getElementById('canvas-demo');
+            
+            const cssCode = document.getElementById('css-code');
+            const cssDemoContainer = document.getElementById('css-demo-container');
+            
+            const svgCode = document.getElementById('svg-code');
+            const svgDemoContainer = document.getElementById('svg-demo-container');
+            
+            const fontUrlInput = document.getElementById('font-url');
+            const loadFontBtn = document.getElementById('load-font-btn');
+            
+            let loadedFont = null;
+
+            function loadFont(url) {
+                svgDemoContainer.innerHTML = '<span class="text-blue-500 text-sm">Loading font...</span>';
+                opentype.load(url, function(err, font) {
+                    if (err) {
+                        console.error('Font could not be loaded: ' + err);
+                        svgDemoContainer.innerHTML = '<span class="text-red-500 text-sm">Error loading font. URL might be blocked by CORS.</span>';
+                        loadedFont = null;
+                    } else {
+                        loadedFont = font;
+                        svgDemoContainer.innerHTML = '<span class="text-gray-400">Font loaded. Enter text above.</span>';
+                        if (rawTextInput.value) updateSnippets();
+                    }
+                });
+            }
+
+            // Initial Font Load
+            loadFont(fontUrlInput.value);
+
+            // Handle Font Button Click
+            loadFontBtn.addEventListener('click', () => {
+                const url = fontUrlInput.value.trim();
+                if(url) loadFont(url);
+            });
+
+            function updateSnippets() {
+                const rawText = rawTextInput.value;
+                
+                if (!rawText) {
+                    // Reset to default
+                    clickCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    canvasCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    cssCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    svgCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
+                    
+                    clickDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
+                    cssDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
+                    
+                    if (loadedFont) svgDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
+                    
+                    canvasDemo.dataset.b64Text = "";
+                    drawCanvas(canvasDemo); // Clear canvas
+                    return;
+                }
+
+                const b64text = btoa(rawText);
+                
+                // --- 1. Update Click-to-Reveal ---
+                const clickSnippet = `&lt;a href="#"
+   class="..."
+   data-obfuscate="click"
+   data-b64-text="${b64text}"&gt;
+   Click to Show Text
+&lt;/a&gt;`;
+                clickCode.innerHTML = escapeHTML(clickSnippet.replace(/^\n|\n$/g, ''));
+                
+                // Update live demo (by replacing it)
+                clickDemoContainer.innerHTML = ''; // Clear
+                clickDemoContainer.appendChild(createClickButton(b64text));
+                
+
+                // --- 2. Update Canvas ---
+                // Estimate lines to set a reasonable default height in snippet
+                const lines = rawText.split('\n').length;
+                const canvasHeight = Math.max(lines * 20 + 20, 40);
+
+                const canvasSnippet = `&lt;canvas
+    data-obfuscate="canvas"
+    data-b64-text="${b64text}"
+    data-font="18px Arial"
+    data-color="#374151"
+    width="300"
+    height="${canvasHeight}"
+    class="rounded-md"&gt;
+&lt;/canvas&gt;`;
+                canvasCode.innerHTML = escapeHTML(canvasSnippet.replace(/^\n|\n$/g, ''));
+                
+                // Update live demo (by updating data and redrawing)
+                canvasDemo.dataset.b64Text = b64text;
+                canvasDemo.width = 300; // Reset width (in case)
+                drawCanvas(canvasDemo);
+
+
+                // --- 3. Update CSS Reversal ---
+                const reversedText = reverseString(rawText);
+                const cssSnippet = `&lt;span style="unicode-bidi: bidi-override; direction: rtl;"&gt;
+  ${reversedText}
+&lt;/span&gt;`;
+                cssCode.innerHTML = escapeHTML(cssSnippet.replace(/^\n|\n$/g, ''));
+
+                // Update live demo
+                cssDemoContainer.innerHTML = `<span class="text-lg font-medium text-gray-800" style="unicode-bidi: bidi-override; direction: rtl;">${reversedText}</span>`;
+
+                // --- 5. Update SVG Path Data ---
+                if (loadedFont) {
+                    const fontSize = 24;
+                    // Simple logic: split lines, generate path for each
+                    const textLines = rawText.split('\n');
+                    let svgPaths = '';
+                    let svgHeight = 0;
+                    let maxWidth = 0;
+
+                    textLines.forEach((line, index) => {
+                        const y = (index + 1) * (fontSize * 1.2); // Line height
+                        const path = loadedFont.getPath(line, 0, y, fontSize);
+                        // Measure width
+                        const box = path.getBoundingBox();
+                        if (box.x2 > maxWidth) maxWidth = box.x2;
+                        
+                        // Add path element
+                        svgPaths += `  ${path.toSVG(2)}\n`; // 2 decimal precision
+                        svgHeight = y + 10; // Update height
+                    });
+                    
+                    // Construct full SVG
+                    // Add some padding
+                    const finalWidth = Math.ceil(maxWidth + 10);
+                    const finalHeight = Math.ceil(svgHeight);
+                    
+                    const svgString = `<svg viewBox="0 0 ${finalWidth} ${finalHeight}" width="${finalWidth}" height="${finalHeight}" role="img" aria-label="Contact Information">
+${svgPaths}</svg>`;
+                    
+                    // Update Code
+                    svgCode.innerHTML = escapeHTML(svgString);
+                    // Update Demo
+                    svgDemoContainer.innerHTML = svgString;
+                }
+            }
+
+            // --- Initial State (for page load) ---
+            updateSnippets(); // Run on load
+            rawTextInput.addEventListener('input', updateSnippets); // Run on text change
+
+            // --- Activate all OTHER obfuscated elements on the page ---
+            // Activate static "click" elements
+            document.querySelectorAll('[data-obfuscate="click"]:not([data-b64-text=""])').forEach(attachClickRevealListener);
+            
+            // Activate static "canvas" elements
+            document.querySelectorAll('[data-obfuscate="canvas"]:not([data-b64-text=""])').forEach(drawCanvas);
+
+
+            // --- Clipboard Copy Logic ---
+            document.querySelectorAll('.copy-btn-static').forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.dataset.target;
+                    const codeElement = document.getElementById(targetId);
+                    
+                    // Create a temporary textarea to hold the text
+                    const textArea = document.createElement('textarea');
+                    
+                    // We need to "unescape" the HTML for the clipboard
+                    textArea.innerHTML = codeElement.innerHTML
+                        .replace(/&lt;/g, '<')
+                        .replace(/&gt;/g, '>')
+                        .replace(/&amp;/g, '&');
+                        
+                    textArea.style.position = 'fixed'; // Hide it
+                    textArea.style.opacity = 0;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    
+                    try {
+                        // Use execCommand for broader compatibility in iFrames
+                        document.execCommand('copy');
+                        const originalText = button.textContent;
+                        button.textContent = 'Copied!';
+                        button.classList.add('bg-green-500', 'text-white');
+                        
+                        setTimeout(() => {
+                            button.textContent = originalText;
+                            button.classList.remove('bg-green-500', 'text-white');
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy text: ', err);
+                    }
+                    
+                    document.body.removeChild(textArea);
+                });
+            });
+
+        });
+    </script>
+
+</body>
+</html>
