@@ -45,8 +45,7 @@
         <!-- Navigation Tabs -->
         <div class="flex justify-center gap-4 mb-8">
             <button onclick="switchView('obfuscator')" id="tab-obfuscator" class="tab-btn active px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-600 text-white transition-all shadow-lg shadow-blue-900/20">Obfuscator</button>
-            <button onclick="switchView('auth')" id="tab-auth" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">BiDi-Auth</button>
-            <button onclick="switchView('integration')" id="tab-integration" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">Integration</button>
+            <button onclick="switchView('gate')" id="tab-gate" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">CAPTCHA</button>
         </div>
 
         <!-- View: Obfuscator -->
@@ -239,10 +238,12 @@ Protocol: BiDi-Override-2025</textarea>
                 </div>
             </div>
         </div>
-        </div>
+        </div> <!-- End View Obfuscator -->
 
-        <!-- View: BiDi-Auth -->
-        <div id="view-auth" class="view-section hidden max-w-2xl mx-auto">
+        <!-- View: CAPTCHA Gate  -->
+        <div id="view-gate" class="view-section hidden max-w-4xl mx-auto space-y-12">
+            
+            <!-- Prototype Panel -->
             <div class="glass-panel p-8 rounded-3xl shadow-2xl border-l-4 border-indigo-500">
                 <div class="flex justify-between items-start mb-8">
                     <div class="space-y-2">
@@ -278,10 +279,8 @@ Protocol: BiDi-Override-2025</textarea>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- View: Integration -->
-        <div id="view-integration" class="view-section hidden max-w-4xl mx-auto">
+            <!-- Integration Guide -->
             <div class="glass-panel p-8 rounded-3xl shadow-2xl">
                 <div class="flex items-center justify-between mb-8">
                     <h2 class="text-2xl font-bold text-white">Integration Guide</h2>
