@@ -32,6 +32,9 @@
             border-color: #ef4444 !important; /* red-500 */
             color: #fca5a5 !important; /* red-300 */
         }
+        .phantom-atom::after {
+            content: var(--p);
+        }
     </style>
 </head>
 <body class="bg-[#020617] text-slate-300 min-h-screen p-6 md:p-12">
@@ -1068,36 +1071,64 @@ function generateBidiAuth(elementId) {
             }
             currentAuthSecret = result;
             
-            // Strategy: 50% Chance of standard BiDi Reverse, 50% Chance of Flex Swap
-            const strategy = Math.random() > 0.5 ? 'bidi' : 'swap';
-            let html = '';
+            // --- The Phantom Weave Algorithm (v3.0) ---
             
-            if (strategy === 'bidi') {
-                // Strategy A: Character Reversal
-                const atoms = Array.from(result);
-                let noisy = [];
-                atoms.forEach(a => { noisy.push(a); if(Math.random() > 0.4) noisy.push('&#8203;'); });
-                const reversed = noisy.reverse();
-                const mid = Math.floor(reversed.length / 2);
-                const p1 = reversed.slice(0, mid).join('');
-                const p2 = reversed.slice(mid).join('');
-                
-                html = `<div style="unicode-bidi:bidi-override; direction:rtl; text-align:center;">
-                    <span style="direction:rtl">${p1}</span><span style="direction:rtl">${p2}</span>
-                </div>`;
-            } else {
-                // Strategy B: Chunk Swapping (Flex Reverse)
-                // DOM: [Part2, Part1] -> Visual (Row-Reverse): Part1 Part2
-                const split = 2; // Split after 2 chars
-                const part1 = result.substring(0, split).split('').join('&#8203;'); // "A&#8203;B"
-                const part2 = result.substring(split).split('').join('&#8203;');    // "C&#8203;D&#8203;E"
-                
-                html = `<div style="display:flex; flex-direction:row-reverse; justify-content:center; gap:0;">
-                    <span>${part2}</span><span>${part1}</span>
-                </div>`;
+            // 1. Isolate the Phantom (Last Char) - Defeats innerText
+            const phantomChar = result.charAt(result.length - 1);
+            const body = result.substring(0, result.length - 1); // First 4 chars
+            
+            // 2. Fragment Body (Random chunks of 1-2 chars)
+            let chunks = [];
+            let i = 0;
+            while(i < body.length) {
+                // Randomly split into 1 or 2 chars
+                const len = (Math.random() > 0.5 && (i + 1 < body.length)) ? 2 : 1;
+                chunks.push(body.substr(i, len));
+                i += len;
             }
             
-            document.getElementById('authRender').innerHTML = html;
+            // 3. Create DOM Nodes
+            let nodes = [];
+            
+            // A. Real Chunks (Visible)
+            chunks.forEach((chunk, idx) => {
+                // Entropy: 50% chance to Reverse characters + RTL Override
+                const doReverse = chunk.length > 1 && Math.random() > 0.5;
+                const text = doReverse ? chunk.split('').reverse().join('') : chunk;
+                const dir = doReverse ? 'rtl' : 'ltr';
+                
+                // Flex Order guarantees visual sequence 1, 2, 3...
+                nodes.push({
+                    html: `<span style="order:${idx+1}; unicode-bidi:isolate; direction:${dir};">${text}</span>`,
+                    type: 'real'
+                });
+            });
+            
+            // B. The Phantom Node (Holds the last char in CSS only)
+            nodes.push({
+                html: `<span class="phantom-atom" style="order:${chunks.length + 1}; --p:'${phantomChar}';"></span>`,
+                type: 'phantom'
+            });
+            
+            // C. Decoy Nodes (Invisible to humans, visible to bots)
+            const decoys = 3;
+            for(let j=0; j<decoys; j++) {
+                const decoyChar = chars.charAt(Math.floor(Math.random() * chars.length));
+                // Position absolute + opacity 0 keeps it in the DOM stream for innerText but hidden
+                nodes.push({
+                    html: `<span style="order:${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none; z-index:-1;">${decoyChar}</span>`,
+                    type: 'decoy'
+                });
+            }
+            
+            // 4. Shuffle DOM Order (The Chaos)
+            nodes.sort(() => Math.random() - 0.5);
+            
+            // 5. Render
+            const containerHtml = nodes.map(n => n.html).join('');
+            
+            const el = document.getElementById('authRender');
+            el.innerHTML = `<div style="display:flex; justify-content:center; gap:2px; position:relative;">${containerHtml}</div>`;
             
             // Update Bot View
             const botText = document.getElementById('authRender').innerText;
@@ -1107,7 +1138,7 @@ function generateBidiAuth(elementId) {
             const input = document.getElementById('authInput');
             const status = document.getElementById('authStatus');
             input.value = '';
-            input.className = "w-full bg-[#050810] border border-slate-700 rounded-lg px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase placeholder:tracking-normal";
+            input.className = "w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase placeholder:tracking-normal";
             status.className = "hidden";
         }
 
