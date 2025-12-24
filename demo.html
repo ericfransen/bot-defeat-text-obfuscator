@@ -112,7 +112,7 @@ Protocol: BiDi-Override-2025</textarea>
                             <div id="actionControls" class="grid grid-cols-3 gap-2 opacity-50 pointer-events-none transition-opacity">
                                 <button onclick="setAction('copy')" class="action-btn active text-[10px] font-bold uppercase py-2 bg-blue-600 text-white rounded transition hover:bg-blue-500 ring-2 ring-blue-400" data-type="copy">Copy</button>
                                 <button onclick="setAction('mailto')" class="action-btn text-[10px] font-bold uppercase py-2 bg-slate-800 text-slate-400 rounded transition hover:bg-slate-700" data-type="mailto">Email</button>
-                                <button onclick="setAction('tel')" class="action-btn text-[10px] font-bold uppercase py-2 bg-slate-800 text-slate-400 rounded transition hover:bg-slate-700" data-type="tel">Call</button>
+                                <button onclick="setAction('tel')" class="action-btn text-[10px] font-bold uppercase py-2 bg-slate-800 text-slate-400 rounded transition hover:bg-slate-700" data-type="tel">Phone</button>
                             </div>
                         </div>
                     </div>
@@ -197,7 +197,7 @@ Protocol: BiDi-Override-2025</textarea>
                 </div>
 
                 <!-- Security & A11y Ratings -->
-                <div class="glass-panel p-6 rounded-3xl shadow-xl border-l-4 border-teal-500 transition-all duration-300" id="ratingsPanel">
+                <div class="glass-panel p-6 rounded-3xl shadow-xl border-teal-500 transition-all duration-300" id="ratingsPanel">
                     <div class="flex justify-between items-start mb-2">
                         <h4 class="text-xs font-bold text-white uppercase tracking-widest">Efficiency Analysis</h4>
                         <button onclick="toggleRatingDetails()" class="text-slate-500 hover:text-teal-400 transition">
@@ -598,29 +598,29 @@ function generateBidiAuth(elementId) {
 
             // --- Bot Defeat Logic ---
             let botW = 25; let botT = 'Low'; let botC = 'bg-red-500';
-            let botMsg = "Simple structure. Easily scraped by basic bots.";
+            let botMsg = "Simple structure.<br>Easily scraped by basic bots.";
 
             if (level === 2) { 
                 botW = 50; botT = 'Medium'; botC = 'bg-yellow-500'; 
-                botMsg = "Noise injection disrupts simple regex, but DOM order is preserved.";
+                botMsg = "Noise injection disrupts simple regex.<br>However, DOM order is still preserved.";
             }
             if (level === 3) { 
                 botW = 85; botT = 'High'; botC = 'bg-teal-500'; 
-                botMsg = "BiDi reversal + Homoglyphs confuse parsers. Requires computed layout analysis.";
+                botMsg = "BiDi reversal + Homoglyphs confuse parsers.<br>Requires computed layout analysis to reconstruct.";
             }
             if (level === 4) { 
                 botW = 100; botT = 'Critical'; botC = 'bg-purple-500'; 
-                botMsg = "Data is hidden behind interaction. Bots cannot see it without executing JS events.";
+                botMsg = "Data is hidden behind interaction.<br>Bots cannot see it without executing specific JS events.";
             }
             if (level === 5) { 
                 botW = 95; botT = 'Fortified'; botC = 'bg-indigo-500'; 
-                botMsg = "Phantom Shield. Data is fragmented, poisoned with decoys, and partially rendered via CSS.";
+                botMsg = "Phantom Shield.<br>Data is fragmented, poisoned with decoys, and partially rendered via CSS.";
             }
 
             // Density Bonus (for L1, L2, L3, L5)
             if (level !== 4) {
                 botW = Math.min(99, botW + (density * 1.5));
-                if (density > 8) botMsg += " High fragmentation forces expensive DOM reconstruction.";
+                if (density > 8) botMsg += "<br>High fragmentation forces expensive DOM reconstruction.";
             }
 
             // Leak Penalty
@@ -628,40 +628,40 @@ function generateBidiAuth(elementId) {
                  botW = Math.max(10, botW - 40);
                  botT = 'Compromised';
                  botC = 'bg-red-600';
-                 botMsg = "ALERT: Sim scraper detected keywords! Strategy insufficient for this payload.";
+                 botMsg = "ALERT: Sim scraper detected keywords!<br>Strategy is insufficient for this specific payload.";
             }
 
             botBar.style.width = `${botW}%`;
             botBar.className = `h-full ${botC} transition-all duration-500`;
             botText.textContent = botT;
             botText.className = `text-xs font-bold ${botC.replace('bg-', 'text-')}`;
-            if(botReason) botReason.textContent = botMsg;
+            if(botReason) botReason.innerHTML = botMsg;
 
             // --- Accessibility Logic ---
             let a11yW = '10%'; let a11yT = 'Unusable'; let a11yC = 'bg-red-600';
-            let a11yMsg = "Screen readers read the scrambled DOM order (gibberish).";
+            let a11yMsg = "Screen readers read the scrambled DOM order.<br>This results in unusable gibberish.";
 
             if (level === 1) { 
                 a11yW = '30%'; a11yT = 'Poor'; a11yC = 'bg-orange-500'; 
-                a11yMsg = "Reversed DOM structure confuses reading order.";
+                a11yMsg = "Reversed DOM structure confuses reading order.<br>Most assistive tech fails to linearize correctly.";
             }
             if (level === 4) { 
                 a11yW = '90%'; a11yT = 'Good'; a11yC = 'bg-green-500'; 
-                a11yMsg = "User must click to reveal, but the revealed text is standard.";
+                a11yMsg = "User must click to reveal.<br>The revealed text is standard and perfectly readable.";
             }
             
             if (actionsEnabled && level !== 4) {
                  a11yW = '60%'; 
                  a11yT = 'Fair (Actionable)'; 
                  a11yC = 'bg-yellow-400';
-                 a11yMsg = "Text is scrambled, but 'Click-to-Action' allows assistive tech to access clean data.";
+                 a11yMsg = "Text is scrambled.<br>However, the 'Click-to-Action' button allows users to grab clean data.";
             }
 
             a11yBar.style.width = a11yW;
             a11yBar.className = `h-full ${a11yC} transition-all duration-500`;
             a11yText.textContent = a11yT;
             a11yText.className = `text-xs font-bold ${a11yC.replace('bg-', 'text-')}`;
-            if(a11yReason) a11yReason.textContent = a11yMsg;
+            if(a11yReason) a11yReason.innerHTML = a11yMsg;
         }
 
         function updateEntropyLabel() {
@@ -738,13 +738,13 @@ function generateBidiAuth(elementId) {
                     // 30% chance to be a "Phantom" (CSS Content)
                     if (Math.random() < 0.3 && atom.length === 1 && !atom.startsWith('&')) {
                         nodes.push({
-                            html: `<span class="phantom-atom" style="order:${idx}; --p:'${atom}';"></span>`,
+                            html: `<span class="phantom-atom" style="order:${idx}; --p:'${atom}'; white-space:pre;"></span>`,
                             type: 'phantom'
                         });
                     } else {
                         // Real Node
                         nodes.push({
-                            html: `<span style="order:${idx};">${atom}</span>`,
+                            html: `<span style="order:${idx}; white-space:pre;">${atom}</span>`,
                             type: 'real'
                         });
                     }
@@ -810,7 +810,7 @@ function generateBidiAuth(elementId) {
                 segments.push(reversedAtoms.slice(currentPos).join(''));
                 
                 // 4. Wrap each segment in dir=rtl
-                const innerHtml = segments.map(s => `<span style="direction:rtl">${s}</span>`).join('');
+                const innerHtml = segments.map(s => `<span style="direction:rtl; white-space:pre;">${s}</span>`).join('');
                 
                 // 5. Outer wrapper
                 return `<div style="unicode-bidi:bidi-override; direction:rtl; text-align:left;">${innerHtml}</div>`;
@@ -842,7 +842,7 @@ function generateBidiAuth(elementId) {
             
             const domOrder = fragments.reverse();
             
-            let innerHtml = domOrder.map(f => `<span class="weave-atom">${f}</span>`).join('');
+            let innerHtml = domOrder.map(f => `<span class="weave-atom" style="white-space:pre;">${f}</span>`).join('');
             
             return `<div class="bidi-layer" style="display:flex; flex-direction:row-reverse; justify-content:flex-end;">${innerHtml}</div>`;
         }
