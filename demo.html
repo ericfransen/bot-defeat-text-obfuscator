@@ -37,12 +37,20 @@
 <body class="bg-[#020617] text-slate-300 min-h-screen p-6 md:p-12">
 
     <div class="max-w-7xl mx-auto">
-        <header class="mb-10 border-b border-slate-800 pb-8">
-            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Bot Defeat Text Obfuscator<span class="text-blue-500">v2</span></h1>
-            <p class="text-slate-500 mt-2 font-mono text-sm tracking-widest uppercase">Multi-line Atomic Obfuscation Engine</p>
+        <header class="mb-8 border-b border-slate-800 pb-8">
+            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Adversarial Weave <span class="text-blue-500">v3.0</span></h1>
+            <p class="text-slate-500 mt-2 font-mono text-sm tracking-widest uppercase">Multi-line Atomic Fragmentation Engine</p>
         </header>
 
-        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center gap-4 mb-8">
+            <button onclick="switchView('obfuscator')" id="tab-obfuscator" class="tab-btn active px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-600 text-white transition-all shadow-lg shadow-blue-900/20">Obfuscator</button>
+            <button onclick="switchView('auth')" id="tab-auth" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">BiDi-Auth</button>
+            <button onclick="switchView('integration')" id="tab-integration" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">Integration</button>
+        </div>
+
+        <!-- View: Obfuscator -->
+        <div id="view-obfuscator" class="view-section grid grid-cols-1 xl:grid-cols-2 gap-8">
             <!-- Left Column: Input & Source -->
             <div class="space-y-6">
                 <!-- Payload Input -->
@@ -125,6 +133,7 @@ Protocol: BiDi-Override-2025</textarea>
                         spellcheck="false"
                     ></pre>
                 </div>
+                
             </div>
 
             <!-- Right Column: Visuals & Styling -->
@@ -225,6 +234,120 @@ Protocol: BiDi-Override-2025</textarea>
                         <div class="flex items-center gap-2 pt-2">
                             <div id="matchIndicator" class="w-2 h-2 rounded-full"></div>
                             <span id="matchStatus" class="text-[10px] font-bold uppercase"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- View: BiDi-Auth -->
+        <div id="view-auth" class="view-section hidden max-w-2xl mx-auto">
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl border-l-4 border-indigo-500">
+                <div class="flex justify-between items-start mb-8">
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-bold text-indigo-400 uppercase tracking-widest">BiDi-Auth Prototype</h3>
+                        <p class="text-xs text-slate-500 max-w-md">A semantic CAPTCHA that defeats bots by decoupling the visual layer from the DOM layer using BiDi overrides. No cookies, no tracking, no external scripts.</p>
+                    </div>
+                    <button onclick="generateBidiAuth()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl transition shadow-lg" title="Refresh Code">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    </button>
+                </div>
+
+                <div class="flex gap-6 items-stretch h-32 mb-8">
+                    <!-- Rendered Auth Code -->
+                    <div id="authRender" class="flex-1 bg-black/40 rounded-2xl border-2 border-slate-700 flex items-center justify-center text-5xl font-mono tracking-[0.2em] text-white select-none relative overflow-hidden shadow-inner">
+                        <!-- Injected -->
+                    </div>
+                    <!-- Bot Eye View -->
+                    <div class="w-32 bg-red-900/10 border border-red-900/30 rounded-2xl flex flex-col justify-center items-center p-4 opacity-70">
+                        <span class="text-[10px] uppercase font-bold text-red-500/70 mb-2">Bot Context</span>
+                        <span id="authBotView" class="font-mono text-sm text-red-400 line-through text-center break-all">---</span>
+                    </div>
+                </div>
+
+                <div class="space-y-6 max-w-md mx-auto">
+                    <div class="relative group">
+                        <input type="text" id="authInput" placeholder="ENTER CODE" class="w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase placeholder:tracking-normal">
+                        <div id="authStatus" class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold uppercase hidden"></div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="validateAuth()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider shadow-lg shadow-indigo-900/20">Verify Human</button>
+                        <button onclick="botAttempt()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider border border-red-900/20 hover:border-red-500/50">Simulate Bot Attack</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Integration -->
+        <div id="view-integration" class="view-section hidden max-w-4xl mx-auto">
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-2xl font-bold text-white">Integration Guide</h2>
+                    <span class="text-xs font-mono text-blue-400 bg-blue-900/20 px-3 py-1 rounded-full">v3.0.0</span>
+                </div>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3">1. The Generator Function</h3>
+                        <p class="text-xs text-slate-500 mb-4">Add this pure function to your codebase. It has zero dependencies.</p>
+                        <pre class="bg-black/40 p-6 rounded-xl text-blue-300 font-mono text-xs overflow-auto select-all leading-relaxed">
+/**
+ * Generates a BiDi-secured CAPTCHA
+ * @param {string} elementId - The ID of the container to render into
+ * @returns {string} The secret code for validation
+ */
+function generateBidiAuth(elementId) {
+    // 1. Generate Random Code (5 chars)
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let secret = '';
+    for(let i=0; i<5; i++) secret += chars.charAt(Math.floor(Math.random()*chars.length));
+    
+    // 2. Obfuscate (BiDi Reversal + Noise)
+    const atoms = Array.from(secret);
+    let noisy = [];
+    atoms.forEach(a => {
+        noisy.push(a);
+        // Add Zero Width Space noise (60% probability)
+        if(Math.random() > 0.4) noisy.push('\u200B'); 
+    });
+    
+    // 3. Structural Reversal
+    const reversed = noisy.reverse();
+    const mid = Math.floor(reversed.length / 2);
+    const p1 = reversed.slice(0, mid).join('');
+    const p2 = reversed.slice(mid).join('');
+
+    // 4. Render with BiDi Override
+    const el = document.getElementById(elementId);
+    el.innerHTML = `&lt;div style="unicode-bidi:bidi-override; direction:rtl; text-align:center; user-select:none;"&gt;
+      &lt;span style="direction:rtl"&gt;${p1}&lt;/span&gt;&lt;span style="direction:rtl"&gt;${p2}&lt;/span&gt;
+    &lt;/div&gt;`;
+    
+    return secret; 
+}</pre>
+                    </div>
+
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3">2. Implementation Strategy</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                                <span class="text-green-400 text-xs font-bold uppercase block mb-2">Do</span>
+                                <ul class="list-disc ml-4 text-[10px] text-slate-400 space-y-1">
+                                    <li>Regenerate code after every attempt (success or fail).</li>
+                                    <li>Use server-side validation if possible (send secret hash).</li>
+                                    <li>Add rate limiting (e.g., max 5 attempts per minute).</li>
+                                </ul>
+                            </div>
+                            <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
+                                <span class="text-red-400 text-xs font-bold uppercase block mb-2">Don't</span>
+                                <ul class="list-disc ml-4 text-[10px] text-slate-400 space-y-1">
+                                    <li>Use CSS `display: none` for honeypots (bots detect this).</li>
+                                    <li>Rely solely on this for high-value targets (banking).</li>
+                                    <li>Forget audio fallback for production accessibility.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -917,9 +1040,123 @@ Protocol: BiDi-Override-2025</textarea>
             orchestrate();
         }
 
+        function switchView(viewId) {
+            // Hide all views
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            // Show target
+            document.getElementById('view-' + viewId).classList.remove('hidden');
+            
+            // Update Tabs
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if (btn.id === 'tab-' + viewId) {
+                    btn.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg');
+                    btn.classList.remove('bg-slate-800', 'text-slate-400', 'hover:bg-slate-700');
+                } else {
+                    btn.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg');
+                    btn.classList.add('bg-slate-800', 'text-slate-400', 'hover:bg-slate-700');
+                }
+            });
+        }
+
+        // --- BiDi-Auth Logic ---
+        let currentAuthSecret = '';
+
+        function generateBidiAuth() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
+            let result = '';
+            for (let i = 0; i < 5; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            currentAuthSecret = result;
+            
+            // Strategy: 50% Chance of standard BiDi Reverse, 50% Chance of Flex Swap
+            const strategy = Math.random() > 0.5 ? 'bidi' : 'swap';
+            let html = '';
+            
+            if (strategy === 'bidi') {
+                // Strategy A: Character Reversal
+                const atoms = Array.from(result);
+                let noisy = [];
+                atoms.forEach(a => { noisy.push(a); if(Math.random() > 0.4) noisy.push('&#8203;'); });
+                const reversed = noisy.reverse();
+                const mid = Math.floor(reversed.length / 2);
+                const p1 = reversed.slice(0, mid).join('');
+                const p2 = reversed.slice(mid).join('');
+                
+                html = `<div style="unicode-bidi:bidi-override; direction:rtl; text-align:center;">
+                    <span style="direction:rtl">${p1}</span><span style="direction:rtl">${p2}</span>
+                </div>`;
+            } else {
+                // Strategy B: Chunk Swapping (Flex Reverse)
+                // DOM: [Part2, Part1] -> Visual (Row-Reverse): Part1 Part2
+                const split = 2; // Split after 2 chars
+                const part1 = result.substring(0, split).split('').join('&#8203;'); // "A&#8203;B"
+                const part2 = result.substring(split).split('').join('&#8203;');    // "C&#8203;D&#8203;E"
+                
+                html = `<div style="display:flex; flex-direction:row-reverse; justify-content:center; gap:0;">
+                    <span>${part2}</span><span>${part1}</span>
+                </div>`;
+            }
+            
+            document.getElementById('authRender').innerHTML = html;
+            
+            // Update Bot View
+            const botText = document.getElementById('authRender').innerText;
+            document.getElementById('authBotView').textContent = botText;
+            
+            // Reset Input
+            const input = document.getElementById('authInput');
+            const status = document.getElementById('authStatus');
+            input.value = '';
+            input.className = "w-full bg-[#050810] border border-slate-700 rounded-lg px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase placeholder:tracking-normal";
+            status.className = "hidden";
+        }
+
+        function validateAuth() {
+            const input = document.getElementById('authInput');
+            const status = document.getElementById('authStatus');
+            // Remove noise from input if user pasted it? No, user types.
+            const val = input.value.toUpperCase().replace(/\u200B/g, '').trim();
+            
+            status.className = "absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block";
+            
+            if (val === currentAuthSecret) {
+                // Success
+                status.textContent = "Verified";
+                status.className = "absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block text-green-500";
+                input.classList.remove('border-slate-700', 'border-red-500');
+                input.classList.add('border-green-500', 'ring-1', 'ring-green-500');
+                
+                // Regen after delay
+                setTimeout(generateBidiAuth, 1500);
+            } else {
+                // Fail
+                status.textContent = "Invalid";
+                status.className = "absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block text-red-500";
+                input.classList.remove('border-slate-700');
+                input.classList.add('border-red-500');
+                
+                // Immediate Regen to prevent brute force
+                setTimeout(generateBidiAuth, 1000);
+            }
+        }
+
+        function botAttempt() {
+            // Simulate bot reading innerText
+            const botText = document.getElementById('authRender').innerText;
+            const input = document.getElementById('authInput');
+            
+            // Type it in
+            input.value = botText;
+            
+            // Trigger verify
+            validateAuth();
+        }
+
         window.onload = () => {
             updateEntropyLabel(); // Initialize label
             orchestrate();
+            generateBidiAuth(); // Initialize CAPTCHA
         };
     </script>
 </body>
