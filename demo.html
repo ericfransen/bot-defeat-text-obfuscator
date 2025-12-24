@@ -81,7 +81,7 @@ Protocol: BiDi-Override-2025</textarea>
                                 <p class="text-[10px] text-slate-600">Technique Complexity</p>
                             </div>
                             <input 
-                                type="range" id="entropy" min="1" max="4" value="1" step="1"
+                                type="range" id="entropy" min="1" max="5" value="1" step="1"
                                 class="w-32 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
                                 oninput="updateEntropyLabel(); orchestrate();"
                             >
@@ -197,7 +197,14 @@ Protocol: BiDi-Override-2025</textarea>
                 </div>
 
                 <!-- Security & A11y Ratings -->
-                <div class="glass-panel p-6 rounded-3xl shadow-xl border-teal-500">
+                <div class="glass-panel p-6 rounded-3xl shadow-xl border-l-4 border-teal-500 transition-all duration-300" id="ratingsPanel">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-widest">Efficiency Analysis</h4>
+                        <button onclick="toggleRatingDetails()" class="text-slate-500 hover:text-teal-400 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </button>
+                    </div>
+                    
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1">
                             <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Bot Defeat Probability</span>
@@ -216,6 +223,18 @@ Protocol: BiDi-Override-2025</textarea>
                                 </div>
                                 <span id="a11yRatingText" class="text-xs font-bold text-yellow-400">Poor</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden Details -->
+                    <div id="ratingDetails" class="hidden mt-4 pt-4 border-t border-slate-700/50 text-[10px] space-y-3">
+                        <div>
+                            <span class="block font-bold text-teal-400 uppercase mb-1">Security Factor</span>
+                            <p id="botReason" class="text-slate-400 leading-relaxed">Analysis pending...</p>
+                        </div>
+                        <div>
+                            <span class="block font-bold text-yellow-400 uppercase mb-1">Accessibility Factor</span>
+                            <p id="a11yReason" class="text-slate-400 leading-relaxed">Analysis pending...</p>
                         </div>
                     </div>
                 </div>
@@ -427,12 +446,12 @@ function generateBidiAuth(elementId) {
             // Pulse revert at 250ms
             setTimeout(() => {
                 el.style.color = originalColor;
-            }, 450);
+            }, 100);
 
             // Instant removal at 500ms
             setTimeout(() => {
                 feedback.remove();
-            }, 500);
+            }, 800);
         }
 
         function orchestrate() {
@@ -500,7 +519,8 @@ function generateBidiAuth(elementId) {
 
             // --- Smart Actions Wrapper ---
             const enableActions = document.getElementById('enableActions').checked;
-            if (enableActions && entropyLevel < 4) {
+            // Enable for L1-3 AND L5. L4 is self-contained.
+            if (enableActions && entropyLevel !== 4) {
                 const activeBtn = document.querySelector('.action-btn.active');
                 const actionType = activeBtn ? activeBtn.dataset.type : 'copy';
                 const b64 = btoa(unescape(encodeURIComponent(rawText)));
@@ -559,63 +579,89 @@ function generateBidiAuth(elementId) {
             updateRatings(leak);
         }
 
+        function toggleRatingDetails() {
+            const el = document.getElementById('ratingDetails');
+            el.classList.toggle('hidden');
+        }
+
         function updateRatings(leakDetected) {
             const level = parseInt(document.getElementById('entropy').value);
+            const density = parseInt(document.getElementById('fragDensity').value);
+            const actionsEnabled = document.getElementById('enableActions').checked;
+            
             const botBar = document.getElementById('botRatingFill');
             const botText = document.getElementById('botRatingText');
             const a11yBar = document.getElementById('a11yRatingFill');
             const a11yText = document.getElementById('a11yRatingText');
+            const botReason = document.getElementById('botReason');
+            const a11yReason = document.getElementById('a11yReason');
 
-            // Bot Defeat Ratings
-            // Granular logic: Base score + Penalty for leaks
-            let botW = 25; 
-            let botT = 'Low'; 
-            let botC = 'bg-red-500';
+            // --- Bot Defeat Logic ---
+            let botW = 25; let botT = 'Low'; let botC = 'bg-red-500';
+            let botMsg = "Simple structure. Easily scraped by basic bots.";
 
-            if (level === 2) { botW = 50; botT = 'Medium'; botC = 'bg-yellow-500'; }
-            if (level === 3) { botW = 85; botT = 'High'; botC = 'bg-teal-500'; }
-            if (level === 4) { botW = 100; botT = 'Critical'; botC = 'bg-purple-500'; }
+            if (level === 2) { 
+                botW = 50; botT = 'Medium'; botC = 'bg-yellow-500'; 
+                botMsg = "Noise injection disrupts simple regex, but DOM order is preserved.";
+            }
+            if (level === 3) { 
+                botW = 85; botT = 'High'; botC = 'bg-teal-500'; 
+                botMsg = "BiDi reversal + Homoglyphs confuse parsers. Requires computed layout analysis.";
+            }
+            if (level === 4) { 
+                botW = 100; botT = 'Critical'; botC = 'bg-purple-500'; 
+                botMsg = "Data is hidden behind interaction. Bots cannot see it without executing JS events.";
+            }
+            if (level === 5) { 
+                botW = 95; botT = 'Fortified'; botC = 'bg-indigo-500'; 
+                botMsg = "Phantom Shield. Data is fragmented, poisoned with decoys, and partially rendered via CSS.";
+            }
 
-            // Apply Leak Penalty
+            // Density Bonus (for L1, L2, L3, L5)
+            if (level !== 4) {
+                botW = Math.min(99, botW + (density * 1.5));
+                if (density > 8) botMsg += " High fragmentation forces expensive DOM reconstruction.";
+            }
+
+            // Leak Penalty
             if (leakDetected && level < 4) {
-                 // Drastic penalty
                  botW = Math.max(10, botW - 40);
                  botT = 'Compromised';
                  botC = 'bg-red-600';
-            } else if (!leakDetected && level > 1) {
-                // Boost for no leak if level is decent
-                if (level === 2) { botW = 65; botT = 'Medium High'; botC = 'bg-yellow-400'; }
-                if (level === 3) { botW = 95; botT = 'Very High'; botC = 'bg-teal-400'; }
+                 botMsg = "ALERT: Sim scraper detected keywords! Strategy insufficient for this payload.";
             }
 
-            // Stringify
             botBar.style.width = `${botW}%`;
             botBar.className = `h-full ${botC} transition-all duration-500`;
             botText.textContent = botT;
             botText.className = `text-xs font-bold ${botC.replace('bg-', 'text-')}`;
+            if(botReason) botReason.textContent = botMsg;
 
-            // Accessibility Ratings
-            const actionsEnabled = document.getElementById('enableActions').checked;
-            
+            // --- Accessibility Logic ---
             let a11yW = '10%'; let a11yT = 'Unusable'; let a11yC = 'bg-red-600';
+            let a11yMsg = "Screen readers read the scrambled DOM order (gibberish).";
+
+            if (level === 1) { 
+                a11yW = '30%'; a11yT = 'Poor'; a11yC = 'bg-orange-500'; 
+                a11yMsg = "Reversed DOM structure confuses reading order.";
+            }
+            if (level === 4) { 
+                a11yW = '90%'; a11yT = 'Good'; a11yC = 'bg-green-500'; 
+                a11yMsg = "User must click to reveal, but the revealed text is standard.";
+            }
             
-            if (level === 1) { a11yW = '30%'; a11yT = 'Poor (Reversed DOM)'; a11yC = 'bg-orange-500'; }
-            if (level === 2) { a11yW = '20%'; a11yT = 'Poor (Noise)'; a11yC = 'bg-orange-600'; }
-            if (level === 3) { a11yW = '5%'; a11yT = 'Unusable (BiDi)'; a11yC = 'bg-red-600'; }
-            
-            // Boost if Actions Enabled
-            if (actionsEnabled && level < 4) {
+            if (actionsEnabled && level !== 4) {
                  a11yW = '60%'; 
                  a11yT = 'Fair (Actionable)'; 
                  a11yC = 'bg-yellow-400';
+                 a11yMsg = "Text is scrambled, but 'Click-to-Action' allows assistive tech to access clean data.";
             }
-            
-            if (level === 4) { a11yW = '90%'; a11yT = 'Good (Interactive)'; a11yC = 'bg-green-500'; }
 
             a11yBar.style.width = a11yW;
             a11yBar.className = `h-full ${a11yC} transition-all duration-500`;
             a11yText.textContent = a11yT;
             a11yText.className = `text-xs font-bold ${a11yC.replace('bg-', 'text-')}`;
+            if(a11yReason) a11yReason.textContent = a11yMsg;
         }
 
         function updateEntropyLabel() {
@@ -639,6 +685,7 @@ function generateBidiAuth(elementId) {
                 case 2: text = "Medium: BiDi + Noise"; break;
                 case 3: text = "High: BiDi + Homoglyphs"; break;
                 case 4: text = "Extreme: Interaction Gate"; break;
+                case 5: text = "Max: Phantom Shield"; break;
             }
             label.textContent = text;
         }
@@ -665,7 +712,7 @@ function generateBidiAuth(elementId) {
             let rawChars = Array.from(str); 
 
             // Level 3: Homoglyph Swapping (Conservative)
-            if (level >= 3) {
+            if (level === 3) {
                 rawChars = rawChars.map(c => {
                     // Mirror brackets for BiDi Reversal Correctness
                     if (mirrorMap[c]) return mirrorMap[c];
@@ -682,6 +729,48 @@ function generateBidiAuth(elementId) {
             let atoms = rawChars.map(c => escapeHtml(c));
 
             // --- Construction Strategies ---
+
+            // Level 5: Phantom Shield (The Crowning Achievement)
+            if (level === 5) {
+                let nodes = [];
+                // 1. Process Atoms
+                atoms.forEach((atom, idx) => {
+                    // 30% chance to be a "Phantom" (CSS Content)
+                    if (Math.random() < 0.3 && atom.length === 1 && !atom.startsWith('&')) {
+                        nodes.push({
+                            html: `<span class="phantom-atom" style="order:${idx}; --p:'${atom}';"></span>`,
+                            type: 'phantom'
+                        });
+                    } else {
+                        // Real Node
+                        nodes.push({
+                            html: `<span style="order:${idx};">${atom}</span>`,
+                            type: 'real'
+                        });
+                    }
+                });
+
+                // 2. Add Decoys (Poison the well)
+                // Add decoys proportional to length (~20%)
+                const numDecoys = Math.ceil(atoms.length * 0.2);
+                const decoyChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                for(let i=0; i<numDecoys; i++) {
+                    const d = decoyChars.charAt(Math.floor(Math.random() * decoyChars.length));
+                    nodes.push({
+                        html: `<span style="order:${Math.floor(Math.random() * atoms.length)}; opacity:0; position:absolute; pointer-events:none; font-size:0;">${d}</span>`,
+                        type: 'decoy'
+                    });
+                }
+
+                // 3. Shuffle DOM
+                nodes.sort(() => Math.random() - 0.5);
+
+                // 4. Render Wrapper
+                const inner = nodes.map(n => n.html).join('');
+                // flex-wrap: wrap ensures long lines break naturally
+                // word-break: break-all helps prevents flex items from overflowing
+                return `<div style="display:flex; flex-wrap:wrap; position:relative; word-break:break-all;">${inner}</div>`;
+            }
 
             // Level 3: The "Sandwich" (Recursive Segmenting)
             // Now bound to 'density' slider to match user expectation
