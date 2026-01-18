@@ -227,12 +227,12 @@ Protocol: BiDi-Override-2025</textarea>
                     <div id="authRender" class="flex-1 bg-black/40 rounded-2xl border-2 border-slate-700 flex items-center justify-center text-5xl font-mono tracking-[0.2em] text-white select-none relative overflow-hidden shadow-inner"></div>
                     <div class="w-32 flex flex-col gap-2">
                         <div class="flex-1 bg-red-900/10 border border-red-900/30 rounded-xl flex flex-col justify-center items-center p-2 opacity-70">
-                            <span class="text-[8px] uppercase font-bold text-red-500/70 mb-1">DOM</span>
-                            <span id="authBotView" class="font-mono text-[10px] text-red-400 line-through text-center break-all">---</span>
+                            <span class="text-[12px] uppercase font-bold text-red-500/70 mb-1">DOM</span>
+                            <span id="authBotView" class="font-mono text-[12px] text-red-400 line-through text-center break-all">---</span>
                         </div>
                         <div class="flex-1 bg-orange-900/10 border border-orange-900/30 rounded-xl flex flex-col justify-center items-center p-2 opacity-70">
-                            <span class="text-[8px] uppercase font-bold text-orange-500/70 mb-1">Vision</span>
-                            <span id="authOCRView" class="font-mono text-[10px] text-orange-400 text-center break-all">---</span>
+                            <span class="text-[12px] uppercase font-bold text-orange-500/70 mb-1">OCR Vision</span>
+                            <span id="authOCRView" class="font-mono text-[12px] text-orange-400 text-center break-all">---</span>
                         </div>
                     </div>
                 </div>
@@ -497,7 +497,7 @@ Protocol: BiDi-Override-2025</textarea>
             let nodes = [];
             chunks.forEach((chunk, idx) => {
                 const rev = chunk.length > 1 && Math.random() > 0.5;
-                nodes.push({ html: `<span style="order:${idx+1}; unicode-bidi:isolate; direction:${rev?'rtl':'ltr'}; white-space:pre;">${rev?chunk.split('').reverse().join(''):chunk}</span>` });
+                nodes.push({ html: `<span style="order:${idx+1}; unicode-bidi:bidi-override; direction:${rev?'rtl':'ltr'}; white-space:pre;">${rev?chunk.split('').reverse().join(''):chunk}</span>` });
             });
             nodes.push({ html: `<span class="phantom-atom" style="order:${chunks.length+1}; --p:'${phantomChar}'; white-space:pre;"></span>` });
             for(let j=0; j<3; j++) nodes.push({ html: `<span style="order:${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none; z-index:-1;">${"ABC".charAt(Math.floor(Math.random()*3))}</span>` });
@@ -514,18 +514,18 @@ Protocol: BiDi-Override-2025</textarea>
                     else sim += c;
                 }
                 ocrEl.textContent = sim || "[EMPTY]"; ocrEl.className = "font-mono text-[10px] text-orange-400 opacity-50";
-            } else { ocrEl.textContent = currentAuthSecret; ocrEl.className = "font-mono text-[10px] text-green-400 font-bold"; }
+            } else { ocrEl.textContent = currentAuthSecret; ocrEl.className = "font-mono text-[12px] text-green-400 font-bold"; }
         }
 
-        function validateAuth() {
+        function validateAuth(failureDelay = 1000) {
             const input = document.getElementById('authInput'), status = document.getElementById('authStatus');
             const val = input.value.toUpperCase().replace(/\u200B/g, '').trim();
             status.className = "absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block";
             if (val === currentAuthSecret) { status.textContent = "Verified"; status.classList.add('text-green-500'); setTimeout(generateNewSecret, 1500); }
-            else { status.textContent = "Invalid"; status.classList.add('text-red-500'); setTimeout(generateNewSecret, 1000); }
+            else { status.textContent = "Invalid"; status.classList.add('text-red-500'); setTimeout(generateNewSecret, failureDelay); }
         }
 
-        function botAttempt() { document.getElementById('authInput').value = document.getElementById('authRender').innerText; validateAuth(); }
+        function botAttempt() { document.getElementById('authInput').value = document.getElementById('authRender').innerText; validateAuth(2000); }
         function manualOverride() { document.getElementById('renderTarget').innerHTML = document.getElementById('sourceSnippet').innerText; updateRatings(runScraperSim()); }
         function runScraperSim() {
             const extracted = document.getElementById('renderTarget').innerText.trim();
@@ -593,7 +593,7 @@ Protocol: BiDi-Override-2025</textarea>
         const len = (Math.random() > 0.5 && i + 1 < body.length) ? 2 : 1;
         const chunk = body.substr(i, len);
         const rev = chunk.length > 1 && Math.random() > 0.5;
-        nodes.push({ html: \`<span style="order:\${i+1}; unicode-bidi:isolate; direction:\${rev?'rtl':'ltr'}; white-space:pre;">\${rev?chunk.split('').reverse().join(''):chunk}</span>\` });
+        nodes.push({ html: \`<span style="order:\${i+1}; unicode-bidi:bidi-override; direction:\${rev?'rtl':'ltr'}; white-space:pre;">\${rev?chunk.split('').reverse().join(''):chunk}</span>\` });
         i += len;
       }
       nodes.push({ html: \`<span class="phantom-atom" style="order:100; --p:'\${phantom}'; white-space:pre;"></span>\` });
