@@ -394,12 +394,25 @@ Protocol: BiDi-Override-2025</textarea>
                 
                 // SVG Icons
                 const iconCopy = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
-                const iconMail = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
+                const iconMail = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
                 const iconTel = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
                 
-                if (actionType === 'copy') { onclick = `navigator.clipboard.writeText(${decryptJS}); const f=this.querySelector('.feedback'); f.style.opacity='1'; f.style.top='-45px'; setTimeout(()=>{f.style.opacity='0'; f.style.top='-35px'},1000); icon = iconCopy;`; }
-                else if (actionType === 'mailto') { onclick = `window.location.href='mailto:'+${decryptJS}`; icon = iconMail; }
-                else if (actionType === 'tel') { onclick = `window.location.href='tel:'+${decryptJS}`; icon = iconTel; }
+                let ariaLabel = "Click to reveal protected content";
+                if (actionType === 'copy') { 
+                    onclick = `navigator.clipboard.writeText(${decryptJS}); const f=this.querySelector('.feedback'); f.style.opacity='1'; f.style.top='-45px'; setTimeout(()=>{f.style.opacity='0'; f.style.top='-35px'},1000); icon = iconCopy;`; 
+                    ariaLabel = "Click to copy protected content";
+                }
+                else if (actionType === 'mailto') { 
+                    onclick = `window.location.href='mailto:'+${decryptJS}`; icon = iconMail; 
+                    ariaLabel = "Click to send email to protected address";
+                }
+                else if (actionType === 'tel') { 
+                    onclick = `window.location.href='tel:'+${decryptJS}`; icon = iconTel; 
+                    ariaLabel = "Click to call protected phone number";
+                }
+
+                // Keyboard support (Enter/Space triggers click)
+                const onkeydown = `if(event.key==='Enter'||event.key===' ') { this.click(); event.preventDefault(); }`;
 
                 // Self-contained CSS for hover effects
                 interactionCSS = `<style>
@@ -419,12 +432,12 @@ Protocol: BiDi-Override-2025</textarea>
   }
 </style>`;
 
-                const wrapStart = `<div class="${uniqueId}" onclick="${onclick}"><div style="flex-grow:1;">
+                const wrapStart = `<div class="${uniqueId}" role="button" tabindex="0" aria-label="${ariaLabel}" onclick="${onclick}" onkeydown="${onkeydown}"><div style="flex-grow:1;" aria-hidden="true">
 `;
                 // Add feedback pill for copy action (with improved class)
                 const feedbackEl = actionType === 'copy' ? `<div class="feedback">COPIED!</div>` : '';
                 const wrapEnd = `
-</div><div class="icon-box">${icon}</div>${feedbackEl}</div>`;
+</div><div class="icon-box" aria-hidden="true">${icon}</div>${feedbackEl}</div>`;
 
                 rawFinal = wrapStart + rawFinal + wrapEnd;
             }
@@ -508,7 +521,10 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
             let a11yW = '10%', a11yT = 'Unusable', a11yC = 'bg-red-600', a11yMsg = "Screen readers read scrambled DOM order.";
             if (level === 1) { a11yW = '30%'; a11yT = 'Poor'; a11yC = 'bg-orange-500'; a11yMsg = "Reversed DOM confuses reading order."; }
             if (level === 4) { a11yW = '90%'; a11yT = 'Good'; a11yC = 'bg-green-500'; a11yMsg = "Revealed text is standard and readable."; }
-            if (actionsEnabled && level !== 4) { a11yW = '60%'; a11yT = 'Fair'; a11yC = 'bg-yellow-400'; a11yMsg = "Actionable wrapper allows data access."; }
+            if (actionsEnabled && level !== 4) { 
+                a11yW = '95%'; a11yT = 'Excellent'; a11yC = 'bg-green-500'; 
+                a11yMsg = "ARIA labels + Keyboard support provide perfect Screen Reader experience.<br>Garbage DOM is hidden from A11y tree."; 
+            }
             a11yBar.style.width = a11yW; a11yBar.className = `h-full ${a11yC} transition-all duration-500`; a11yText.textContent = a11yT; a11yReason.innerHTML = a11yMsg;
         }
 
