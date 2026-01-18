@@ -113,10 +113,15 @@ Protocol: BiDi-Override-2025</textarea>
                 <!-- Editable Source Snippet (Moved here) -->
                 <div class="glass-panel rounded-3xl overflow-hidden shadow-xl">
                     <div class="px-6 py-3 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Generated Source (Editable)</span>
-                        <div class="flex gap-2">
-                            <button onclick="orchestrate()" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded font-bold transition">RERUN / RESET</button>
-                            <button onclick="copySource()" class="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded font-bold transition">COPY SNIPPET</button>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Generated Source</span>
+                        <div class="flex gap-2 items-center">
+                            <select id="exportFormat" onchange="orchestrate()" class="bg-[#050810] text-[10px] text-blue-400 font-bold uppercase border border-slate-700 rounded px-2 py-1 outline-none focus:border-blue-500">
+                                <option value="html">HTML + CSS</option>
+                                <option value="react">React Component</option>
+                            </select>
+                            <div class="h-4 w-px bg-slate-700 mx-1"></div>
+                            <button onclick="orchestrate()" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded font-bold transition">RESET</button>
+                            <button onclick="copySource()" class="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded font-bold transition">COPY</button>
                         </div>
                     </div>
                     <pre 
@@ -327,6 +332,7 @@ Protocol: BiDi-Override-2025</textarea>
             const useWrapper = document.getElementById('useWrapper').checked;
             const twClasses = document.getElementById('twClasses').value;
             const rawStyles = document.getElementById('rawStyles').value;
+            const exportFormat = document.getElementById('exportFormat').value;
             
             // Mode selection for wrapper
             const mode = document.querySelector('input[name="styleMode"]:checked').value;
@@ -354,7 +360,9 @@ Protocol: BiDi-Override-2025</textarea>
             
             fullHtml = fullHtml.trim();
             let rawFinal = fullHtml;
-            let highlightedFinal = escapeHtml(fullHtml);
+            
+            let interactionCSS = "";
+            let uniqueId = "obf-" + Math.random().toString(36).substr(2, 6);
 
             const enableActions = document.getElementById('enableActions').checked;
             if (enableActions && entropyLevel !== 4) {
@@ -362,18 +370,33 @@ Protocol: BiDi-Override-2025</textarea>
                 const actionType = activeBtn ? activeBtn.dataset.type : 'copy';
                 const b64 = btoa(unescape(encodeURIComponent(rawText)));
                 let onclick = "", icon = "";
-                const iconCopy = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
-                const iconMail = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
-                const iconTel = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
-                if (actionType === 'copy') { onclick = `navigator.clipboard.writeText(decodeURIComponent(escape(atob('${b64}')))); triggerFeedback(this, event); icon = iconCopy;`; }
+                
+                // SVG Icons
+                const iconCopy = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
+                const iconMail = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
+                const iconTel = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
+                
+                if (actionType === 'copy') { onclick = `navigator.clipboard.writeText(decodeURIComponent(escape(atob('${b64}')))); this.querySelector('.feedback').style.opacity='1'; setTimeout(()=>{this.querySelector('.feedback').style.opacity='0'},1000); icon = iconCopy;`; }
                 else if (actionType === 'mailto') { onclick = `window.location.href='mailto:'+decodeURIComponent(escape(atob('${b64}')))`; icon = iconMail; }
                 else if (actionType === 'tel') { onclick = `window.location.href='tel:'+decodeURIComponent(escape(atob('${b64}')))`; icon = iconTel; }
-                const wrapStart = `<div style="cursor:pointer; display:flex; align-items:center; gap:0.5rem;" class="group" onclick="${onclick}"><div style="flex-grow:1;">
+
+                // Self-contained CSS for hover effects
+                interactionCSS = `<style>
+  .${uniqueId} { cursor:pointer; display:flex; align-items:center; gap:0.5rem; position:relative; }
+  .${uniqueId}:hover svg { color: #60a5fa !important; }
+  .${uniqueId} .icon-box { opacity:0; transition:opacity 0.2s; }
+  .${uniqueId}:hover .icon-box { opacity:1; }
+  .${uniqueId} .feedback { position:absolute; top:-20px; left:50%; transform:translateX(-50%); background:#0f172a; color:white; font-size:10px; padding:2px 8px; border-radius:4px; opacity:0; transition:opacity 0.2s; pointer-events:none; white-space:nowrap; }
+</style>`;
+
+                const wrapStart = `<div class="${uniqueId}" onclick="${onclick}"><div style="flex-grow:1;">
 `;
+                // Add feedback pill for copy action
+                const feedbackEl = actionType === 'copy' ? `<div class="feedback">COPIED</div>` : '';
                 const wrapEnd = `
-</div><div style="opacity:0; transition:opacity 0.2s;" class="group-hover:opacity-100">${icon}</div></div>`;
+</div><div class="icon-box">${icon}</div>${feedbackEl}</div>`;
+
                 rawFinal = wrapStart + rawFinal + wrapEnd;
-                highlightedFinal = `<span class="text-yellow-400">${escapeHtml(wrapStart)}</span>${highlightedFinal}<span class="text-yellow-400">${escapeHtml(wrapEnd)}</span>`;
             }
 
             if (useWrapper) {
@@ -381,13 +404,54 @@ Protocol: BiDi-Override-2025</textarea>
                 if (mode === 'tailwind' && twClasses.trim()) wrapperTag += ` class="${twClasses}"`;
                 else if (mode === 'css' && rawStyles.trim()) wrapperTag += ` style="${rawStyles.replace(/\n/g, ' ')}"`;
                 wrapperTag += '>';
-                const styleStart = `${wrapperTag}\n`, styleEnd = `\n</div>`;
-                rawFinal = styleStart + rawFinal + styleEnd;
-                highlightedFinal = `<span class="text-purple-400">${escapeHtml(styleStart)}</span>${highlightedFinal}<span class="text-purple-400">${escapeHtml(styleEnd)}</span>`;
+                // Add newlines for cleaner source code
+                rawFinal = wrapperTag + '\n' + rawFinal + '\n</div>';
+            }
+
+            let highlightedFinal = "";
+            let finalOutput = "";
+            
+            if (exportFormat === 'react') {
+                finalOutput = `import React from 'react';
+
+export default function SecureText() {
+  return (
+    <div dangerouslySetInnerHTML={{ __html: \`
+${interactionCSS ? interactionCSS.replace(/<style>/g, '<style scoped>') : ''}
+${rawFinal.replace(/`/g, '\\`')}
+    \` }} />
+  );
+}`;
+                highlightedFinal = `<span class="text-purple-400">import</span> React <span class="text-purple-400">from</span> <span class="text-green-400">'react'</span>;
+
+<span class="text-purple-400">export default function</span> <span class="text-yellow-400">SecureText</span>() {
+  <span class="text-purple-400">return</span> (
+    &lt;<span class="text-blue-400">div</span> <span class="text-purple-400">dangerouslySetInnerHTML</span>={{ __html: \`
+${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/style&gt;</span>\n' : ''}${escapeHtml(rawFinal)}
+    \` }} /&gt;
+  );
+}`;
+            } else {
+                // HTML Format
+                finalOutput = (interactionCSS ? interactionCSS + '\n' : '') + rawFinal;
+                highlightedFinal = (interactionCSS ? `<span class="text-slate-500">${escapeHtml(interactionCSS)}</span>\n` : '') + escapeHtml(rawFinal);
+                
+                // Highlight wrapper if exists
+                if (useWrapper) {
+                   const split = highlightedFinal.split('\n');
+                   if (split.length > 2) {
+                       split[interactionCSS ? 1 : 0] = `<span class="text-purple-400">${split[interactionCSS ? 1 : 0]}</span>`;
+                       split[split.length-1] = `<span class="text-purple-400">${split[split.length-1]}</span>`;
+                       highlightedFinal = split.join('\n');
+                   }
+                }
             }
 
             renderTarget.innerHTML = rawFinal;
             sourceSnippet.innerHTML = highlightedFinal;
+            // Store raw text for copy button (since sourceSnippet has HTML coloring)
+            sourceSnippet.dataset.raw = finalOutput;
+
             const leak = runScraperSim();
             updateRatings(leak);
         }
@@ -539,7 +603,11 @@ Protocol: BiDi-Override-2025</textarea>
             return leak;
         }
         function escapeHtml(t) { return t.replace(/[&<>'"`]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;','`':'&#96;'}[m])); }
-        function copySource() { navigator.clipboard.writeText(document.getElementById('sourceSnippet').innerText); showToast(); }
+        function copySource() { 
+            const text = document.getElementById('sourceSnippet').dataset.raw || document.getElementById('sourceSnippet').innerText;
+            navigator.clipboard.writeText(text); 
+            showToast(); 
+        }
         function showToast() { const t = document.getElementById('toast'); t.style.opacity = "1"; setTimeout(() => t.style.opacity = "0", 2000); }
         function switchView(id) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
