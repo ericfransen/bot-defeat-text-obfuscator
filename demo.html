@@ -216,9 +216,9 @@ Protocol: BiDi-Override-2025</textarea>
                         <p class="text-xs text-slate-500 max-w-md">Decoupling visual and logical layers to defeat Vision AI and DOM scrapers.</p>
                     </div>
                     <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-2 bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-700 cursor-pointer" onclick="document.getElementById('ocrToggle').click()">
+                        <div class="flex items-center gap-2 bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-700 cursor-pointer">
                             <input type="checkbox" id="ocrToggle" onchange="renderBidiAuth(); generateIntegrationSnippet()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500 accent-indigo-500">
-                            <span class="text-[10px] text-slate-400 uppercase font-bold select-none">Anti-OCR Mesh</span>
+                            <label for="ocrToggle" class="text-[10px] text-slate-400 uppercase font-bold select-none cursor-pointer">Anti-OCR Mesh</label>
                         </div>
                         <button onclick="generateNewSecret()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl transition shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
                     </div>
@@ -227,12 +227,12 @@ Protocol: BiDi-Override-2025</textarea>
                     <div id="authRender" class="flex-1 bg-black/40 rounded-2xl border-2 border-slate-700 flex items-center justify-center text-5xl font-mono tracking-[0.2em] text-white select-none relative overflow-hidden shadow-inner"></div>
                     <div class="w-32 flex flex-col gap-2">
                         <div class="flex-1 bg-red-900/10 border border-red-900/30 rounded-xl flex flex-col justify-center items-center p-2 opacity-70">
-                            <span class="text-[12px] uppercase font-bold text-red-500/70 mb-1">DOM</span>
-                            <span id="authBotView" class="font-mono text-[12px] text-red-400 line-through text-center break-all">---</span>
+                            <span class="text-[16px] uppercase font-bold text-red-500/70 mb-1">DOM</span>
+                            <span id="authBotView" class="font-mono text-[14px] text-red-400 line-through text-center break-all">---</span>
                         </div>
                         <div class="flex-1 bg-orange-900/10 border border-orange-900/30 rounded-xl flex flex-col justify-center items-center p-2 opacity-70">
-                            <span class="text-[12px] uppercase font-bold text-orange-500/70 mb-1">OCR Vision</span>
-                            <span id="authOCRView" class="font-mono text-[12px] text-orange-400 text-center break-all">---</span>
+                            <span class="text-[16px] uppercase font-bold text-orange-500/70 mb-1">OCR Vision</span>
+                            <span id="authOCRView" class="font-mono text-[14px] text-orange-400 text-center break-all">---</span>
                         </div>
                     </div>
                 </div>
@@ -514,7 +514,7 @@ Protocol: BiDi-Override-2025</textarea>
                     else sim += c;
                 }
                 ocrEl.textContent = sim || "[EMPTY]"; ocrEl.className = "font-mono text-[10px] text-orange-400 opacity-50";
-            } else { ocrEl.textContent = currentAuthSecret; ocrEl.className = "font-mono text-[12px] text-green-400 font-bold"; }
+            } else { ocrEl.textContent = currentAuthSecret; ocrEl.className = "font-mono text-[14px] text-green-400 font-bold"; }
         }
 
         function validateAuth(failureDelay = 1000) {
