@@ -6,18 +6,10 @@
     <title>Multi-Line Bot Defeat Obfuscation Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* .bidi-layer is no longer used, replaced by inline styles */
-        /* .bidi-layer {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
-            font-family: 'ui-monospace', 'SFMono-Regular', monospace;
-            min-height: 1.5em;
-        } */
-        .weave-atom { /* This is now primarily for nested spans in Level 3 */
+        .weave-atom {
             unicode-bidi: isolate;
-            direction: ltr; /* Ensure individual fragments render LTR */
-            white-space: pre; /* Preserve spaces within fragments */
+            direction: ltr; 
+            white-space: pre; 
         }
         .glass-panel {
             background: rgba(15, 23, 42, 0.6);
@@ -29,8 +21,8 @@
             tab-size: 2;
         }
         .invalid-css {
-            border-color: #ef4444 !important; /* red-500 */
-            color: #fca5a5 !important; /* red-300 */
+            border-color: #ef4444 !important;
+            color: #fca5a5 !important;
         }
         .phantom-atom::after {
             content: var(--p);
@@ -41,14 +33,14 @@
 
     <div class="max-w-7xl mx-auto">
         <header class="mb-8 border-b border-slate-800 pb-8">
-            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Adversarial Weave <span class="text-blue-500">v3.0</span></h1>
+            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Adversarial Weave <span class="text-blue-500">v3.1</span></h1>
             <p class="text-slate-500 mt-2 font-mono text-sm tracking-widest uppercase">Multi-line Atomic Fragmentation Engine</p>
         </header>
 
         <!-- Navigation Tabs -->
         <div class="flex justify-center gap-4 mb-8">
             <button onclick="switchView('obfuscator')" id="tab-obfuscator" class="tab-btn active px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-600 text-white transition-all shadow-lg shadow-blue-900/20">Obfuscator</button>
-            <button onclick="switchView('gate')" id="tab-gate" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">CAPTCHA</button>
+            <button onclick="switchView('gate')" id="tab-gate" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">Human Gate</button>
         </div>
 
         <!-- View: Obfuscator -->
@@ -135,7 +127,6 @@ Protocol: BiDi-Override-2025</textarea>
                         spellcheck="false"
                     ></pre>
                 </div>
-                
             </div>
 
             <!-- Right Column: Visuals & Styling -->
@@ -162,37 +153,16 @@ Protocol: BiDi-Override-2025</textarea>
                         <div class="flex gap-4 mb-2">
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="radio" name="styleMode" value="tailwind" checked onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
-                                <span class="text-[10px] uppercase font-bold text-slate-400">Tailwind Mode</span>
+                                <span class="text-[10px] uppercase font-bold text-slate-400">Tailwind</span>
                             </label>
                             <label class="flex items-center gap-2 cursor-pointer">
                                 <input type="radio" name="styleMode" value="css" onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
-                                <span class="text-[10px] uppercase font-bold text-slate-400">CSS Mode</span>
+                                <span class="text-[10px] uppercase font-bold text-slate-400">CSS</span>
                             </label>
                         </div>
 
-                        <div class="space-y-2">
-                            <span class="text-[10px] text-slate-500 uppercase font-bold">Tailwind Classes (Auto-Generated)</span>
-                            <input 
-                                type="text" 
-                                id="twClasses" 
-                                placeholder="p-4 bg-slate-900 rounded-lg" 
-                                oninput="handleTwInput(event)"
-                                onblur="handleTwInput(event)"
-                                class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none focus:border-blue-500 transition-colors"
-                            >
-                        </div>
-                        <div class="space-y-2">
-                            <span class="text-[10px] text-slate-500 uppercase font-bold">Inline CSS Styles</span>
-                            <textarea 
-                                id="rawStyles" 
-                                rows="3"
-                                placeholder="padding: 1rem; border: 1px solid #333;" 
-                                onblur="validateAndSyncCss()"
-                                onkeydown="checkCssEnter(event)"
-                                class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none resize-y code-editor focus:border-blue-500 transition-colors"
-                            ></textarea>
-                            <p id="cssError" class="text-[10px] text-red-400 hidden">Malformed CSS detected</p>
-                        </div>
+                        <input type="text" id="twClasses" placeholder="Tailwind classes..." oninput="handleTwInput(event)" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none focus:border-blue-500">
+                        <textarea id="rawStyles" rows="2" placeholder="Inline CSS..." onblur="validateAndSyncCss()" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none resize-none"></textarea>
                     </div>
                 </div>
 
@@ -204,254 +174,120 @@ Protocol: BiDi-Override-2025</textarea>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </button>
                     </div>
-                    
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Bot Defeat Probability</span>
-                            <div class="flex items-center gap-2">
-                                <div id="botRatingBar" class="h-2 w-16 bg-slate-800 rounded-full overflow-hidden">
-                                    <div id="botRatingFill" class="h-full bg-teal-500 w-1/4 transition-all duration-500"></div>
-                                </div>
-                                <span id="botRatingText" class="text-xs font-bold text-teal-400">Low</span>
+                            <span class="text-[10px] font-bold uppercase text-slate-400">Bot Defeat</span>
+                            <div id="botRatingBar" class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                <div id="botRatingFill" class="h-full bg-teal-500 w-1/4 transition-all duration-500"></div>
                             </div>
+                            <span id="botRatingText" class="text-[10px] font-bold text-teal-400">Low</span>
                         </div>
                         <div class="space-y-1">
-                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Accessibility Score</span>
-                            <div class="flex items-center gap-2">
-                                <div id="a11yRatingBar" class="h-2 w-16 bg-slate-800 rounded-full overflow-hidden">
-                                    <div id="a11yRatingFill" class="h-full bg-yellow-500 w-1/4 transition-all duration-500"></div>
-                                </div>
-                                <span id="a11yRatingText" class="text-xs font-bold text-yellow-400">Poor</span>
+                            <span class="text-[10px] font-bold uppercase text-slate-400">Accessibility</span>
+                            <div id="a11yRatingBar" class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                <div id="a11yRatingFill" class="h-full bg-yellow-500 w-1/4 transition-all duration-500"></div>
                             </div>
+                            <span id="a11yRatingText" class="text-[10px] font-bold text-yellow-400">Poor</span>
                         </div>
                     </div>
-
-                    <!-- Hidden Details -->
                     <div id="ratingDetails" class="hidden mt-4 pt-4 border-t border-slate-700/50 text-[10px] space-y-3">
-                        <div>
-                            <span class="block font-bold text-teal-400 uppercase mb-1">Security Factor</span>
-                            <p id="botReason" class="text-slate-400 leading-relaxed">Analysis pending...</p>
-                        </div>
-                        <div>
-                            <span class="block font-bold text-yellow-400 uppercase mb-1">Accessibility Factor</span>
-                            <p id="a11yReason" class="text-slate-400 leading-relaxed">Analysis pending...</p>
-                        </div>
+                        <div><span class="block font-bold text-teal-400 uppercase mb-1">Security</span><p id="botReason" class="text-slate-400 leading-relaxed"></p></div>
+                        <div><span class="block font-bold text-yellow-400 uppercase mb-1">A11y</span><p id="a11yReason" class="text-slate-400 leading-relaxed"></p></div>
                     </div>
                 </div>
 
                 <!-- Bot Simulation Console -->
                 <div class="glass-panel rounded-3xl overflow-hidden shadow-xl">
-                    <div class="px-6 py-3 bg-red-500/10 border-b border-red-500/20">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-red-400">Heuristic Scraper Simulation</span>
-                    </div>
-                    <div class="p-6 font-mono text-xs space-y-3 bg-black/20">
-                        <div class="flex gap-2">
-                            <span class="text-blue-500">λ</span>
-                            <span class="text-slate-500">const data = el.innerText;</span>
-                        </div>
-                        <div id="scraperResult" class="text-red-400/80 p-3 bg-red-950/10 rounded border border-red-900/20 break-all whitespace-pre-wrap">
-                            <!-- Injected -->
-                        </div>
-                        <div class="flex items-center gap-2 pt-2">
-                            <div id="matchIndicator" class="w-2 h-2 rounded-full"></div>
-                            <span id="matchStatus" class="text-[10px] font-bold uppercase"></span>
-                        </div>
+                    <div class="px-6 py-3 bg-red-500/10 border-b border-red-500/20"><span class="text-[10px] font-bold uppercase text-red-400">Scraper Simulation</span></div>
+                    <div class="p-6 font-mono text-[10px] space-y-3 bg-black/20 text-slate-500">
+                        <div id="scraperResult" class="text-red-400/80 p-3 bg-red-950/10 rounded border border-red-900/20 break-all whitespace-pre-wrap"></div>
+                        <div class="flex items-center gap-2"><div id="matchIndicator" class="w-2 h-2 rounded-full"></div><span id="matchStatus" class="uppercase font-bold"></span></div>
                     </div>
                 </div>
             </div>
         </div>
-        </div> <!-- End View Obfuscator -->
 
         <!-- View: CAPTCHA Gate  -->
         <div id="view-gate" class="view-section hidden max-w-4xl mx-auto space-y-12">
-            
-            <!-- Prototype Panel -->
-            <div class="glass-panel p-8 rounded-3xl shadow-2xl border-indigo-500">
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl border-l-4 border-indigo-500">
                 <div class="flex justify-between items-start mb-8">
                     <div class="space-y-2">
                         <h3 class="text-xl font-bold text-indigo-400 uppercase tracking-widest">BiDi-Auth Prototype</h3>
-                        <p class="text-xs text-slate-500 max-w-md">A semantic CAPTCHA that defeats bots by decoupling the visual layer from the DOM layer using BiDi overrides. No cookies, no tracking, no external scripts.</p>
+                        <p class="text-xs text-slate-500 max-w-md">Decoupling visual and logical layers to defeat Vision AI and DOM scrapers.</p>
                     </div>
-                    <button onclick="generateBidiAuth()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl transition shadow-lg" title="Refresh Code">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    </button>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-700 cursor-pointer" onclick="document.getElementById('ocrToggle').click()">
+                            <input type="checkbox" id="ocrToggle" onchange="renderBidiAuth()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500 accent-indigo-500">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold select-none">Anti-OCR Mesh</span>
+                        </div>
+                        <button onclick="generateNewSecret()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl transition shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+                    </div>
                 </div>
-
                 <div class="flex gap-6 items-stretch h-32 mb-8">
-                    <!-- Rendered Auth Code -->
-                    <div id="authRender" class="flex-1 bg-black/40 rounded-2xl border-2 border-slate-700 flex items-center justify-center text-5xl font-mono tracking-[0.2em] text-white select-none relative overflow-hidden shadow-inner">
-                        <!-- Injected -->
-                    </div>
-                    <!-- Bot Eye View -->
-                    <div class="w-32 bg-red-900/10 border border-red-900/30 rounded-2xl flex flex-col justify-center items-center p-4 opacity-70">
-                        <span class="text-[10px] uppercase font-bold text-red-500/70 mb-2">Bot Context</span>
-                        <span id="authBotView" class="font-mono text-sm text-red-400 line-through text-center break-all">---</span>
+                    <div id="authRender" class="flex-1 bg-black/40 rounded-2xl border-2 border-slate-700 flex items-center justify-center text-5xl font-mono tracking-[0.2em] text-white select-none relative overflow-hidden shadow-inner"></div>
+                    <div class="w-32 flex flex-col gap-2">
+                        <div class="flex-1 bg-red-900/10 border border-red-900/30 rounded-xl flex flex-col justify-center items-center p-2 opacity-70">
+                            <span class="text-[8px] uppercase font-bold text-red-500/70 mb-1">DOM</span>
+                            <span id="authBotView" class="font-mono text-[10px] text-red-400 line-through text-center break-all">---</span>
+                        </div>
+                        <div class="flex-1 bg-orange-900/10 border border-orange-900/30 rounded-xl flex flex-col justify-center items-center p-2 opacity-70">
+                            <span class="text-[8px] uppercase font-bold text-orange-500/70 mb-1">Vision</span>
+                            <span id="authOCRView" class="font-mono text-[10px] text-orange-400 text-center break-all">---</span>
+                        </div>
                     </div>
                 </div>
-
                 <div class="space-y-6 max-w-md mx-auto">
                     <div class="relative group">
-                        <input type="text" id="authInput" placeholder="ENTER CODE" class="w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase placeholder:tracking-normal">
+                        <input type="text" id="authInput" placeholder="ENTER CODE" class="w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase">
                         <div id="authStatus" class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold uppercase hidden"></div>
                     </div>
-                    
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="validateAuth()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider shadow-lg shadow-indigo-900/20">Verify Human</button>
-                        <button onclick="botAttempt()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider border border-red-900/20 hover:border-red-500/50">Simulate Bot Attack</button>
+                        <button onclick="validateAuth()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider">Verify Human</button>
+                        <button onclick="botAttempt()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider border border-red-900/20">Bot Attack</button>
                     </div>
                 </div>
             </div>
 
             <!-- Integration Guide -->
             <div class="glass-panel p-8 rounded-3xl shadow-2xl">
-                <div class="flex items-center justify-between mb-8">
-                    <h2 class="text-2xl font-bold text-white">Integration Guide</h2>
-                    <span class="text-xs font-mono text-blue-400 bg-blue-900/20 px-3 py-1 rounded-full">v3.0.0</span>
-                </div>
-                
-                <div class="space-y-8">
-                    <div>
-                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3">1. The Generator Function</h3>
-                        <p class="text-xs text-slate-500 mb-4">Add this pure function to your codebase. It has zero dependencies.</p>
-                        <pre class="bg-black/40 p-6 rounded-xl text-blue-300 font-mono text-xs overflow-auto select-all leading-relaxed">
-/**
- * Generates a BiDi-secured CAPTCHA
- * @param {string} elementId - The ID of the container to render into
- * @returns {string} The secret code for validation
- */
-function generateBidiAuth(elementId) {
-    // 1. Generate Random Code (5 chars)
-    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    let secret = '';
-    for(let i=0; i<5; i++) secret += chars.charAt(Math.floor(Math.random()*chars.length));
-    
-    // 2. Obfuscate (BiDi Reversal + Noise)
-    const atoms = Array.from(secret);
-    let noisy = [];
-    atoms.forEach(a => {
-        noisy.push(a);
-        // Add Zero Width Space noise (60% probability)
-        if(Math.random() > 0.4) noisy.push('\u200B'); 
-    });
-    
-    // 3. Structural Reversal
-    const reversed = noisy.reverse();
-    const mid = Math.floor(reversed.length / 2);
-    const p1 = reversed.slice(0, mid).join('');
-    const p2 = reversed.slice(mid).join('');
-
-    // 4. Render with BiDi Override
-    const el = document.getElementById(elementId);
-    el.innerHTML = `&lt;div style="unicode-bidi:bidi-override; direction:rtl; text-align:center; user-select:none;"&gt;
-      &lt;span style="direction:rtl"&gt;${p1}&lt;/span&gt;&lt;span style="direction:rtl"&gt;${p2}&lt;/span&gt;
-    &lt;/div&gt;`;
-    
-    return secret; 
-}</pre>
+                <h2 class="text-xl font-bold text-white mb-6">Security Principles</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-[11px] text-slate-400 leading-relaxed">
+                    <div class="space-y-4">
+                        <p><strong class="text-blue-400 uppercase">1. Phantom Atoms:</strong> Characters are rendered via CSS <code>::after</code> content, removing them from the DOM text flow.</p>
+                        <p><strong class="text-blue-400 uppercase">2. Well Poisoning:</strong> Random decoys are injected with <code>opacity: 0</code>. They corrupt <code>innerText</code> but are invisible to users.</p>
                     </div>
-
-                    <div>
-                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-3">2. Implementation Strategy</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
-                                <span class="text-green-400 text-xs font-bold uppercase block mb-2">Do</span>
-                                <ul class="list-disc ml-4 text-[10px] text-slate-400 space-y-1">
-                                    <li>Regenerate code after every attempt (success or fail).</li>
-                                    <li>Use server-side validation if possible (send secret hash).</li>
-                                    <li>Add rate limiting (e.g., max 5 attempts per minute).</li>
-                                </ul>
-                            </div>
-                            <div class="bg-slate-900/50 p-4 rounded-lg border border-slate-800">
-                                <span class="text-red-400 text-xs font-bold uppercase block mb-2">Don't</span>
-                                <ul class="list-disc ml-4 text-[10px] text-slate-400 space-y-1">
-                                    <li>Use CSS `display: none` for honeypots (bots detect this).</li>
-                                    <li>Rely solely on this for high-value targets (banking).</li>
-                                    <li>Forget audio fallback for production accessibility.</li>
-                                </ul>
-                            </div>
-                        </div>
+                    <div class="space-y-4">
+                        <p><strong class="text-blue-400 uppercase">3. Structural Chaos:</strong> Elements are shuffled in the DOM. Visual order is restored via Flexbox <code>order</code> properties.</p>
+                        <p><strong class="text-blue-400 uppercase">4. Adversarial Noise:</strong> SVG mesh patterns target the weaknesses of Convolutional Neural Networks used in OCR.</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <footer class="mt-12 pt-8 border-t border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="space-y-2">
-                <h4 class="text-xs font-bold text-white uppercase tracking-tighter">Established Principles</h4>
-                <ul class="text-[11px] text-slate-500 space-y-1 list-disc ml-4">
-                    <li>Unicode BiDi Isolation (UAX #9) implementation.</li>
-                    <li>Logical-to-Visual mapping decoupling via CSS Flexbox.</li>
-                </ul>
-            </div>
-            <div class="space-y-2">
-                <h4 class="text-xs font-bold text-blue-400 uppercase tracking-tighter">Emerging Trends 2025</h4>
-                <ul class="text-[11px] text-slate-500 space-y-1 list-disc ml-4">
-                    <li><strong>Contextual Entropy</strong>: Fragments defeat LLM-based reconstruction.</li>
-                    <li><strong>Atomic Weaving</strong>: Moving to localized isolation contexts.</li>
-                </ul>
-            </div>
-            <div class="space-y-2">
-                <h4 class="text-xs font-bold text-red-400 uppercase tracking-tighter">Security Posture</h4>
-                <p class="text-[11px] text-slate-500 leading-relaxed">Forces transition from O(1) string searching to expensive O(N) layout computation for bots.</p>
-            </div>
+            <div class="space-y-2"><h4 class="text-xs font-bold text-white uppercase tracking-tighter">UAX #9</h4><p class="text-[11px] text-slate-500 leading-relaxed">BiDi Isolation prevents context leakage across atom boundaries.</p></div>
+            <div class="space-y-2"><h4 class="text-xs font-bold text-blue-400 uppercase tracking-tighter">Phantom shield</h4><p class="text-[11px] text-slate-500 leading-relaxed">Maximum entropy via CSS injection and DOM poisoning.</p></div>
+            <div class="space-y-2"><h4 class="text-xs font-bold text-red-400 uppercase tracking-tighter">Vision AI</h4><p class="text-[11px] text-slate-500 leading-relaxed">Forcing the transition from cheap string-parsing to expensive rendering.</p></div>
         </footer>
     </div>
 
-    <!-- Legacy V1 Link -->
-    <a href="v1.html" class="fixed bottom-4 right-4 text-slate-600 hover:text-slate-400 text-xs uppercase tracking-widest transition-colors flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-        Launch Legacy V1
-    </a>
+    <!-- Feedback Pill -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-8 py-3 rounded-full text-xs font-bold shadow-2xl opacity-0 transition-opacity pointer-events-none uppercase tracking-widest">Copied</div>
 
     <script>
-        // --- Core Logic ---
-        function triggerFeedback(el) {
-            // 1. Text Pulse (Burnt Orange)
+        let currentAuthSecret = '';
+
+        function triggerFeedback(el, e) {
             const originalColor = el.style.color || 'inherit';
             el.style.transition = 'color 0.1s ease'; 
-            el.style.color = '#c2410c'; // Burnt Orange (orange-700)
-            
-            // 2. Create "Copied!" Overlay (Pill Shape)
+            el.style.color = '#c2410c'; 
             const feedback = document.createElement('div');
             feedback.textContent = 'Copied!';
-            feedback.style.position = 'absolute';
-            feedback.style.top = '-25px';
-            feedback.style.left = '50%';
-            feedback.style.transform = 'translateX(-50%)';
-            
-            // Pill Styling
-            feedback.style.padding = '4px 12px';
-            feedback.style.borderRadius = '9999px';
-            feedback.style.backgroundColor = '#111827'; // Dark Gray (gray-900)
-            feedback.style.color = '#ffffff'; // White text
-            feedback.style.fontSize = '10px';
-            feedback.style.fontWeight = 'bold';
-            feedback.style.textTransform = 'uppercase';
-            feedback.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.5)';
-            
-            feedback.style.pointerEvents = 'none';
-            feedback.style.opacity = '0';
-            // Only fade in
-            feedback.style.transition = 'opacity 0.2s ease-in, top 0.2s ease-out';
-            
-            el.style.position = el.style.position || 'relative';
-            el.appendChild(feedback);
-
-            // Animate In
-            requestAnimationFrame(() => {
-                feedback.style.opacity = '1';
-                feedback.style.top = '-35px';
-            });
-
-            // Pulse revert at 250ms
-            setTimeout(() => {
-                el.style.color = originalColor;
-            }, 100);
-
-            // Instant removal at 500ms
-            setTimeout(() => {
-                feedback.remove();
-            }, 800);
+            feedback.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; transform:translate(-50%, -100%); padding:4px 12px; border-radius:9999px; background-color:#111827; color:white; font-size:10px; font-weight:bold; text-transform:uppercase; box-shadow:0 4px 6px -1px rgba(0,0,0,0.5); pointer-events:none; opacity:0; transition:all 0.2s ease-out; z-index:9999;`;
+            document.body.appendChild(feedback);
+            requestAnimationFrame(() => { feedback.style.opacity = '1'; feedback.style.transform = 'translate(-50%, -200%)'; });
+            setTimeout(() => { el.style.color = originalColor; }, 250);
+            setTimeout(() => { feedback.remove(); }, 800);
         }
 
         function orchestrate() {
@@ -472,14 +308,8 @@ function generateBidiAuth(elementId) {
             const cssInput = document.getElementById('rawStyles');
             const wrapperControls = document.getElementById('wrapperControls');
 
-            // Visual feedback for mode
-            if (mode === 'tailwind') {
-                twInput.classList.remove('opacity-50');
-                cssInput.classList.add('opacity-50');
-            } else {
-                twInput.classList.add('opacity-50');
-                cssInput.classList.remove('opacity-50');
-            }
+            if (mode === 'tailwind') { twInput.classList.remove('opacity-50'); cssInput.classList.add('opacity-50'); }
+            else { twInput.classList.add('opacity-50'); cssInput.classList.remove('opacity-50'); }
             
             wrapperControls.style.opacity = useWrapper ? "1" : "0.5";
             wrapperControls.style.pointerEvents = useWrapper ? "auto" : "none";
@@ -488,244 +318,96 @@ function generateBidiAuth(elementId) {
 
             // --- Level 4: Extreme (Single Interaction Gate) ---
             if (entropyLevel === 4) {
-                // Encode the entire block including newlines
                 const b64 = btoa(unescape(encodeURIComponent(rawText)));
-                
-                // Single Reveal Button
-                fullHtml = `<span style="cursor:pointer; border-bottom:1px dashed #666; color: inherit; white-space: pre-wrap;"
-      title="Click to reveal"
-      data-secret="${b64}" 
-      onclick="this.innerHTML=decodeURIComponent(escape(atob(this.dataset.secret))); this.style.border='none'; this.removeAttribute('onclick'); this.style.cursor='auto';">
-    [Reveal Sensitive Data]
-</span>`;
-
+                fullHtml = `<span style="cursor:pointer; border-bottom:1px dashed #666; color: inherit; white-space: pre-wrap;" onclick="this.innerHTML=decodeURIComponent(escape(atob(this.dataset.secret))); this.style.border='none'; this.removeAttribute('onclick');" data-secret="${b64}">[Reveal Sensitive Data]</span>`;
             } else {
-                // --- Levels 1-3: Line-by-line Processing ---
-                const lines = rawText.split('\n');
-                lines.forEach((line) => {
-                    if(!line) {
-                        fullHtml += `<div class="bidi-layer"><br></div>\n`;
-                    } else {
-                        fullHtml += generateObfuscatedLine(line, entropyLevel, fragDensity) + '\n';
-                    }
+                rawText.split('\n').forEach((line) => {
+                    fullHtml += (line ? generateObfuscatedLine(line, entropyLevel, fragDensity) : '<div class="bidi-layer"><br></div>') + '\n';
                 });
             }
             
             fullHtml = fullHtml.trim();
-            
-            // Prepare distinct versions for Render vs Source
             let rawFinal = fullHtml;
-            let highlightedFinal = escapeHtml(fullHtml); // Core logic is white
+            let highlightedFinal = escapeHtml(fullHtml);
 
-            // --- Smart Actions Wrapper ---
             const enableActions = document.getElementById('enableActions').checked;
-            // Enable for L1-3 AND L5. L4 is self-contained.
             if (enableActions && entropyLevel !== 4) {
                 const activeBtn = document.querySelector('.action-btn.active');
                 const actionType = activeBtn ? activeBtn.dataset.type : 'copy';
                 const b64 = btoa(unescape(encodeURIComponent(rawText)));
-                
-                let onclick = "";
-                let icon = "";
-                
+                let onclick = "", icon = "";
                 const iconCopy = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>`;
                 const iconMail = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
                 const iconTel = `<svg class="w-4 h-4 text-slate-500 group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
-
-                if (actionType === 'copy') {
-                    onclick = `navigator.clipboard.writeText(decodeURIComponent(escape(atob('${b64}')))); triggerFeedback(this);`;
-                    icon = iconCopy;
-                } else if (actionType === 'mailto') {
-                    onclick = `window.location.href='mailto:'+decodeURIComponent(escape(atob('${b64}')))`;
-                    icon = iconMail;
-                } else if (actionType === 'tel') {
-                    onclick = `window.location.href='tel:'+decodeURIComponent(escape(atob('${b64}')))`;
-                    icon = iconTel;
-                }
-
-                const wrapStart = `<div style="cursor:pointer; display:flex; align-items:center; gap:0.5rem;" class="group" onclick="${onclick}">
-    <div style="flex-grow:1;">\n`;
-                const wrapEnd = `\n    </div>
-    <div style="opacity:0; transition:opacity 0.2s;" class="group-hover:opacity-100">
-        ${icon}
-    </div>
-</div>`;
-
+                if (actionType === 'copy') { onclick = `navigator.clipboard.writeText(decodeURIComponent(escape(atob('${b64}')))); triggerFeedback(this, event); icon = iconCopy;`; }
+                else if (actionType === 'mailto') { onclick = `window.location.href='mailto:'+decodeURIComponent(escape(atob('${b64}')))`; icon = iconMail; }
+                else if (actionType === 'tel') { onclick = `window.location.href='tel:'+decodeURIComponent(escape(atob('${b64}')))`; icon = iconTel; }
+                const wrapStart = `<div style="cursor:pointer; display:flex; align-items:center; gap:0.5rem;" class="group" onclick="${onclick}"><div style="flex-grow:1;">
+`;
+                const wrapEnd = `
+</div><div style="opacity:0; transition:opacity 0.2s;" class="group-hover:opacity-100">${icon}</div></div>`;
                 rawFinal = wrapStart + rawFinal + wrapEnd;
                 highlightedFinal = `<span class="text-yellow-400">${escapeHtml(wrapStart)}</span>${highlightedFinal}<span class="text-yellow-400">${escapeHtml(wrapEnd)}</span>`;
             }
 
-            // --- Style Wrapper Logic ---
             if (useWrapper) {
                 let wrapperTag = '<div';
-                if (mode === 'tailwind' && twClasses.trim()) {
-                    wrapperTag += ` class="${twClasses}"`;
-                } else if (mode === 'css' && rawStyles.trim()) {
-                    wrapperTag += ` style="${rawStyles.replace(/\n/g, ' ')}"`;
-                }
+                if (mode === 'tailwind' && twClasses.trim()) wrapperTag += ` class="${twClasses}"`;
+                else if (mode === 'css' && rawStyles.trim()) wrapperTag += ` style="${rawStyles.replace(/\n/g, ' ')}"`;
                 wrapperTag += '>';
-                
-                const styleStart = `${wrapperTag}\n`;
-                const styleEnd = `\n</div>`;
-                
+                const styleStart = `${wrapperTag}\n`, styleEnd = `\n</div>`;
                 rawFinal = styleStart + rawFinal + styleEnd;
                 highlightedFinal = `<span class="text-purple-400">${escapeHtml(styleStart)}</span>${highlightedFinal}<span class="text-purple-400">${escapeHtml(styleEnd)}</span>`;
             }
 
             renderTarget.innerHTML = rawFinal;
             sourceSnippet.innerHTML = highlightedFinal;
-            
             const leak = runScraperSim();
             updateRatings(leak);
         }
 
-        function toggleRatingDetails() {
-            const el = document.getElementById('ratingDetails');
-            el.classList.toggle('hidden');
-        }
+        function toggleRatingDetails() { document.getElementById('ratingDetails').classList.toggle('hidden'); }
 
         function updateRatings(leakDetected) {
             const level = parseInt(document.getElementById('entropy').value);
             const density = parseInt(document.getElementById('fragDensity').value);
             const actionsEnabled = document.getElementById('enableActions').checked;
-            
-            const botBar = document.getElementById('botRatingFill');
-            const botText = document.getElementById('botRatingText');
-            const a11yBar = document.getElementById('a11yRatingFill');
-            const a11yText = document.getElementById('a11yRatingText');
-            const botReason = document.getElementById('botReason');
-            const a11yReason = document.getElementById('a11yReason');
+            const botBar = document.getElementById('botRatingFill'), botText = document.getElementById('botRatingText');
+            const a11yBar = document.getElementById('a11yRatingFill'), a11yText = document.getElementById('a11yRatingText');
+            const botReason = document.getElementById('botReason'), a11yReason = document.getElementById('a11yReason');
 
-            // --- Bot Defeat Logic ---
-            let botW = 25; let botT = 'Low'; let botC = 'bg-red-500';
-            let botMsg = "Simple structure.<br>Easily scraped by basic bots.";
+            let botW = 25, botT = 'Low', botC = 'bg-red-500', botMsg = "Simple structure.<br><br>Easily scraped by basic bots.";
+            if (level === 2) { botW = 50; botT = 'Medium'; botC = 'bg-yellow-500'; botMsg = "Noise injection disrupts regex.<br><br>DOM order is still preserved."; }
+            if (level === 3) { botW = 85; botT = 'High'; botC = 'bg-teal-500'; botMsg = "BiDi + Homoglyphs confuse parsers.<br><br>Requires layout analysis."; }
+            if (level === 4) { botW = 100; botT = 'Critical'; botC = 'bg-purple-500'; botMsg = "Data hidden behind interaction.<br><br>Invisible without JS events."; }
+            if (level === 5) { botW = 95; botT = 'Fortified'; botC = 'bg-indigo-500'; botMsg = "Phantom Shield.<br><br>Fragmented, poisoned, and partially CSS-rendered."; }
+            if (level !== 4) botW = Math.min(99, botW + (density * 1.5));
+            if (leakDetected && level < 4) { botW = Math.max(10, botW - 40); botT = 'Compromised'; botC = 'bg-red-600'; botMsg = "ALERT: Sim scraper detected keywords!"; }
+            botBar.style.width = `${botW}%`; botBar.className = `h-full ${botC} transition-all duration-500`; botText.textContent = botT; botReason.innerHTML = botMsg;
 
-            if (level === 2) { 
-                botW = 50; botT = 'Medium'; botC = 'bg-yellow-500'; 
-                botMsg = "Noise injection disrupts simple regex.<br>However, DOM order is still preserved.";
-            }
-            if (level === 3) { 
-                botW = 85; botT = 'High'; botC = 'bg-teal-500'; 
-                botMsg = "BiDi reversal + Homoglyphs confuse parsers.<br>Requires computed layout analysis to reconstruct.";
-            }
-            if (level === 4) { 
-                botW = 100; botT = 'Critical'; botC = 'bg-purple-500'; 
-                botMsg = "Data is hidden behind interaction.<br>Bots cannot see it without executing specific JS events.";
-            }
-            if (level === 5) { 
-                botW = 95; botT = 'Fortified'; botC = 'bg-indigo-500'; 
-                botMsg = "Phantom Shield.<br>Data is fragmented, poisoned with decoys, and partially rendered via CSS.";
-            }
-
-            // Density Bonus (for L1, L2, L3, L5)
-            if (level !== 4) {
-                botW = Math.min(99, botW + (density * 1.5));
-                if (density > 8) botMsg += "<br>High fragmentation forces expensive DOM reconstruction.";
-            }
-
-            // Leak Penalty
-            if (leakDetected && level < 4) {
-                 botW = Math.max(10, botW - 40);
-                 botT = 'Compromised';
-                 botC = 'bg-red-600';
-                 botMsg = "ALERT: Sim scraper detected keywords!<br>Strategy is insufficient for this specific payload.";
-            }
-
-            botBar.style.width = `${botW}%`;
-            botBar.className = `h-full ${botC} transition-all duration-500`;
-            botText.textContent = botT;
-            botText.className = `text-xs font-bold ${botC.replace('bg-', 'text-')}`;
-            if(botReason) botReason.innerHTML = botMsg;
-
-            // --- Accessibility Logic ---
-            let a11yW = '10%'; let a11yT = 'Unusable'; let a11yC = 'bg-red-600';
-            let a11yMsg = "Screen readers read the scrambled DOM order.<br>This results in unusable gibberish.";
-
-            if (level === 1) { 
-                a11yW = '30%'; a11yT = 'Poor'; a11yC = 'bg-orange-500'; 
-                a11yMsg = "Reversed DOM structure confuses reading order.<br>Most assistive tech fails to linearize correctly.";
-            }
-            if (level === 4) { 
-                a11yW = '90%'; a11yT = 'Good'; a11yC = 'bg-green-500'; 
-                a11yMsg = "User must click to reveal.<br>The revealed text is standard and perfectly readable.";
-            }
-            
-            if (actionsEnabled && level !== 4) {
-                 a11yW = '60%'; 
-                 a11yT = 'Fair (Actionable)'; 
-                 a11yC = 'bg-yellow-400';
-                 a11yMsg = "Text is scrambled.<br>However, the 'Click-to-Action' button allows users to grab clean data.";
-            }
-
-            a11yBar.style.width = a11yW;
-            a11yBar.className = `h-full ${a11yC} transition-all duration-500`;
-            a11yText.textContent = a11yT;
-            a11yText.className = `text-xs font-bold ${a11yC.replace('bg-', 'text-')}`;
-            if(a11yReason) a11yReason.innerHTML = a11yMsg;
+            let a11yW = '10%', a11yT = 'Unusable', a11yC = 'bg-red-600', a11yMsg = "Screen readers read scrambled DOM order.";
+            if (level === 1) { a11yW = '30%'; a11yT = 'Poor'; a11yC = 'bg-orange-500'; a11yMsg = "Reversed DOM confuses reading order."; }
+            if (level === 4) { a11yW = '90%'; a11yT = 'Good'; a11yC = 'bg-green-500'; a11yMsg = "Revealed text is standard and readable."; }
+            if (actionsEnabled && level !== 4) { a11yW = '60%'; a11yT = 'Fair'; a11yC = 'bg-yellow-400'; a11yMsg = "Actionable wrapper allows data access."; }
+            a11yBar.style.width = a11yW; a11yBar.className = `h-full ${a11yC} transition-all duration-500`; a11yText.textContent = a11yT; a11yReason.innerHTML = a11yMsg;
         }
 
         function updateEntropyLabel() {
-            const entropyLevel = parseInt(document.getElementById('entropy').value);
+            const level = parseInt(document.getElementById('entropy').value);
             const label = document.getElementById('entropyLabel');
             const fragControl = document.getElementById('fragControl');
-            let text = "";
-            
-            // Show/Hide fragmentation slider based on level
-            // Visible for 1, 2, 3. Hidden for 4.
-            if (entropyLevel === 4) {
-                fragControl.style.opacity = "0.3";
-                fragControl.style.pointerEvents = "none";
-            } else {
-                fragControl.style.opacity = "1";
-                fragControl.style.pointerEvents = "auto";
-            }
-
-            switch(entropyLevel) {
-                case 1: text = "Low: Standard BiDi"; break;
-                case 2: text = "Medium: BiDi + Noise"; break;
-                case 3: text = "High: BiDi + Homoglyphs"; break;
-                case 4: text = "Extreme: Interaction Gate"; break;
-                case 5: text = "Max: Phantom Shield"; break;
-            }
-            label.textContent = text;
+            if (level === 4) { fragControl.style.opacity = "0.3"; fragControl.style.pointerEvents = "none"; }
+            else { fragControl.style.opacity = "1"; fragControl.style.pointerEvents = "auto"; }
+            const texts = ["Low: Standard BiDi", "Medium: BiDi + Noise", "High: BiDi + Homoglyphs", "Extreme: Interaction Gate", "Max: Phantom Shield"];
+            label.textContent = texts[level-1];
         }
 
-        // Reduced map to ensure legibility in monospace
-        const homoglyphMaps = {
-            'o': 'ο', // Greek Omicron
-            'a': 'а', // Cyrillic Small A
-            'e': 'е', // Cyrillic Small Ie
-            'O': 'Ο', // Greek Capital Omicron
-            'A': 'А', // Cyrillic Capital A
-            'E': 'Е'  // Cyrillic Capital Ie
-        };
-
-        const mirrorMap = {
-            '(': ')', ')': '(',
-            '{': '}', '}': '{',
-            '[': ']', ']': '[',
-            '<': '>', '>': '<'
-        };
+        const homoglyphMaps = { 'o': 'ο', 'a': 'а', 'e': 'е', 'O': 'Ο', 'A': 'А', 'E': 'Е' };
+        const mirrorMap = { '(': ')', ')': '(', '{': '}', '}': '{', '[': ']', ']': '[', '<': '>', '>': '<' };
 
         function generateObfuscatedLine(str, level, density) {
-            // Step 1: Work with raw characters first
             let rawChars = Array.from(str); 
-
-            // Level 3: Homoglyph Swapping (Conservative)
-            if (level === 3) {
-                rawChars = rawChars.map(c => {
-                    // Mirror brackets for BiDi Reversal Correctness
-                    if (mirrorMap[c]) return mirrorMap[c];
-
-                    // 50% chance to swap if a match exists
-                    if (Math.random() > 0.5 && homoglyphMaps[c]) {
-                        return homoglyphMaps[c];
-                    }
-                    return c;
-                });
-            }
-
-            // Step 2: Convert to HTML Atoms (Safe for splitting)
+            if (level === 3) rawChars = rawChars.map(c => mirrorMap[c] || (Math.random() > 0.5 && homoglyphMaps[c] ? homoglyphMaps[c] : c));
             let atoms = rawChars.map(c => escapeHtml(c));
 
             // --- Construction Strategies ---
@@ -733,550 +415,124 @@ function generateBidiAuth(elementId) {
             // Level 5: Phantom Shield (The Crowning Achievement)
             if (level === 5) {
                 let nodes = [];
-                // 1. Process Atoms
                 atoms.forEach((atom, idx) => {
-                    // 30% chance to be a "Phantom" (CSS Content)
-                    if (Math.random() < 0.3 && atom.length === 1 && !atom.startsWith('&')) {
-                        nodes.push({
-                            html: `<span class="phantom-atom" style="order:${idx}; --p:'${atom}'; white-space:pre;"></span>`,
-                            type: 'phantom'
-                        });
-                    } else {
-                        // Real Node
-                        nodes.push({
-                            html: `<span style="order:${idx}; white-space:pre;">${atom}</span>`,
-                            type: 'real'
-                        });
-                    }
+                    if (Math.random() < 0.3 && atom.length === 1 && !atom.startsWith('&')) nodes.push({ html: `<span class="phantom-atom" style="order:${idx}; --p:'${atom}'; white-space:pre;"></span>` });
+                    else nodes.push({ html: `<span style="order:${idx}; white-space:pre;">${atom}</span>` });
                 });
-
-                // 2. Add Decoys (Poison the well)
-                // Add decoys proportional to length (~20%)
-                const numDecoys = Math.ceil(atoms.length * 0.2);
-                const decoyChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-                for(let i=0; i<numDecoys; i++) {
-                    const d = decoyChars.charAt(Math.floor(Math.random() * decoyChars.length));
-                    nodes.push({
-                        html: `<span style="order:${Math.floor(Math.random() * atoms.length)}; opacity:0; position:absolute; pointer-events:none; font-size:0;">${d}</span>`,
-                        type: 'decoy'
-                    });
-                }
-
-                // 3. Shuffle DOM
+                for(let i=0; i<Math.ceil(atoms.length*0.2); i++) nodes.push({ html: `<span style="order:${Math.floor(Math.random()*atoms.length)}; opacity:0; position:absolute; pointer-events:none; font-size:0;">${'XYZ'.charAt(Math.floor(Math.random()*3))}</span>` });
                 nodes.sort(() => Math.random() - 0.5);
-
-                // 4. Render Wrapper
-                const inner = nodes.map(n => n.html).join('');
-                // flex-wrap: wrap ensures long lines break naturally
-                // word-break: break-all helps prevents flex items from overflowing
-                return `<div style="display:flex; flex-wrap:wrap; position:relative; word-break:break-all;">${inner}</div>`;
+                return `<div style="display:flex; flex-wrap:wrap; position:relative; word-break:break-all;">${nodes.map(n => n.html).join('')}</div>`;
             }
 
-            // Level 3: The "Sandwich" (Recursive Segmenting)
-            // Now bound to 'density' slider to match user expectation
             if (level === 3) {
-                // 1. Inject Noise (Standard for High)
-                // Use &#8203; as a discrete atom
-                // Density-dependent noise: Right (12) = High Noise (~60%), Left (1) = Low Noise (~5%)
-                const noiseProb = density * 0.05;
-
-                let noisy = [];
-                atoms.forEach(a => {
-                    noisy.push(a);
-                    if(Math.random() < noiseProb) noisy.push('&#8203;'); 
-                });
-                
-                // 2. Reverse the ATOMS array (not the string)
-                const reversedAtoms = noisy.reverse();
-                
-                // 3. Sandwich Split (Chunks determined by density slider)
-                // Range 1-12 -> map to roughly 2-6 chunks (Right = More chunks = Higher Frag)
-                const numChunks = Math.max(2, Math.ceil(density / 2));
-                
-                let segments = [];
-                let currentPos = 0;
-                const totalAtoms = reversedAtoms.length;
-                const chunkBaseSize = Math.floor(totalAtoms / numChunks);
-
-                for(let i=0; i<numChunks-1; i++) {
-                    // Small jitter based on position, not random re-rolls
-                    let len = chunkBaseSize;
-                    if (currentPos + len > totalAtoms) len = totalAtoms - currentPos;
-                    if (len < 1) len = 1;
-                    
-                    segments.push(reversedAtoms.slice(currentPos, currentPos + len).join(''));
-                    currentPos += len;
-                }
-                segments.push(reversedAtoms.slice(currentPos).join(''));
-                
-                // 4. Wrap each segment in dir=rtl
-                const innerHtml = segments.map(s => `<span style="direction:rtl; white-space:pre;">${s}</span>`).join('');
-                
-                // 5. Outer wrapper
-                return `<div style="unicode-bidi:bidi-override; direction:rtl; text-align:left;">${innerHtml}</div>`;
+                const noiseProb = density * 0.05; let noisy = [];
+                atoms.forEach(a => { noisy.push(a); if(Math.random() < noiseProb) noisy.push('&#8203;'); });
+                const reversed = noisy.reverse(); const numChunks = Math.max(2, Math.ceil(density / 2));
+                let segments = [], currentPos = 0, base = Math.floor(reversed.length / numChunks);
+                for(let i=0; i<numChunks-1; i++) { segments.push(reversed.slice(currentPos, currentPos + base).join('')); currentPos += base; }
+                segments.push(reversed.slice(currentPos).join(''));
+                return `<div style="unicode-bidi:bidi-override; direction:rtl; text-align:left;">${segments.map(s => `<span style="direction:rtl; white-space:pre;">${s}</span>`).join('')}</div>`;
             }
 
-            // Level 1 & 2: Fragmentation Strategy
-            let fragments = [];
-            let i = 0;
+            let fragments = [], i = 0;
             while(i < atoms.length) {
-                // Inverted Logic: Right (High Density) -> Small Chunks
-                // Range 1-12. 
-                // Density 1 (Left) -> Size ~13 (Low Frag)
-                // Density 12 (Right) -> Size ~2 (High Frag)
                 const baseSize = Math.max(1, 14 - density);
-                let jitter = Math.floor(Math.random() * (baseSize / 2)) - (baseSize / 4);
-                let size = Math.max(1, baseSize + jitter);
-                
+                let size = Math.max(1, baseSize + Math.floor(Math.random()*baseSize/2 - baseSize/4));
                 let chunk = atoms.slice(i, i + size);
-                
-                // L2: Noise Injection
-                if (level === 2) {
-                    // Inject ZWSP randomly inside chunk
-                    if(Math.random() > 0.7) chunk.push('&#8203;'); 
-                }
-                
-                fragments.push(chunk.join(''));
-                i += size;
+                if (level === 2 && Math.random() > 0.7) chunk.push('&#8203;'); 
+                fragments.push(chunk.join('')); i += size;
             }
-            
-            const domOrder = fragments.reverse();
-            
-            let innerHtml = domOrder.map(f => `<span class="weave-atom" style="white-space:pre;">${f}</span>`).join('');
-            
-            return `<div class="bidi-layer" style="display:flex; flex-direction:row-reverse; justify-content:flex-end;">${innerHtml}</div>`;
+            return `<div class="bidi-layer" style="display:flex; flex-direction:row-reverse; justify-content:flex-end;">${fragments.reverse().map(f => `<span class="weave-atom" style="white-space:pre;">${f}</span>`).join('')}</div>`;
         }
 
-        // --- CSS Handling ---
-        function checkCssEnter(e) {
-            if(e.key === 'Enter') {
-                validateAndSyncCss();
-            }
+        function generateOCRNoise(enabled) {
+            if (!enabled) return '';
+            let svg = '', w = 300, h = 100;
+            svg += `<path d="M0 100 L300 0" stroke="rgba(255,255,255,0.3)" stroke-width="2" /><path d="M0 0 L300 100" stroke="rgba(255,255,255,0.3)" stroke-width="2" />`;
+            for(let i=0; i<15; i++) svg += `<path d="M${Math.random()*w} ${Math.random()*h} Q ${Math.random()*w} ${Math.random()*h} ${Math.random()*w} ${Math.random()*h}" stroke="rgba(200,200,200,0.5)" fill="none" stroke-width="1.5" />`;
+            for(let i=0; i<250; i++) svg += `<circle cx="${Math.random()*w}" cy="${Math.random()*h}" r="${Math.random()*2}" fill="rgba(255,255,255,${Math.random()*0.7+0.3})" />`;
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:1;">${svg}</svg>`;
         }
 
-        function validateAndSyncCss() {
-            const cssInput = document.getElementById('rawStyles');
-            const twInput = document.getElementById('twClasses');
-            const errorMsg = document.getElementById('cssError');
-            
-            const cssText = cssInput.value;
-            
-            // 1. Basic Validation
-            const lines = cssText.split(/;|\n/);
-            let isValid = true;
-            for(let line of lines) {
-                line = line.trim();
-                if(line && !line.includes(':')) {
-                    isValid = false;
-                    break;
-                }
-            }
-
-            if (!isValid && cssText.trim() !== "") {
-                cssInput.classList.add('invalid-css');
-                errorMsg.classList.remove('hidden');
-            } else {
-                cssInput.classList.remove('invalid-css');
-                errorMsg.classList.add('hidden');
-                
-                // Only sync if valid
-                const twClasses = convertCssToTailwind(cssText);
-                if (twClasses !== twInput.value) {
-                    twInput.value = twClasses;
-                }
-            }
-
-            orchestrate();
+        function generateNewSecret() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let res = '';
+            for (let i = 0; i < 5; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+            currentAuthSecret = res;
+            const input = document.getElementById('authInput'), status = document.getElementById('authStatus');
+            if (input) { input.value = ''; input.className = "w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase"; }
+            if (status) status.className = "hidden";
+            renderBidiAuth();
         }
 
-        function convertCssToTailwind(css) {
-            const mappings = [];
-            const rules = css.split(';').map(r => r.trim()).filter(r => r);
-            
-            rules.forEach(rule => {
-                const parts = rule.split(':');
-                if(parts.length < 2) return;
-                
-                const prop = parts[0].trim().toLowerCase();
-                const val = parts[1].trim();
-                
-                let tw = '';
-                // Simple Arbitrary Value Mapper
-                const arbitrary = (prefix) => `${prefix}-[${val.replace(/\s/g, '_')}]`;
-
-                switch(prop) {
-                    case 'padding': tw = val.endsWith('px') ? `p-[${val}]` : arbitrary('p'); break;
-                    case 'padding-top': tw = arbitrary('pt'); break;
-                    case 'padding-right': tw = arbitrary('pr'); break;
-                    case 'padding-bottom': tw = arbitrary('pb'); break;
-                    case 'padding-left': tw = arbitrary('pl'); break;
-                    
-                    case 'margin': tw = arbitrary('m'); break;
-                    case 'margin-top': tw = arbitrary('mt'); break;
-                    case 'margin-right': tw = arbitrary('mr'); break;
-                    case 'margin-bottom': tw = arbitrary('mb'); break;
-                    case 'margin-left': tw = arbitrary('ml'); break;
-
-                    case 'background-color':
-                    case 'background': tw = `bg-[${val}]`; break;
-                    case 'color': tw = `text-[${val}]`; break;
-                    case 'border-radius': tw = `rounded-[${val}]`; break;
-                    case 'border': tw = `border-[${val}]`; break;
-                    case 'width': tw = `w-[${val}]`; break;
-                    case 'height': tw = `h-[${val}]`; break;
-                    case 'font-size': tw = `text-[${val}]`; break;
-                    case 'font-weight': tw = `font-[${val}]`; break;
-                    case 'display': tw = val; break; // e.g. block, flex
-                    case 'text-align': tw = `text-${val}`; break; // e.g. text-center
-                    default: break;
-                }
-                
-                if(tw) mappings.push(tw);
-            });
-            return mappings.join(' ');
-        }
-
-        // --- Tailwind Handling ---
-        function handleTwInput(e) {
-            const val = e.target.value;
-            // Check for completion triggers: trailing space or blur event
-            if (e.type === 'blur' || (e.data === ' ' && val.endsWith(' '))) {
-                validateAndSyncTw();
-            }
-        }
-
-        function validateAndSyncTw() {
-            const twInput = document.getElementById('twClasses');
-            const cssInput = document.getElementById('rawStyles');
-            
-            const classes = twInput.value.trim().split(/\s+/);
-            const cssRules = [];
-            let allValid = true;
-
-            // Handle empty input
-            if (twInput.value.trim() === "") {
-                cssInput.value = "";
-                twInput.classList.remove('invalid-css');
-                orchestrate();
-                return;
-            }
-
-            classes.forEach(cls => {
-                if(!cls) return;
-                const rule = convertTwToCss(cls);
-                if (rule) {
-                    cssRules.push(rule);
-                } else {
-                    allValid = false;
-                }
-            });
-
-            // Validation Feedback
-            if (!allValid) {
-                twInput.classList.add('invalid-css'); // Reuse css error style
-            } else {
-                twInput.classList.remove('invalid-css');
-                // Sync to CSS
-                const newCss = cssRules.join('\n');
-                if (newCss !== cssInput.value.trim()) {
-                    cssInput.value = newCss;
-                }
-            }
-            
-            orchestrate();
-        }
-
-        function convertTwToCss(cls) {
-            // 1. Handle Arbitrary Values: p-[10px] -> padding: 10px
-            const arbMatch = cls.match(/^([a-z]+)-\[(.+)\]$/);
-            if (arbMatch) {
-                const prefix = arbMatch[1];
-                const val = arbMatch[2].replace(/_/g, ' ');
-                
-                const map = {
-                    'p': 'padding', 'pt': 'padding-top', 'pr': 'padding-right', 'pb': 'padding-bottom', 'pl': 'padding-left',
-                    'm': 'margin', 'mt': 'margin-top', 'mr': 'margin-right', 'mb': 'margin-bottom', 'ml': 'margin-left',
-                    'w': 'width', 'h': 'height',
-                    'bg': 'background-color', 'text': 'color', 
-                    'border': 'border', 'rounded': 'border-radius', 'font': 'font-weight'
-                };
-                
-                if (map[prefix]) return `${map[prefix]}: ${val};`;
-            }
-
-            // 2. Handle Common Utilities (Simplified map)
-            const getRem = (str) => {
-                const parts = str.split('-');
-                if (parts.length > 1 && !isNaN(parts[1])) {
-                    return `${parseInt(parts[1]) / 4}rem`;
-                }
-                return null;
-            }
-
-            if (cls.startsWith('p-')) return `padding: ${getRem(cls)};`; 
-            if (cls.startsWith('pt-')) return `padding-top: ${getRem(cls)};`;
-            if (cls.startsWith('pr-')) return `padding-right: ${getRem(cls)};`;
-            if (cls.startsWith('pb-')) return `padding-bottom: ${getRem(cls)};`;
-            if (cls.startsWith('pl-')) return `padding-left: ${getRem(cls)};`;
-
-            if (cls.startsWith('m-')) return `margin: ${getRem(cls)};`;
-            if (cls.startsWith('mt-')) return `margin-top: ${getRem(cls)};`;
-            if (cls.startsWith('mr-')) return `margin-right: ${getRem(cls)};`;
-            if (cls.startsWith('mb-')) return `margin-bottom: ${getRem(cls)};`;
-            if (cls.startsWith('ml-')) return `margin-left: ${getRem(cls)};`;
-
-            if (cls.startsWith('bg-')) return `background-color: var(--tw-${cls});`; // Fallback
-            
-            if (cls === 'flex') return 'display: flex;';
-            if (cls === 'block') return 'display: block;';
-            if (cls === 'hidden') return 'display: none;';
-            
-            if (cls.startsWith('text-')) {
-                if (['left', 'center', 'right', 'justify'].includes(cls.split('-')[1])) {
-                    return `text-align: ${cls.split('-')[1]};`;
-                }
-            }
-
-            if (cls === 'rounded') return 'border-radius: 0.25rem;';
-            if (cls === 'border') return 'border-width: 1px;';
-
-            return null; // Invalid/Unknown
-        }
-
-
-        // --- Other Utilities ---
-        function manualOverride() {
-            const manualHtml = document.getElementById('sourceSnippet').innerText;
-            document.getElementById('renderTarget').innerHTML = manualHtml;
-            const leak = runScraperSim();
-            updateRatings(leak);
-        }
-
-        function runScraperSim() {
-            const renderTarget = document.getElementById('renderTarget');
-            const scraperResult = document.getElementById('scraperResult');
-            const indicator = document.getElementById('matchIndicator');
-            const status = document.getElementById('matchStatus');
-
-            const extracted = renderTarget.innerText.trim();
-            scraperResult.textContent = extracted;
-
-            const originalPayload = document.getElementById('payloadInput').value.toLowerCase();
-            const keywordsToCheck = ['admin', 'master@vault.local', 'restricted', 'protocol'];
-            
-            let leakDetected = false;
-            // For Extreme Level (Reveal), the extracted text is "[Reveal Sensitive Data]". 
-            // We should NOT flag this as a leak unless the secret is somehow exposed.
-            // For other levels, we check if keywords appear.
-            
-            for(const keyword of keywordsToCheck) {
-                if (originalPayload.includes(keyword) && extracted.toLowerCase().includes(keyword)) {
-                     leakDetected = true;
-                     break;
-                }
-            }
-            
-            if (leakDetected) {
-                indicator.className = "w-2 h-2 rounded-full bg-red-500 animate-ping";
-                status.textContent = "Leak Detected";
-                status.className = "text-[10px] font-bold uppercase text-red-500";
-            } else if (originalPayload.trim() === "") {
-                indicator.className = "w-2 h-2 rounded-full bg-slate-500";
-                status.textContent = "Enter Payload";
-                status.className = "text-[10px] font-bold uppercase text-slate-500";
-            }
-            else {
-                indicator.className = "w-2 h-2 rounded-full bg-green-500";
-                status.textContent = "Obfuscation Clear";
-                status.className = "text-[10px] font-bold uppercase text-green-500";
-            }
-            
-            return leakDetected;
-        }
-
-        function escapeHtml(text) {
-            const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-            return text.replace(/[&<>"']/g, m => map[m]);
-        }
-
-        function copySource() {
-            const text = document.getElementById('sourceSnippet').innerText;
-            const el = document.createElement('textarea');
-            el.value = text;
-            document.body.appendChild(el);
-            el.select();
-            document.execCommand('copy');
-            document.body.removeChild(el);
-        }
-
-        // --- Smart Actions ---
-        function toggleActions() {
-            const enabled = document.getElementById('enableActions').checked;
-            const controls = document.getElementById('actionControls');
-            controls.style.opacity = enabled ? "1" : "0.5";
-            controls.style.pointerEvents = enabled ? "auto" : "none";
-        }
-
-        function setAction(type) {
-            const btns = document.querySelectorAll('.action-btn');
-            btns.forEach(b => {
-                if(b.dataset.type === type) {
-                    b.classList.add('active', 'bg-blue-600', 'text-white', 'ring-2', 'ring-blue-400');
-                    b.classList.remove('bg-slate-800', 'text-slate-400');
-                } else {
-                    b.classList.remove('active', 'bg-blue-600', 'text-white', 'ring-2', 'ring-blue-400');
-                    b.classList.add('bg-slate-800', 'text-slate-400');
-                }
-            });
-            orchestrate();
-        }
-
-        function switchView(viewId) {
-            // Hide all views
-            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
-            // Show target
-            document.getElementById('view-' + viewId).classList.remove('hidden');
-            
-            // Update Tabs
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                if (btn.id === 'tab-' + viewId) {
-                    btn.classList.add('active', 'bg-blue-600', 'text-white', 'shadow-lg');
-                    btn.classList.remove('bg-slate-800', 'text-slate-400', 'hover:bg-slate-700');
-                } else {
-                    btn.classList.remove('active', 'bg-blue-600', 'text-white', 'shadow-lg');
-                    btn.classList.add('bg-slate-800', 'text-slate-400', 'hover:bg-slate-700');
-                }
-            });
-        }
-
-        // --- BiDi-Auth Logic ---
-        let currentAuthSecret = '';
-
-        function generateBidiAuth() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; 
-            let result = '';
-            for (let i = 0; i < 5; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            currentAuthSecret = result;
-            
-            // --- The Phantom Weave Algorithm (v3.0) ---
-            
-            // 1. Isolate the Phantom (Last Char) - Defeats innerText
-            const phantomChar = result.charAt(result.length - 1);
-            const body = result.substring(0, result.length - 1); // First 4 chars
-            
-            // 2. Fragment Body (Random chunks of 1-2 chars)
-            let chunks = [];
-            let i = 0;
-            while(i < body.length) {
-                // Randomly split into 1 or 2 chars
-                const len = (Math.random() > 0.5 && (i + 1 < body.length)) ? 2 : 1;
-                chunks.push(body.substr(i, len));
-                i += len;
-            }
-            
-            // 3. Create DOM Nodes
+        function renderBidiAuth() {
+            if(!currentAuthSecret) return;
+            const res = currentAuthSecret, noiseEnabled = document.getElementById('ocrToggle').checked;
+            const phantomChar = res.charAt(res.length - 1), body = res.substring(0, res.length - 1);
+            let chunks = [], i = 0;
+            while(i < body.length) { const len = (Math.random() > 0.5 && (i + 1 < body.length)) ? 2 : 1; chunks.push(body.substr(i, len)); i += len; }
             let nodes = [];
-            
-            // A. Real Chunks (Visible)
             chunks.forEach((chunk, idx) => {
-                // Entropy: 50% chance to Reverse characters + RTL Override
-                const doReverse = chunk.length > 1 && Math.random() > 0.5;
-                const text = doReverse ? chunk.split('').reverse().join('') : chunk;
-                const dir = doReverse ? 'rtl' : 'ltr';
-                
-                // Flex Order guarantees visual sequence 1, 2, 3...
-                nodes.push({
-                    html: `<span style="order:${idx+1}; unicode-bidi:isolate; direction:${dir};">${text}</span>`,
-                    type: 'real'
-                });
+                const rev = chunk.length > 1 && Math.random() > 0.5;
+                nodes.push({ html: `<span style="order:${idx+1}; unicode-bidi:isolate; direction:${rev?'rtl':'ltr'}; white-space:pre;">${rev?chunk.split('').reverse().join(''):chunk}</span>` });
             });
-            
-            // B. The Phantom Node (Holds the last char in CSS only)
-            nodes.push({
-                html: `<span class="phantom-atom" style="order:${chunks.length + 1}; --p:'${phantomChar}';"></span>`,
-                type: 'phantom'
-            });
-            
-            // C. Decoy Nodes (Invisible to humans, visible to bots)
-            const decoys = 3;
-            for(let j=0; j<decoys; j++) {
-                const decoyChar = chars.charAt(Math.floor(Math.random() * chars.length));
-                // Position absolute + opacity 0 keeps it in the DOM stream for innerText but hidden
-                nodes.push({
-                    html: `<span style="order:${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none; z-index:-1;">${decoyChar}</span>`,
-                    type: 'decoy'
-                });
-            }
-            
-            // 4. Shuffle DOM Order (The Chaos)
+            nodes.push({ html: `<span class="phantom-atom" style="order:${chunks.length+1}; --p:'${phantomChar}'; white-space:pre;"></span>` });
+            for(let j=0; j<3; j++) nodes.push({ html: `<span style="order:${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none; z-index:-1;">${"ABC".charAt(Math.floor(Math.random()*3))}</span>` });
             nodes.sort(() => Math.random() - 0.5);
-            
-            // 5. Render
-            const containerHtml = nodes.map(n => n.html).join('');
-            
-            const el = document.getElementById('authRender');
-            el.innerHTML = `<div style="display:flex; justify-content:center; gap:2px; position:relative;">${containerHtml}</div>`;
-            
-            // Update Bot View
-            const botText = document.getElementById('authRender').innerText;
-            document.getElementById('authBotView').textContent = botText;
-            
-            // Reset Input
-            const input = document.getElementById('authInput');
-            const status = document.getElementById('authStatus');
-            input.value = '';
-            input.className = "w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase placeholder:tracking-normal";
-            status.className = "hidden";
+            document.getElementById('authRender').innerHTML = generateOCRNoise(noiseEnabled) + `<div style="display:flex; justify-content:center; gap:2px; position:relative; z-index:1; width:100%; height:100%; align-items:center;">${nodes.map(n => n.html).join('')}</div>`;
+            document.getElementById('authBotView').textContent = document.getElementById('authRender').innerText;
+            const ocrEl = document.getElementById('authOCRView');
+            if (noiseEnabled) {
+                let sim = "";
+                for (let c of currentAuthSecret) {
+                    const r = Math.random();
+                    if (r < 0.25) continue;
+                    else if (r < 0.8) sim += ['8', 'E', '0', 'X', '5'][Math.floor(Math.random()*5)];
+                    else sim += c;
+                }
+                ocrEl.textContent = sim || "[EMPTY]"; ocrEl.className = "font-mono text-[10px] text-orange-400 opacity-50";
+            } else { ocrEl.textContent = currentAuthSecret; ocrEl.className = "font-mono text-[10px] text-green-400 font-bold"; }
         }
 
         function validateAuth() {
-            const input = document.getElementById('authInput');
-            const status = document.getElementById('authStatus');
-            // Remove noise from input if user pasted it? No, user types.
+            const input = document.getElementById('authInput'), status = document.getElementById('authStatus');
             const val = input.value.toUpperCase().replace(/\u200B/g, '').trim();
-            
-            status.className = "absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block";
-            
-            if (val === currentAuthSecret) {
-                // Success
-                status.textContent = "Verified";
-                status.className = "absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block text-green-500";
-                input.classList.remove('border-slate-700', 'border-red-500');
-                input.classList.add('border-green-500', 'ring-1', 'ring-green-500');
-                
-                // Regen after delay
-                setTimeout(generateBidiAuth, 1500);
-            } else {
-                // Fail
-                status.textContent = "Invalid";
-                status.className = "absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block text-red-500";
-                input.classList.remove('border-slate-700');
-                input.classList.add('border-red-500');
-                
-                // Immediate Regen to prevent brute force
-                setTimeout(generateBidiAuth, 1000);
-            }
+            status.className = "absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block";
+            if (val === currentAuthSecret) { status.textContent = "Verified"; status.classList.add('text-green-500'); setTimeout(generateNewSecret, 1500); }
+            else { status.textContent = "Invalid"; status.classList.add('text-red-500'); setTimeout(generateNewSecret, 1000); }
         }
 
-        function botAttempt() {
-            // Simulate bot reading innerText
-            const botText = document.getElementById('authRender').innerText;
-            const input = document.getElementById('authInput');
-            
-            // Type it in
-            input.value = botText;
-            
-            // Trigger verify
-            validateAuth();
+        function botAttempt() { document.getElementById('authInput').value = document.getElementById('authRender').innerText; validateAuth(); }
+        function manualOverride() { document.getElementById('renderTarget').innerHTML = document.getElementById('sourceSnippet').innerText; updateRatings(runScraperSim()); }
+        function runScraperSim() {
+            const extracted = document.getElementById('renderTarget').innerText.trim();
+            document.getElementById('scraperResult').textContent = extracted;
+            const leak = ['admin', 'master', 'restricted'].some(k => extracted.toLowerCase().includes(k));
+            const ind = document.getElementById('matchIndicator'), stat = document.getElementById('matchStatus');
+            ind.className = `w-2 h-2 rounded-full ${leak ? 'bg-red-500 animate-ping' : 'bg-green-500'}`;
+            stat.textContent = leak ? "Leak Detected" : "Obfuscation Clear"; stat.className = leak ? "text-red-500" : "text-green-500";
+            return leak;
         }
-
-        window.onload = () => {
-            updateEntropyLabel(); // Initialize label
+        function escapeHtml(t) { return t.replace(/[&<>'"`]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;','`':'&#96;'}[m])); }
+        function copySource() { navigator.clipboard.writeText(document.getElementById('sourceSnippet').innerText); showToast(); }
+        function showToast() { const t = document.getElementById('toast'); t.style.opacity = "1"; setTimeout(() => t.style.opacity = "0", 2000); }
+        function switchView(id) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-' + id).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const active = btn.id === 'tab-' + id;
+                btn.className = `tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${active ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
+            });
+        }
+        function toggleActions() { const en = document.getElementById('enableActions').checked; document.getElementById('actionControls').style.opacity = en ? "1" : "0.5"; document.getElementById('actionControls').style.pointerEvents = en ? "auto" : "none"; }
+        function setAction(type) {
+            document.querySelectorAll('.action-btn').forEach(b => {
+                const active = b.dataset.type === type;
+                b.className = `action-btn text-[10px] font-bold uppercase py-2 rounded transition ${active ? 'bg-blue-600 text-white ring-2 ring-blue-400 active' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
+            });
             orchestrate();
-            generateBidiAuth(); // Initialize CAPTCHA
-        };
+        }
+
+        window.onload = () => { updateEntropyLabel(); orchestrate(); generateNewSecret(); };
     </script>
 </body>
 </html>
