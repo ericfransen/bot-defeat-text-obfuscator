@@ -277,7 +277,13 @@ Protocol: BiDi-Override-2025</textarea>
                         <h3 class="text-xl font-bold text-teal-400 uppercase tracking-widest">Integration</h3>
                         <p class="text-xs text-slate-500 mt-1">Drop-in code for your forms.</p>
                     </div>
-                    <button onclick="copyIntegration()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition uppercase tracking-wider shadow-lg">Copy Code</button>
+                    <div class="flex items-center gap-4">
+                        <select id="captchaExportFormat" onchange="generateIntegrationSnippet()" class="bg-[#050810] text-[10px] text-teal-400 font-bold uppercase border border-slate-700 rounded px-2 py-2 outline-none focus:border-teal-500">
+                            <option value="html">HTML + JS</option>
+                            <option value="react">React Component</option>
+                        </select>
+                        <button onclick="copyIntegration()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition uppercase tracking-wider shadow-lg">Copy Code</button>
+                    </div>
                 </div>
                 
                 <div class="bg-black/40 rounded-xl p-4 border border-slate-700/50 overflow-hidden relative">
@@ -368,7 +374,22 @@ Protocol: BiDi-Override-2025</textarea>
             if (enableActions && entropyLevel !== 4) {
                 const activeBtn = document.querySelector('.action-btn.active');
                 const actionType = activeBtn ? activeBtn.dataset.type : 'copy';
-                const b64 = btoa(unescape(encodeURIComponent(rawText)));
+                
+                // --- XOR Encryption Logic ---
+                // 1. Generate a random key (1-255)
+                const xorKey = Math.floor(Math.random() * 254) + 1;
+                
+                // 2. URI Encode (to handle UTF-8/Emoji correctly), then XOR every character
+                const uriEncoded = encodeURIComponent(rawText);
+                const encrypted = uriEncoded.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ xorKey)).join('');
+                
+                // 3. Base64 Encode the encrypted binary string
+                const b64 = btoa(encrypted);
+
+                // 4. Generate the inline decryption script
+                // Logic: atob -> split -> map(xor) -> join -> decodeURIComponent
+                const decryptJS = `decodeURIComponent(atob('${b64}').split('').map(c=>String.fromCharCode(c.charCodeAt(0)^${xorKey})).join(''))`;
+
                 let onclick = "", icon = "";
                 
                 // SVG Icons
@@ -376,9 +397,9 @@ Protocol: BiDi-Override-2025</textarea>
                 const iconMail = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
                 const iconTel = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
                 
-                if (actionType === 'copy') { onclick = `navigator.clipboard.writeText(decodeURIComponent(escape(atob('${b64}')))); const f=this.querySelector('.feedback'); f.style.opacity='1'; f.style.top='-45px'; setTimeout(()=>{f.style.opacity='0'; f.style.top='-35px'},1000); icon = iconCopy;`; }
-                else if (actionType === 'mailto') { onclick = `window.location.href='mailto:'+decodeURIComponent(escape(atob('${b64}')))`; icon = iconMail; }
-                else if (actionType === 'tel') { onclick = `window.location.href='tel:'+decodeURIComponent(escape(atob('${b64}')))`; icon = iconTel; }
+                if (actionType === 'copy') { onclick = `navigator.clipboard.writeText(${decryptJS}); const f=this.querySelector('.feedback'); f.style.opacity='1'; f.style.top='-45px'; setTimeout(()=>{f.style.opacity='0'; f.style.top='-35px'},1000); icon = iconCopy;`; }
+                else if (actionType === 'mailto') { onclick = `window.location.href='mailto:'+${decryptJS}`; icon = iconMail; }
+                else if (actionType === 'tel') { onclick = `window.location.href='tel:'+${decryptJS}`; icon = iconTel; }
 
                 // Self-contained CSS for hover effects
                 interactionCSS = `<style>
@@ -637,12 +658,88 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
 
         function generateIntegrationSnippet() {
             const useNoise = document.getElementById('ocrToggle').checked;
-            const noiseCSS = useNoise ? '' : '/* Noise disabled */';
-            const noiseLogic = useNoise 
-                ? `const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;`
-                : `const noise = ''; // Anti-OCR Mesh disabled`;
+            const format = document.getElementById('captchaExportFormat').value;
+            
+            let code = "";
 
-            const code = `<!-- BiDi CAPTCHA Container -->
+            if (format === 'react') {
+                const noiseLogicReact = useNoise 
+                    ? `const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;`
+                    : `const noise = '';`;
+
+                code = `import React, { useState, useEffect, useRef } from 'react';
+
+export default function BiDiCaptcha({ onValidate }) {
+  const [inputVal, setInputVal] = useState('');
+  const [renderHtml, setRenderHtml] = useState('');
+  const secretRef = useRef('');
+
+  const generateCaptcha = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const newSecret = Array.from({length:5}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+    secretRef.current = newSecret;
+    
+    const phantom = newSecret.slice(-1);
+    const body = newSecret.slice(0, -1);
+    let nodes = [];
+    
+    let i = 0;
+    while(i < body.length) {
+      const len = (Math.random() > 0.5 && i + 1 < body.length) ? 2 : 1;
+      const chunk = body.substr(i, len);
+      const rev = chunk.length > 1 && Math.random() > 0.5;
+      nodes.push({ html: \`<span style="order:\${i+1}; unicode-bidi:bidi-override; direction:\${rev?'rtl':'ltr'}; white-space:pre;">\${rev?chunk.split('').reverse().join(''):chunk}</span>\` });
+      i += len;
+    }
+    nodes.push({ html: \`<span class="phantom-atom" style="order:100; --p:'\${phantom}'; white-space:pre;"></span>\` });
+    for(let j=0; j<3; j++) nodes.push({ html: \`<span style="order:\${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none;">\${"ABC".charAt(Math.floor(Math.random()*3))}</span>\` });
+    nodes.sort(() => Math.random() - 0.5);
+    
+    ${noiseLogicReact}
+    setRenderHtml(noise + \`<div style="display:flex; justify-content:center; width:100%; gap:2px;">\${nodes.map(n => n.html).join('')}</div>\`);
+    setInputVal('');
+  };
+
+  useEffect(() => { generateCaptcha(); }, []);
+
+  const handleChange = (e) => {
+    const val = e.target.value.toUpperCase();
+    setInputVal(val);
+    if (onValidate) onValidate(val.replace(/\\u200B/g, '').trim() === secretRef.current);
+  };
+
+  return (
+    <div className="p-5 bg-slate-900 border border-slate-700 rounded-lg w-[300px] flex flex-col gap-4 font-mono">
+      <style>{\`.phantom-atom::after { content: var(--p); }\`}</style>
+      <div 
+        className="h-[60px] bg-black/30 border-2 border-slate-600 rounded-md flex items-center justify-center relative overflow-hidden select-none text-white text-2xl tracking-widest"
+        dangerouslySetInnerHTML={{ __html: renderHtml }} 
+      />
+      <input 
+        type="text" 
+        value={inputVal}
+        onChange={handleChange}
+        placeholder="ENTER CODE"
+        className="bg-slate-800 border border-slate-600 text-white p-2 rounded text-center uppercase tracking-widest outline-none focus:border-indigo-500"
+      />
+      <button 
+        type="button"
+        onClick={generateCaptcha}
+        className="bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-white text-[10px] font-bold py-2 rounded uppercase transition"
+      >
+        Refresh Code
+      </button>
+    </div>
+  );
+}`;
+            } else {
+                // HTML Logic (Default)
+                const noiseCSS = useNoise ? '' : '/* Noise disabled */';
+                const noiseLogic = useNoise 
+                    ? `const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;`
+                    : `const noise = ''; // Anti-OCR Mesh disabled`;
+
+                code = `<!-- BiDi CAPTCHA Container -->
 <style>
   .bidi-captcha-box { background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; width: 300px; font-family: monospace; }
   .bidi-render { background: rgba(0,0,0,0.3); border: 2px solid #475569; border-radius: 6px; height: 60px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; user-select: none; color: white; font-size: 24px; letter-spacing: 0.2em; }
@@ -703,6 +800,8 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
   // Initialize
   BiDiCaptcha.init();
 <\/script>`;
+            }
+            
             document.getElementById('integrationCode').textContent = code;
         }
 
