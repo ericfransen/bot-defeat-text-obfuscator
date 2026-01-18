@@ -40,7 +40,7 @@
         <!-- Navigation Tabs -->
         <div class="flex justify-center gap-4 mb-8">
             <button onclick="switchView('obfuscator')" id="tab-obfuscator" class="tab-btn active px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-600 text-white transition-all shadow-lg shadow-blue-900/20">Obfuscator</button>
-            <button onclick="switchView('gate')" id="tab-gate" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">Human Gate</button>
+            <button onclick="switchView('gate')" id="tab-gate" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">CAPTCHA</button>
         </div>
 
         <!-- View: Obfuscator -->
@@ -207,12 +207,12 @@ Protocol: BiDi-Override-2025</textarea>
             </div>
         </div>
 
-        <!-- View: CAPTCHA Gate  -->
+        <!-- View: CAPTCHA -->
         <div id="view-gate" class="view-section hidden max-w-4xl mx-auto space-y-12">
             <div class="glass-panel p-8 rounded-3xl shadow-2xl border-l-4 border-indigo-500">
                 <div class="flex justify-between items-start mb-8">
                     <div class="space-y-2">
-                        <h3 class="text-xl font-bold text-indigo-400 uppercase tracking-widest">BiDi-Auth Prototype</h3>
+                        <h3 class="text-xl font-bold text-indigo-400 uppercase tracking-widest">BiDi-Auth CAPTCHA</h3>
                         <p class="text-xs text-slate-500 max-w-md">Decoupling visual and logical layers to defeat Vision AI and DOM scrapers.</p>
                     </div>
                     <div class="flex items-center gap-4">
@@ -242,7 +242,7 @@ Protocol: BiDi-Override-2025</textarea>
                         <div id="authStatus" class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold uppercase hidden"></div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <button onclick="validateAuth()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider">Verify Human</button>
+                        <button onclick="validateAuth()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider">Verify CAPTCHA</button>
                         <button onclick="botAttempt()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider border border-red-900/20">Bot Attack</button>
                     </div>
                 </div>
@@ -260,6 +260,30 @@ Protocol: BiDi-Override-2025</textarea>
                         <p><strong class="text-blue-400 uppercase">3. Structural Chaos:</strong> Elements are shuffled in the DOM. Visual order is restored via Flexbox <code>order</code> properties.</p>
                         <p><strong class="text-blue-400 uppercase">4. Adversarial Noise:</strong> SVG mesh patterns target the weaknesses of Convolutional Neural Networks used in OCR.</p>
                     </div>
+                </div>
+            </div>
+
+            <!-- Integration Section -->
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl border-t-4 border-teal-500">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-teal-400 uppercase tracking-widest">Integration</h3>
+                        <p class="text-xs text-slate-500 mt-1">Drop-in code for your forms.</p>
+                    </div>
+                    <button onclick="copyIntegration()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition uppercase tracking-wider shadow-lg">Copy Code</button>
+                </div>
+                
+                <div class="bg-black/40 rounded-xl p-4 border border-slate-700/50 overflow-hidden relative">
+                    <pre id="integrationCode" class="font-mono text-[10px] text-slate-300 h-64 overflow-auto whitespace-pre-wrap select-all outline-none"></pre>
+                </div>
+
+                <div class="mt-6 space-y-4">
+                    <h4 class="text-xs font-bold text-white uppercase">How to use</h4>
+                    <ul class="text-[11px] text-slate-400 space-y-2 list-disc pl-4">
+                        <li><strong>Step 1:</strong> Copy the code above and paste it into your HTML form.</li>
+                        <li><strong>Step 2:</strong> Ensure the <code>validateCaptcha()</code> function is called before form submission.</li>
+                        <li><strong>Note:</strong> This is a client-side implementation (Anti-Spam). For maximum security against targeted attacks, move the logic to your server (Node/PHP/Python) so the secret is never exposed to the browser.</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -532,7 +556,84 @@ Protocol: BiDi-Override-2025</textarea>
             orchestrate();
         }
 
-        window.onload = () => { updateEntropyLabel(); orchestrate(); generateNewSecret(); };
+        function generateIntegrationSnippet() {
+            const code = `<!-- BiDi CAPTCHA Container -->
+<style>
+  .bidi-captcha-box { background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; width: 300px; font-family: monospace; }
+  .bidi-render { background: rgba(0,0,0,0.3); border: 2px solid #475569; border-radius: 6px; height: 60px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; user-select: none; color: white; font-size: 24px; letter-spacing: 0.2em; }
+  .bidi-input { background: #1e293b; border: 1px solid #475569; color: white; padding: 10px; border-radius: 6px; text-align: center; text-transform: uppercase; letter-spacing: 0.2em; font-size: 16px; outline: none; }
+  .bidi-input:focus { border-color: #6366f1; }
+  .bidi-refresh { background: #334155; color: #94a3b8; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 10px; text-transform: uppercase; font-weight: bold; }
+  .bidi-refresh:hover { background: #475569; color: white; }
+  .phantom-atom::after { content: var(--p); }
+</style>
+
+<div class="bidi-captcha-box">
+  <div id="captchaRender" class="bidi-render"></div>
+  <input type="text" id="captchaInput" class="bidi-input" placeholder="ENTER CODE">
+  <button type="button" onclick="BiDiCaptcha.init()" class="bidi-refresh">Refresh Code</button>
+</div>
+
+<script>
+  // BiDi CAPTCHA Module (Private Scope)
+  const BiDiCaptcha = (function() {
+    let _secret = ''; // Private variable, not accessible from console
+    
+    function _generate() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      _secret = Array.from({length:5}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+      
+      const phantom = _secret.slice(-1);
+      const body = _secret.slice(0, -1);
+      let nodes = [];
+      
+      // Obfuscation: Chunking, Reversing, Decoys
+      let i = 0;
+      while(i < body.length) {
+        const len = (Math.random() > 0.5 && i + 1 < body.length) ? 2 : 1;
+        const chunk = body.substr(i, len);
+        const rev = chunk.length > 1 && Math.random() > 0.5;
+        nodes.push({ html: \`<span style="order:\${i+1}; unicode-bidi:isolate; direction:\${rev?'rtl':'ltr'}; white-space:pre;">\${rev?chunk.split('').reverse().join(''):chunk}</span>\` });
+        i += len;
+      }
+      nodes.push({ html: \`<span class="phantom-atom" style="order:100; --p:'\${phantom}'; white-space:pre;"></span>\` });
+      for(let j=0; j<3; j++) nodes.push({ html: \`<span style="order:\${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none;">\${"ABC".charAt(Math.floor(Math.random()*3))}</span>\` });
+      nodes.sort(() => Math.random() - 0.5);
+      
+      const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;
+      
+      document.getElementById('captchaRender').innerHTML = noise + \`<div style="display:flex; justify-content:center; width:100%; gap:2px;">\${nodes.map(n => n.html).join('')}</div>\`;
+      document.getElementById('captchaInput').value = '';
+    }
+
+    return {
+      init: function() { _generate(); },
+      validate: function() {
+        const val = document.getElementById('captchaInput').value.toUpperCase().replace(/\\u200B/g, '').trim();
+        return val === _secret;
+      }
+    };
+  })();
+  
+  // Initialize
+  BiDiCaptcha.init();
+<\/script>`;
+            document.getElementById('integrationCode').textContent = code;
+        }
+
+        function copyIntegration() {
+            navigator.clipboard.writeText(document.getElementById('integrationCode').textContent);
+            const btn = document.querySelector('button[onclick="copyIntegration()"]');
+            const originalText = btn.textContent;
+            btn.textContent = "COPIED!";
+            btn.classList.add('bg-teal-500');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-teal-500');
+            }, 2000);
+        }
+
+        window.onload = () => { updateEntropyLabel(); orchestrate(); generateNewSecret(); generateIntegrationSnippet(); };
     </script>
 </body>
 </html>
