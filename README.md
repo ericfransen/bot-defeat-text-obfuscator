@@ -1,131 +1,159 @@
+# Text-Obfuscator & Client-Side CAPTCHA
 
-# Lightweight Text Obfuscator
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+![Version](https://img.shields.io/badge/version-3.1-teal)
+![Size](https://img.shields.io/badge/size-2kb-green)
 
-- A ultra-lightweight copy-paste repository for effective text obfuscation techniques.
+**The lightweight, privacy-first alternative to heavy bot protection.**
 
-- The goal is to provide simple, reusable snippets to deter text harvesting bots without adding a heavy library.
+Protect your email addresses, phone numbers, short-form data, and forms from 99% of bots, scrapers, and AI crawlers without relying on tracking-heavy third-party services or risking vendor lock-in.
 
-- This can be used for emails, phone numbers, addresses, or any other sensitive text.
+---
 
-## Comparison of Obfuscation Tiers
+## 🚨 The Problem
 
-| Method | Bot Difficulty | UX/Accessibility | Implementation Cost |
-| :--- | :--- | :--- | :--- |
-| **SVG Path Data** | High | Low | High (Generation only) |
-| **Click-to-Reveal** | Low | High | Minimal |
-| **Canvas Render** | Moderate | Very Low | Low |
-| **CSS Reversal** | Moderate | High | Moderate |
-| **Cloudflare Turnstile** | Very High | High | High (API req) |
+In 2026, the web is overrun by automated actors, BOTS!
 
-**Pros & Cons:**
+1.  **"Broad-Net" Scrapers:** Millions of cheap, dumb scripts constantly crawl the web looking for `mailto:` links and `@` symbols to build spam lists.
+2.  **Targeted Crawlers:** Sophisticated bots (Puppeteer/Playwright) that render JavaScript to extract pricing, content, or contact info.
+3.  **Vision AI:** New-age bots that use OCR (Optical Character Recognition) to "read" images of text.
 
-- **SVG Path Data:** Extremely hard to scrape without OCR. Zero JavaScript required on the target site.
-- **Click-to-Reveal:** Best for accessibility, but weak against scrapers that can execute JS.
-- **Canvas Render:** Strong against static scraping, but terrible for accessibility (screen readers cannot read this).
-- **CSS Reversal:** Good balance of UX and bot deterrence (confuses DOM scrapers), but advanced bots can see through it.
-- **Cloudflare Turnstile:** The gold standard for protection, but requires an API key and external dependency.
+### The "Big Tech" Solution & Its Flaws
+Traditionally, you would reach for **Google reCAPTCHA** or **Cloudflare Turnstile**. While effective, they come with significant downsides for personal sites, portfolios, and privacy-conscious projects:
 
-## Techniques Included
+*   **Vendor Lock-in & Outages:** If Cloudflare goes down (a seemingly growing common occurrence), your forms break. You are at the mercy of their uptime.
+*   **Privacy Invasion:** These services often track your users across the web to build "risk scores."
+*   **Performance Bloat:** Loading a 3rd-party CAPTCHA script can add hundreds of kilobytes of JavaScript, hurting your Lighthouse scores and slowing down your site.
+*   **Overkill:** Do you really need an enterprise-grade banking security layer just to let someone send you a "Hello" email?
 
-### 1. SVG Path Data (High Security)
-- Converts your text into vector shapes (`<path>` elements).
-- **Pros:** 
-    - Maximum Scraper Resistance: Text-only bots see a series of svg coordinates, not strings. No chars/digits exist in the DOM.
-    - **No JavaScript required** on the target site unlike Canvas; renders immediately upon page load without waiting for the main thread.
-    - Scales perfectly (Retina/High DPI fidelity) unlike Canvas draws.
-    - Can be styled with CSS (`fill: currentColor`).
-- **Cons:** 
-    - Not copy-pasteable by users (unless you wrap it in a custom script). Screen readers need `aria-label`.
-    - Zero Indexability: Native browser "Find" (Ctrl+F / Cmd+F) will not locate the text.
-    - Localization Block: Browser-level translation tools (Google Translate, Safari Translate) cannot detect or translate text represented as vector paths.
-    - Payload Bloat: Representing a standard email address as paths can take 2KB–5KB of HTML, whereas raw text is ~20 bytes.
+---
 
-### 2. Click to Reveal (Standard)
-- Hides the text until a user clicks a button. 
-- **Pros:** High security against static scrapers; text is accessible after click.
-- **Cons:** Requires user interaction.
+## 🛡️ The Solution: BiDi & Phantom Obfuscation
 
-### 3. Canvas Rendering (Harder to Scrape)
-- Renders the text as pixels in an HTML canvas.
-- **Pros:** Effective against text-only scrapers (curl, Cheerio).
-- **Cons:** **Major Accessibility Failure** (screen readers cannot read this). Use with caution.
+**Text-Obfuscator** sits in the "Goldilocks Zone" of security: **Low Cost, High Friction.**
 
-### 4. CSS Reversal (UX Friendly)
-- Renders text in reverse order (e.g., `moc.elpmaxe`) but uses CSS `unicode-bidi` and `direction: rtl` to display it correctly to the user.
-- **Pros:** Seamless UX (looks normal to user); confuses bots reading the DOM directly.
-- **Cons:** Advanced bots checking visual rendering might bypass it.
+We don't try to outsmart the Bots. We aim to make scraping your site **economically unviable** for spammers. By forcing bots to use expensive Vision AI instead of cheap string parsing, we effectively price them out of attacking you.
 
-## Other Considerations
+### Core Technologies
 
-### Honeypot Field (Bot Trap)
-- A hidden input field that users cannot see but bots might fill out.
-- **Usage:** Add this to your forms. If the backend receives a value in this field, the submission is from a bot.
+#### 1. Adversarial Weave (Visual Obfuscation)
+We use **Bi-Directional (BiDi)** overrides to decouple the *Visual Order* from the *Logical (DOM) Order*.
+*   **The User Sees:** `admin@example.com`
+*   **The DOM Contains:** `moc.elpmaxe@nimda` (or a scrambled mess of spans).
+*   **The Scraper Sees:** Garbage. Even if they extract the text, it is linguistically incorrect.
 
+#### 2. Phantom Atoms
+We inject characters using CSS `::after { content: 'a' }`.
+*   These characters **do not exist** in the DOM text node.
+*   `innerText` scrapers will see gaps in the words (e.g., "dmin@xample.co"), rendering the data useless for spam lists.
+
+#### 3. Well Poisoning & Structural Chaos
+We inject invisible "decoy" elements with `opacity: 0` that human users never see, but bots scrape as valid text.
+*   **Result:** A scraped email looks like `adQmin@exZampPle.cRom`, which bounces when they try to email it.
+
+#### 4. Anti-OCR Mesh (Visual Noise)
+For the CAPTCHA, we overlay an SVG noise mesh that cuts through characters.
+*   **Human Brain:** Easily ignores the lines and reads the code.
+*   **Traditional OCR:** Fails segmentation, reading an `E` as an `8` or `F`.
+*   **Vision AI:** Can solve it, but costs ~$0.01 per attempt, making spam campaigns bankrupt themselves.
+
+---
+
+## 🚀 Usage
+
+This tool is a **Client-Side Generator**. You use the generator (the `demo.html` file) to create the code snippets, then paste them into your static site (Next.js, Hugo, Jekyll, plain HTML).
+
+### 1. The Obfuscator (For Static Text)
+Use this for **Emails**, **Phone Numbers**, **Public API Keys**, etc.
+
+1.  Open `demo.html` in your browser.
+2.  Paste your text (e.g., `me@mysite.com`) into the "Target Payload" box.
+3.  Adjust the **Jumble Level** ("High" or "Extreme" recommended).
+4.  Toggle **Smart Interactions** if you want "Click to Copy" or "Click to Email" functionality.
+5.  Select your export format (**HTML** or **React**).
+6.  Click **Copy**, and paste the code into your site.
+
+**Zero Dependencies:** The generated HTML/CSS is self-contained. It works anywhere.
+
+### 2. The BiDi CAPTCHA (For Forms)
+Use this for **Contact Forms**, **Comments**, or **Signups**.
+
+1.  Open `demo.html` and switch to the **CAPTCHA** tab.
+2.  Toggle **Anti-OCR Mesh** based on your security needs.
+3.  Select **React** or **HTML** format.
+4.  Click **Copy Code**.
+5.  Paste it into your project.
+
+#### Integration Logic
+The CAPTCHA runs entirely in the client's browser using a **Closure Pattern** (IIFE) to hide the secret key from the global scope.
+
+**Vanilla JS Example:**
 ```html
-<div style="opacity: 0; position: absolute; top: 0; left: 0; height: 0; width: 0; z-index: -1;">
-    <label for="website_honeypot">Website</label>
-    <input type="text" id="website_honeypot" name="website_honeypot" tabindex="-1" autocomplete="off">
-</div>
+<form onsubmit="return validateForm()">
+  <!-- Paste generated CAPTCHA code here -->
+  
+  <button type="submit">Send</button>
+</form>
+
+<script>
+  function validateForm() {
+    if (!BiDiCaptcha.validate()) {
+      alert("Invalid CAPTCHA code!");
+      return false; // Stop submission
+    }
+    return true; // Allow submission
+  }
+</script>
 ```
 
-## How to Use
+**React Example:**
+```jsx
+import BiDiCaptcha from './BiDiCaptcha';
 
-Use the interactive generator in **demo.html** to create your HTML snippets.
+export default function ContactForm() {
+  const [isHuman, setIsHuman] = useState(false);
 
-1. Open `demo.html` in your browser.
-2. Enter your text (email, phone, etc.).
-3. Copy the generated HTML snippet.
-4. Copy the `<script>` tag from the bottom of `demo.html` (only needed for "Click to Reveal" and "Canvas").
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!isHuman) {
+      alert("Robots not allowed!");
+      return;
+    }
+    // Proceed with submission
+  };
 
-### Snippet 1: SVG Path Data
-
-Generates a vector image of your text. Zero dependencies.
-
-```html
-<svg viewBox="0 0 200 40" width="200" height="40" role="img" aria-label="Contact Information">
-  <path d="M10 10 ... (vector data) ..." fill="currentColor" />
-</svg>
+  return (
+    <form onSubmit={handleSubmit}>
+      <BiDiCaptcha onValidate={setIsHuman} />
+      <button type="submit">Send</button>
+    </form>
+  );
+}
 ```
 
-### Snippet 2: Click to Reveal
+---
 
-HTML Attributes:
-- `data-obfuscate="click"`: Activates the script.
-- `data-b64-text`: Your sensitive text, encoded in Base64.
+## ☁️ Why Client-Side? (The Static Site Advantage)
 
-```html
-<a href="#"
-   class="inline-block px-5 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-colors"
-   data-obfuscate="click"
-   data-b64-text="Y29udGFjdEBleGFtcGxlLmNvbQ==">
-   Click to Show Email
-</a>
-```
+Moving security to the client side offers notable benefits for the modern "JAMstack" web:
 
-### Snippet 3: Canvas Rendering
+1.  **Unbreakable Uptime:** Your security logic lives in your code. It works offline, on localhost, and during major cloud outages.
+2.  **Privacy Compliance:** No cookies, no IP tracking, no data sent to Google/Cloudflare. GDPR/CCPA friendly by default.
+3.  **Instant Feedback:** Users don't wait for a server round-trip to know they typed the wrong code.
+4.  **Free:** Costs $0.00/month forever.
 
-```html
-<canvas
-    data-obfuscate="canvas"
-    data-b64-text="MTIzIE1haW4gU3RyZWV0CkRlbnZlciwgQ08gODAyMDI="
-    data-font="18px Arial"
-    data-color="#374151"
-    width="300"
-    height="60"
-    class="rounded-md">
-</canvas>
-```
+---
 
-### Snippet 4: CSS Reversal
+## ⚠️ Security Disclaimer
 
-No JavaScript required! Just CSS.
+This library implements **Security by Friction**.
 
-```html
-<span style="unicode-bidi: bidi-override; direction: rtl;">
-  moc.elpmaxe@tcatnoc
-</span>
-```
+*   **Is it hackable?** Yes. A motivated attacker with enough time, resources, and custom scripting *can* defeat client-side logic.
+*   **Should I use it for high security?** Absolutely not. Critical security requires server-side validation and 2FA.
+*   **Should I use it for my blog's contact form?** Yes. It is perfectly calibrated to stop the 99% of "drive-by" spam that plagues personal sites, without the heavy weight of enterprise tools.
 
-## Live Demo
+---
 
-You can view a live demo and generate your own snippets by opening the `demo.html` file in your browser.
+## 📜 License
+
+MIT License. Free to use for personal and commercial projects.
