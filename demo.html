@@ -217,7 +217,7 @@ Protocol: BiDi-Override-2025</textarea>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="flex items-center gap-2 bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-700 cursor-pointer" onclick="document.getElementById('ocrToggle').click()">
-                            <input type="checkbox" id="ocrToggle" onchange="renderBidiAuth()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500 accent-indigo-500">
+                            <input type="checkbox" id="ocrToggle" onchange="renderBidiAuth(); generateIntegrationSnippet()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500 accent-indigo-500">
                             <span class="text-[10px] text-slate-400 uppercase font-bold select-none">Anti-OCR Mesh</span>
                         </div>
                         <button onclick="generateNewSecret()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl transition shadow-lg"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
@@ -557,6 +557,12 @@ Protocol: BiDi-Override-2025</textarea>
         }
 
         function generateIntegrationSnippet() {
+            const useNoise = document.getElementById('ocrToggle').checked;
+            const noiseCSS = useNoise ? '' : '/* Noise disabled */';
+            const noiseLogic = useNoise 
+                ? `const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;`
+                : `const noise = ''; // Anti-OCR Mesh disabled`;
+
             const code = `<!-- BiDi CAPTCHA Container -->
 <style>
   .bidi-captcha-box { background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; width: 300px; font-family: monospace; }
@@ -600,7 +606,7 @@ Protocol: BiDi-Override-2025</textarea>
       for(let j=0; j<3; j++) nodes.push({ html: \`<span style="order:\${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none;">\${"ABC".charAt(Math.floor(Math.random()*3))}</span>\` });
       nodes.sort(() => Math.random() - 0.5);
       
-      const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;
+      ${noiseLogic}
       
       document.getElementById('captchaRender').innerHTML = noise + \`<div style="display:flex; justify-content:center; width:100%; gap:2px;">\${nodes.map(n => n.html).join('')}</div>\`;
       document.getElementById('captchaInput').value = '';
