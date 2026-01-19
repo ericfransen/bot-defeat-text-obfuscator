@@ -768,7 +768,10 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
 
         function renderBidiAuth() {
             if(!currentAuthSecret) return;
-            const res = currentAuthSecret, noiseEnabled = document.getElementById('ocrToggle').checked;
+            const res = currentAuthSecret;
+            const noiseEnabled = document.getElementById('ocrToggle').checked;
+            const shadowEnabled = document.getElementById('shadowCaptchaToggle') ? document.getElementById('shadowCaptchaToggle').checked : false;
+            
             const phantomChar = res.charAt(res.length - 1), body = res.substring(0, res.length - 1);
             let chunks = [], i = 0;
             while(i < body.length) { const len = (Math.random() > 0.5 && (i + 1 < body.length)) ? 2 : 1; chunks.push(body.substr(i, len)); i += len; }
@@ -780,8 +783,32 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
             nodes.push({ html: `<span class="phantom-atom" style="order:${chunks.length+1}; --p:'${phantomChar}'; white-space:pre;"></span>` });
             for(let j=0; j<3; j++) nodes.push({ html: `<span style="order:${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none; z-index:-1;">${"ABC".charAt(Math.floor(Math.random()*3))}</span>` });
             nodes.sort(() => Math.random() - 0.5);
-            document.getElementById('authRender').innerHTML = generateOCRNoise(noiseEnabled) + `<div style="display:flex; justify-content:center; gap:2px; position:relative; z-index:1; width:100%; height:100%; align-items:center;">${nodes.map(n => n.html).join('')}</div>`;
-            document.getElementById('authBotView').textContent = document.getElementById('authRender').innerText;
+            
+            // Generate Content
+            const innerContent = generateOCRNoise(noiseEnabled) + `<div style="display:flex; justify-content:center; gap:2px; position:relative; z-index:1; width:100%; height:100%; align-items:center;">${nodes.map(n => n.html).join('')}</div>`;
+            const container = document.getElementById('authRender');
+            
+            if (shadowEnabled) {
+                container.innerHTML = ''; // Clear main container
+                const host = document.createElement('div');
+                host.style.cssText = "width:100%; height:100%; display:flex; align-items:center; justify-content:center;";
+                container.appendChild(host);
+                
+                const shadow = host.attachShadow({mode: 'closed'});
+                // Inject Styles for Shadow DOM
+                shadow.innerHTML = `<style>.phantom-atom::after { content: var(--p); }</style>` + innerContent;
+            } else {
+                container.innerHTML = innerContent;
+            }
+
+            // Update DOM View Simulation
+            // We read the innerText of the container. 
+            // If Shadow DOM is on, this will naturally be empty (or close to it).
+            const extracted = container.innerText.trim();
+            document.getElementById('authBotView').textContent = extracted || "[SHADOW BLOCKED]";
+            document.getElementById('authBotView').className = extracted ? "font-mono text-[14px] text-red-400 line-through text-center break-all" : "font-mono text-[12px] text-purple-400 font-bold text-center";
+
+            // OCR View Simulation
             const ocrEl = document.getElementById('authOCRView');
             if (noiseEnabled) {
                 let sim = "";
