@@ -165,6 +165,15 @@ This library implements **Security by Friction**.
 
 ---
 
+## 💻 Live Demo
+
+You can view a live demo and generate your own snippets by opening the demo.html here:
+
+https://ericfransen.github.io/js-text-obfuscator/demo.html
+
+---
+
 ## 📜 License
 
 MIT License. Free to use for personal and commercial projects.
+
