@@ -57,6 +57,11 @@ For the CAPTCHA, we overlay an SVG noise mesh that cuts through characters.
 *   **Traditional OCR:** Fails segmentation, reading an `E` as an `8` or `F`.
 *   **Vision AI:** Can solve it, but costs ~$0.01 per attempt, making spam campaigns bankrupt themselves.
 
+#### 5. Shadow DOM Wrapper
+We wrap the protected content inside a **Closed Shadow DOM Root**.
+*   **Scrapers:** `document.body.innerText` returns an **empty string**. The content is invisible to standard DOM scraping.
+*   **Protection:** Forces attackers to use expensive automation tools (Playwright/CDP) to pierce the shadow boundary.
+
 ---
 
 ## 🚀 Usage
