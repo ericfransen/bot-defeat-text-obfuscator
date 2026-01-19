@@ -31,14 +31,24 @@ We utilize the CSS `::after` pseudo-element to inject characters.
 ### Vector B: DOM Traversal / Sequencing
 Bots iterate through DOM nodes to reconstruct words.
 
-**The Defense: "BiDi Sharding"**
-We leverage the Unicode Bidirectional Algorithm (UAX #9) to decouple logical order from visual order.
-*   **Technique:** We chunk the text into random fragments, reverse some of them, and use `unicode-bidi: bidi-override` + `direction: rtl` to force the browser to paint them backwards.
+**The Defense: "BiDi Sharding & Flexbox Chaos"**
+We utilize two mechanics to decouple logical order from visual order:
+1.  **Unicode Bidirectional Algorithm (UAX #9):** `unicode-bidi: bidi-override` + `direction: rtl` forces browsers to paint text backwards.
+2.  **CSS Flexbox Ordering:** We assign random `order` integers to characters or chunks.
+
 *   **Implementation:**
     *   *Secret:* "123456"
-    *   *DOM:* `<span>456</span><span>123</span>` (with CSS `order` or `flex-direction: row-reverse`)
-    *   *Or:* `<span dir="rtl">321</span><span dir="rtl">654</span>`
-*   **Result:** A bot reading nodes in order gets jumbled garbage ("456123" or "321654").
+    *   *DOM:* 
+        ```html
+        <div style="display:flex">
+          <span style="order:2">456</span>
+          <span style="order:1">123</span>
+        </div>
+        ```
+*   **Result:** 
+    *   **User Sees:** "123456" (Visual)
+    *   **Bot DOM Iterator:** "456123" (Logical)
+    *   **Impact:** To reconstruct the valid string, a bot must perform a **full layout pass** (calculate styles), sort nodes by computed `order`, and then handle BiDi reversals. This is significantly more expensive than simple tree traversal.
 
 ### Vector C: Visual scraping (innerText cleaning)
 Sophisticated bots try to "clean" the text by removing noise.
@@ -53,6 +63,21 @@ We inject "Decoy Atoms"—characters that exist in the DOM but are invisible to 
     *   **User Sees:** `admin`
     *   **Bot Reads:** `adZmin`
     *   **Impact:** Even if the bot extracts the text, the data is corrupted. "Poisoned" emails bounce, and "Poisoned" phone numbers fail.
+
+### Vector D: Standard DOM Queries (document.getElementById / body.innerText)
+Bots often scrape the entire document body text to find keywords.
+
+**The Defense: "Shadow DOM Wrapper" (Level 6)**
+We wrap the obfuscated content inside a `closed` Shadow DOM Root.
+*   **Technique:**
+    ```javascript
+    const s = host.attachShadow({mode: 'closed'});
+    s.innerHTML = "<div>...obfuscated content...</div>";
+    ```
+*   **Result:**
+    *   `document.body.innerText`: Returns an **empty string**. The shadow root content is not traversed by standard DOM properties.
+    *   `document.getElementById('my-email')`: Returns `null`.
+*   **Impact:** This forces the attacker to upgrade from simple scrapers (Cheerio/JSDOM) to heavy, browser-automation tools (Playwright/Puppeteer) that can "pierce" shadow roots via CDP (Chrome DevTools Protocol). It massively increases the computational cost of the attack.
 
 ---
 
@@ -109,7 +134,23 @@ Modern Ciphers: XOR is used alongside other operations (like modular addition, s
 
 ---
 
-## 4. Conclusion
+## 4. Rejected Strategies (Why we don't do this)
+
+During R&D, several "advanced" techniques were evaluated and rejected due to poor ROI (Return on Investment).
+
+### A. Recursive Shadow Nesting ("Shadow Inception")
+*   **Idea:** Wrap Shadow DOM inside Shadow DOM inside Shadow DOM to confuse bots.
+*   **Verdict:** **Rejected.**
+*   **Reason:** Modern tools like Playwright have selectors (e.g., `page.getByShadowText()`) or CDP methods (`DOM.describeNode` with `pierce: true`) that cut through 1 layer or 10 layers with equal ease. Adding depth increases payload size and rendering complexity for the browser without significantly increasing the cost for the attacker.
+
+### B. Mock Data / Decoy Shadow Roots
+*   **Idea:** Inject multiple Shadow Roots, some containing "honeypot" emails (`fake@example.com`) and one containing the real one.
+*   **Verdict:** **Rejected.**
+*   **Reason:** While this effectively confuses bots (forcing them to use visual analysis to see which one is visible), it triples the HTML payload size. For a library focused on "lightweight copy-paste," this overhead is unacceptable. The combination of **Shadow DOM Wrapper (Container)** + **Phantom Shield (Content)** is sufficiently lethal to most scrapers without the bloat.
+
+---
+
+## 5. Conclusion
 
 The Phantom Shield algorithm does not rely on checking for "bots" (user-agent sniffing). Instead, it relies on the fundamental difference between how **Machines** parse code (linear, structural) and how **Humans** process information (visual, composite).
 

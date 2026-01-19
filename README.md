@@ -60,7 +60,7 @@ For the CAPTCHA, we overlay an SVG noise mesh that cuts through characters.
 #### 5. Shadow DOM Wrapper
 We wrap the protected content inside a **Closed Shadow DOM Root**.
 *   **Scrapers:** `document.body.innerText` returns an **empty string**. The content is invisible to standard DOM scraping.
-*   **Protection:** Forces attackers to use expensive automation tools (Playwright/CDP) to pierce the shadow boundary.
+*   **Protection:** Forces attackers to use expensive automation tools (Playwright/[CDP](https://chromedevtools.github.io/devtools-protocol/)) to pierce the shadow boundary.
 
 ---
 
