@@ -243,6 +243,10 @@ Protocol: BiDi-Override-2025</textarea>
                             <input type="checkbox" id="ocrToggle" onchange="renderBidiAuth(); generateIntegrationSnippet()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500 accent-indigo-500">
                             <label for="ocrToggle" class="text-[10px] text-slate-400 uppercase font-bold select-none cursor-pointer">Anti-OCR Mesh</label>
                         </div>
+                        <div class="flex items-center gap-2 bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-700 cursor-pointer">
+                            <input type="checkbox" id="shadowCaptchaToggle" onchange="generateIntegrationSnippet()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-purple-500 focus:ring-purple-500 accent-purple-500">
+                            <label for="shadowCaptchaToggle" class="text-[10px] text-purple-400 uppercase font-bold select-none cursor-pointer">Shadow DOM</label>
+                        </div>
                         <button onclick="generateNewSecret(); generateIntegrationSnippet()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl transition shadow-lg" title="Generate New Secret">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
                         </button>
@@ -884,7 +888,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
 
         function generateIntegrationSnippet() {
             const useNoise = document.getElementById('ocrToggle').checked;
-            const useShadow = document.getElementById('useShadow').checked;
+            const useShadow = document.getElementById('shadowCaptchaToggle').checked;
             const format = document.getElementById('captchaExportFormat').value;
             
             let code = "";
