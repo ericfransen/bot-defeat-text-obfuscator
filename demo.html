@@ -356,8 +356,18 @@ Protocol: BiDi-Override-2025</textarea>
 
             // --- Level 4: Extreme (Single Interaction Gate) ---
             if (entropyLevel === 4) {
-                const b64 = btoa(unescape(encodeURIComponent(rawText)));
-                fullHtml = `<span style="cursor:pointer; border-bottom:1px dashed #666; color: inherit; white-space: pre-wrap;" onclick="this.innerHTML=decodeURIComponent(escape(atob(this.dataset.secret))); this.style.border='none'; this.removeAttribute('onclick');" data-secret="${b64}">[Reveal Sensitive Data]</span>`;
+                // 1. Generate a random key (1-255)
+                const xorKey = Math.floor(Math.random() * 254) + 1;
+                
+                // 2. Encrypt: URI Encode -> XOR -> Base64
+                const uriEncoded = encodeURIComponent(rawText);
+                const encrypted = uriEncoded.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ xorKey)).join('');
+                const b64 = btoa(encrypted);
+                
+                // 3. Decrypt Logic
+                const decryptJS = `this.innerHTML=decodeURIComponent(atob('${b64}').split('').map(c=>String.fromCharCode(c.charCodeAt(0)^${xorKey})).join('')); this.style.border='none'; this.style.cursor='default'; this.removeAttribute('onclick');`;
+                
+                fullHtml = `<span style="cursor:pointer; border-bottom:1px dashed #666; color: inherit; white-space: pre-wrap;" onclick="${decryptJS}">[Reveal Sensitive Data]</span>`;
             } else {
                 rawText.split('\n').forEach((line) => {
                     fullHtml += (line ? generateObfuscatedLine(line, entropyLevel, fragDensity) : '<div class="bidi-layer"><br></div>') + '\n';
