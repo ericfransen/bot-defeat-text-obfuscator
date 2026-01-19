@@ -2,337 +2,897 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
-    <title>Interactive Text Obfuscator Demo</title>
-    <!-- Load Tailwind CSS for styling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Line Bot Defeat Obfuscation Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Simple styling for the code block */
-        pre {
-            background-color: #f4f4f5; /* gray-100 */
-            border-radius: 0.5rem;
-            padding: 1rem;
-            overflow-x: auto;
-            position: relative;
+        .weave-atom {
+            unicode-bidi: isolate;
+            direction: ltr; 
+            white-space: pre; 
         }
-        code {
-            font-family: 'Courier New', Courier, monospace;
-            color: #3f3f46; /* gray-700 */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.5);
         }
-        .copy-btn {
-            position: absolute;
-            top: 0.75rem;
-            right: 0.75rem;
-            background-color: #e4e4e7; /* gray-200 */
-            color: #3f3f46;
-            border: none;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
+        .code-editor {
+            font-family: 'Consolas', 'Monaco', monospace;
+            tab-size: 2;
         }
-        .copy-btn:hover {
-            background-color: #d4d4d8; /* gray-300 */
+        .invalid-css {
+            border-color: #ef4444 !important;
+            color: #fca5a5 !important;
         }
-        .copy-btn.copied {
-            background-color: #22c55e; /* green-500 */
-            color: white;
+        .phantom-atom::after {
+            content: var(--p);
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans p-4 sm:p-8 flex items-center justify-center min-h-screen">
+<body class="bg-[#020617] text-slate-300 min-h-screen p-6 md:p-12">
 
-    <div class="w-full max-w-3xl bg-white rounded-lg shadow-xl p-6 sm:p-8 space-y-8">
-        
-        <!-- === Generator Section === -->
-        <div>
-            <h1 class="text-3xl font-bold text-center text-gray-800">Interactive Text Obfuscator</h1>
-            <p class="text-center text-gray-600 mt-2">
-                Enter any text (email, phone, address) to generate obfuscated HTML snippets and see a live preview.
-            </p>
-            
-            <div class="mt-6">
-                <label for="raw-text" class="block text-sm font-medium text-gray-700">Enter Your Text Here:</label>
-                <textarea id="raw-text" rows="4" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-3" placeholder="e.g., contact@example.com&#10;or&#10;(123) 456-7890&#10;or&#10;123 Main Street&#10;Denver, CO 80202"></textarea>
-            </div>
+    <div class="max-w-7xl mx-auto">
+        <header class="mb-8 border-b border-slate-800 pb-8">
+            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Adversarial Weave <span class="text-blue-500">v3.1</span></h1>
+            <p class="text-slate-500 mt-2 font-mono text-sm tracking-widest uppercase">Multi-line Atomic Fragmentation Engine</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center gap-4 mb-8">
+            <button onclick="switchView('obfuscator')" id="tab-obfuscator" class="tab-btn active px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-600 text-white transition-all shadow-lg shadow-blue-900/20">Obfuscator</button>
+            <button onclick="switchView('gate')" id="tab-gate" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">CAPTCHA</button>
         </div>
 
-        <!-- === Technique 1: "Click to Reveal" === -->
-        <div class="border-t pt-6 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-700">Technique 1: "Click to Reveal" (Recommended)</h2>
-            
-            <div>
-                <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
-                <div id="click-demo-container" class="mt-2 p-4 bg-green-50 rounded-lg text-lg text-center min-h-[70px] flex items-center justify-center">
-                    <!-- Live demo will be injected here -->
+        <!-- View: Obfuscator -->
+        <div id="view-obfuscator" class="view-section grid grid-cols-1 xl:grid-cols-2 gap-8">
+            <!-- Left Column: Input & Source -->
+            <div class="space-y-6">
+                <!-- Payload Input -->
+                <div class="glass-panel p-6 rounded-3xl shadow-2xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="text-xs font-bold text-blue-400 uppercase tracking-widest">Target Payload (Multiline)</label>
+                        <span class="text-[10px] text-slate-500">UTF-8 Encoded</span>
+                    </div>
+                    <textarea 
+                        id="payloadInput" 
+                        rows="5"
+                        class="w-full bg-[#050810] border border-slate-700 rounded-xl px-4 py-3 text-slate-200 focus:ring-2 focus:ring-blue-500/50 outline-none transition-all resize-none code-editor text-sm"
+                        oninput="orchestrate()">
+System Access: Restricted
+Admin: master@vault.local
+Protocol: BiDi-Override-2025</textarea>
+                    
+                    <div class="mt-6 space-y-6">
+                        <!-- Entropy Slider -->
+                        <div class="flex items-center justify-between">
+                            <div class="space-y-1">
+                                <div class="flex items-center">
+                                    <span class="block text-xs text-slate-400 uppercase">Obfuscation Level</span>
+                                    <span id="entropyLabel" class="text-[10px] text-blue-400 font-bold uppercase ml-2">Low: Standard BiDi</span>
+                                </div>
+                                <p class="text-[12px] text-slate-600">Technique Complexity</p>
+                            </div>
+                            <input 
+                                type="range" id="entropy" min="1" max="5" value="1" step="1"
+                                class="w-32 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                                oninput="updateEntropyLabel(); orchestrate();"
+                            >
+                        </div>
+
+                        <!-- Fragmentation Slider (Conditional) -->
+                        <div id="fragControl" class="flex items-center justify-between transition-opacity duration-300">
+                            <div class="space-y-1">
+                                <span class="block text-xs text-slate-400 uppercase">Fragmentation Density</span>
+                                <p class="text-[12px] text-slate-600">Atomic shard size</p>
+                            </div>
+                            <input 
+                                type="range" id="fragDensity" min="1" max="12" value="4" 
+                                class="w-32 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-teal-500"
+                                oninput="orchestrate()"
+                            >
+                        </div>
+
+                        <!-- Smart Actions -->
+                        <div class="pt-6 border-t border-slate-800 space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="space-y-1">
+                                    <span class="block text-xs text-blue-400 font-bold uppercase tracking-widest">Smart Interactions</span>
+                                    <p class="text-[10px] text-slate-600">Click-to-Action Wrapper</p>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <label class="flex items-center gap-2 cursor-pointer opacity-50 transition-opacity mr-8" id="iconOnlyLabel">
+                                        <input type="checkbox" id="iconOnly" onchange="orchestrate()" disabled class="w-3 h-3 rounded border-slate-700 bg-slate-900 text-teal-500 focus:ring-teal-500">
+                                        <span class="text-[px] uppercase font-bold text-slate-500">Icon Only</span>
+                                    </label>
+                                    <input type="checkbox" id="enableActions" onchange="toggleActions(); orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
+                                </div>
+                            </div>
+                            <div id="actionControls" class="grid grid-cols-3 gap-2 opacity-50 pointer-events-none transition-opacity">
+                                <button onclick="setAction('copy')" class="action-btn active text-[10px] font-bold uppercase py-2 bg-blue-600 text-white rounded transition hover:bg-blue-500 ring-2 ring-blue-400" data-type="copy">Copy</button>
+                                <button onclick="setAction('mailto')" class="action-btn text-[10px] font-bold uppercase py-2 bg-slate-800 text-slate-400 rounded transition hover:bg-slate-700" data-type="mailto">Email</button>
+                                <button onclick="setAction('tel')" class="action-btn text-[10px] font-bold uppercase py-2 bg-slate-800 text-slate-400 rounded transition hover:bg-slate-700" data-type="tel">Phone</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Editable Source Snippet (Moved here) -->
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl">
+                    <div class="px-6 py-3 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Generated Source</span>
+                            <span id="payloadSize" class="text-[20px] text-slate-500 font-mono bg-slate-900/50 px-2 py-0.5 rounded border border-slate-700/50">0.00 kB</span>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <select id="exportFormat" onchange="orchestrate()" class="bg-[#050810] text-[10px] text-blue-400 font-bold uppercase border border-slate-700 rounded px-2 py-1 outline-none focus:border-blue-500">
+                                <option value="html">HTML + CSS</option>
+                                <option value="react">React Component</option>
+                            </select>
+                            <div class="h-4 w-px bg-slate-700 mx-1"></div>
+                            <button onclick="orchestrate()" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded font-bold transition">RESET</button>
+                            <button onclick="copySource()" class="text-[10px] bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded font-bold transition">COPY</button>
+                        </div>
+                    </div>
+                    <pre 
+                        id="sourceSnippet" 
+                        class="w-full h-80 bg-black/40 p-6 text-white font-mono text-xs focus:outline-none resize-none leading-relaxed overflow-auto whitespace-pre-wrap"
+                        contenteditable="true"
+                        oninput="manualOverride()"
+                        spellcheck="false"
+                    ></pre>
                 </div>
             </div>
-            
-            <div>
-                <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
-                <pre class="mt-2">
-                    <button class="copy-btn" data-target="click-code">Copy</button>
-                    <code id="click-code">
-&lt;!-- Enter text above to generate code --&gt;
-                    </code>
-                </pre>
+
+            <!-- Right Column: Visuals & Styling -->
+            <div class="space-y-6">
+                <!-- Visual Render Tree -->
+                <div class="glass-panel rounded-3xl overflow-hidden border-2 border-blue-500/20 shadow-2xl">
+                    <div class="px-6 py-3 bg-blue-500/10 border-b border-blue-500/20">
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Visual Render (Human View)</span>
+                    </div>
+                    <div id="renderTarget" class="p-8 bg-slate-900/20 min-h-[160px] text-white leading-relaxed text-lg select-none cursor-default">
+                        <!-- Injected -->
+                    </div>
+                </div>
+
+                <!-- Styling Toggle Section -->
+                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-blue-500">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-white uppercase tracking-widest">Wrapper Styling</label>
+                        <input type="checkbox" id="useWrapper" onchange="orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
+                    </div>
+                    
+                    <div id="wrapperControls" class="space-y-4 opacity-50 pointer-events-none transition-opacity">
+                        <!-- Mode Selection -->
+                        <div class="flex gap-4 mb-2">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="styleMode" value="tailwind" checked onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">Tailwind</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="styleMode" value="css" onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">CSS</span>
+                            </label>
+                        </div>
+
+                        <input type="text" id="twClasses" placeholder="Tailwind classes..." oninput="handleTwInput(event)" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none focus:border-blue-500">
+                        <textarea id="rawStyles" rows="2" placeholder="Inline CSS..." onblur="validateAndSyncCss()" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none resize-none"></textarea>
+                    </div>
+                </div>
+
+                <!-- Security & A11y Ratings -->
+                <div class="glass-panel p-6 rounded-3xl shadow-xl border-teal-500 transition-all duration-300" id="ratingsPanel">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-widest">Efficiency Analysis</h4>
+                        <button onclick="toggleRatingDetails()" class="text-slate-500 hover:text-teal-400 transition">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold uppercase text-slate-400">Bot Defeat</span>
+                            <div id="botRatingBar" class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                <div id="botRatingFill" class="h-full bg-teal-500 w-1/4 transition-all duration-500"></div>
+                            </div>
+                            <span id="botRatingText" class="text-[10px] font-bold text-teal-400">Low</span>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[10px] font-bold uppercase text-slate-400">Accessibility</span>
+                            <div id="a11yRatingBar" class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                <div id="a11yRatingFill" class="h-full bg-yellow-500 w-1/4 transition-all duration-500"></div>
+                            </div>
+                            <span id="a11yRatingText" class="text-[10px] font-bold text-yellow-400">Poor</span>
+                        </div>
+                    </div>
+                    <div id="ratingDetails" class="hidden mt-4 pt-4 border-t border-slate-700/50 text-[10px] space-y-3">
+                        <div><span class="block font-bold text-teal-400 uppercase mb-1">Security</span><p id="botReason" class="text-slate-400 leading-relaxed"></p></div>
+                        <div><span class="block font-bold text-yellow-400 uppercase mb-1">A11y</span><p id="a11yReason" class="text-slate-400 leading-relaxed"></p></div>
+                    </div>
+                </div>
+
+                <!-- Bot Simulation Console -->
+                <div class="glass-panel rounded-3xl overflow-hidden shadow-xl">
+                    <div class="px-6 py-3 bg-red-500/10 border-b border-red-500/20"><span class="text-[10px] font-bold uppercase text-red-400">Scraper Simulation</span></div>
+                    <div class="p-6 font-mono text-[10px] space-y-3 bg-black/20 text-slate-500">
+                        <div id="scraperResult" class="text-red-400/80 p-3 bg-red-950/10 rounded border border-red-900/20 break-all whitespace-pre-wrap"></div>
+                        <div class="flex items-center gap-2"><div id="matchIndicator" class="w-2 h-2 rounded-full"></div><span id="matchStatus" class="uppercase font-bold"></span></div>
+                    </div>
+                </div>
             </div>
         </div>
-        
-        <!-- === Technique 2: "Canvas Rendering" === -->
-        <div class="border-t pt-6 space-y-4">
-            <h2 class="text-xl font-semibold text-gray-700">Technique 2: "Canvas Rendering"</h2>
-            
-             <div>
-                <h3 class="font-medium text-gray-900">Live Demo Preview:</h3>
-                <div class="mt-2 p-4 bg-purple-50 rounded-lg flex justify-center min-h-[70px]">
-                    <!-- Live demo will be injected here -->
-                    <canvas id="canvas-demo" data-obfuscate="canvas" data-font="18px Arial" data-color="#374151" class="rounded-md"></canvas>
+
+        <!-- View: CAPTCHA -->
+        <div id="view-gate" class="view-section hidden max-w-4xl mx-auto space-y-12">
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl border-indigo-500">
+                <div class="flex justify-between items-start mb-8">
+                    <div class="space-y-2">
+                        <h3 class="text-xl font-bold text-indigo-400 uppercase tracking-widest">BiDi-Auth CAPTCHA</h3>
+                        <p class="text-xs text-slate-500 max-w-md">Decoupling visual and logical layers to defeat Vision AI and DOM scrapers.</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-700 cursor-pointer">
+                            <input type="checkbox" id="ocrToggle" onchange="renderBidiAuth(); generateIntegrationSnippet()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500 accent-indigo-500">
+                            <label for="ocrToggle" class="text-[10px] text-slate-400 uppercase font-bold select-none cursor-pointer">Anti-OCR Mesh</label>
+                        </div>
+                        <button onclick="generateNewSecret(); generateIntegrationSnippet()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl transition shadow-lg" title="Generate New Secret">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="flex gap-6 items-stretch h-32 mb-8">
+                    <div id="authRender" class="flex-1 bg-black/40 rounded-2xl border-2 border-slate-700 flex items-center justify-center text-5xl font-mono tracking-[0.2em] text-white select-none relative overflow-hidden shadow-inner"></div>
+                    <div class="w-32 flex flex-col gap-2">
+                        <div class="flex-1 bg-red-900/10 border border-red-900/30 rounded-xl flex flex-col justify-center items-center p-2 opacity-70">
+                            <span class="text-[16px] uppercase font-bold text-red-500/70 mb-1">DOM</span>
+                            <span id="authBotView" class="font-mono text-[14px] text-red-400 line-through text-center break-all">---</span>
+                        </div>
+                        <div class="flex-1 bg-orange-900/10 border border-orange-900/30 rounded-xl flex flex-col justify-center items-center p-2 opacity-70">
+                            <span class="text-[16px] uppercase font-bold text-orange-500/70 mb-1">OCR Vision</span>
+                            <span id="authOCRView" class="font-mono text-[14px] text-orange-400 text-center break-all">---</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-6 max-w-md mx-auto">
+                    <div class="relative group">
+                        <input type="text" id="authInput" placeholder="ENTER CODE" class="w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase">
+                        <div id="authStatus" class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold uppercase hidden"></div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="validateAuth()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider">Verify CAPTCHA</button>
+                        <button onclick="botAttempt()" class="bg-slate-800 hover:bg-slate-700 text-red-400 text-sm font-bold py-3 rounded-xl transition uppercase tracking-wider border border-red-900/20">Bot Attack</button>
+                    </div>
                 </div>
             </div>
 
-            <div>
-                <h3 class="font-medium text-gray-900">Copyable Code Snippet:</h3>
-                <pre class="mt-2">
-                    <button class="copy-btn" data-target="canvas-code">Copy</button>
-                    <code id="canvas-code">
-&lt;!-- Enter text above to generate code --&gt;
-                    </code>
-                </pre>
+            <!-- Integration Guide -->
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl">
+                <h2 class="text-xl font-bold text-white mb-6">Security Principles</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-[11px] text-slate-400 leading-relaxed">
+                    <div class="space-y-4">
+                        <p><strong class="text-blue-400 uppercase">1. Phantom Atoms:</strong> Characters are rendered via CSS <code>::after</code> content, removing them from the DOM text flow.</p>
+                        <p><strong class="text-blue-400 uppercase">2. Well Poisoning:</strong> Random decoys are injected with <code>opacity: 0</code>. They corrupt <code>innerText</code> but are invisible to users.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <p><strong class="text-blue-400 uppercase">3. Structural Chaos:</strong> Elements are shuffled in the DOM. Visual order is restored via Flexbox <code>order</code> properties.</p>
+                        <p><strong class="text-blue-400 uppercase">4. Adversarial Noise:</strong> SVG mesh patterns target the weaknesses of Convolutional Neural Networks used in OCR.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Integration Section -->
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl border-teal-500">
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-teal-400 uppercase tracking-widest">Integration</h3>
+                            <p class="text-xs text-slate-500 mt-1">Drop-in code for your forms.</p>
+                        </div>
+                        <span id="captchaPayloadSize" class="text-[20px] text-slate-500 font-mono bg-slate-900/50 px-2 py-0.5 rounded border border-slate-700/50">0.00 kB</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <select id="captchaExportFormat" onchange="generateIntegrationSnippet()" class="bg-[#050810] text-[10px] text-teal-400 font-bold uppercase border border-slate-700 rounded px-2 py-2 outline-none focus:border-teal-500">
+                            <option value="html">HTML + JS</option>
+                            <option value="react">React Component</option>
+                        </select>
+                        <button onclick="copyIntegration()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition uppercase tracking-wider shadow-lg">Copy Code</button>
+                    </div>
+                </div>
+                
+                <div class="bg-black/40 rounded-xl p-4 border border-slate-700/50 overflow-hidden relative">
+                    <pre id="integrationCode" class="font-mono text-[10px] text-slate-300 h-64 overflow-auto whitespace-pre-wrap select-all outline-none"></pre>
+                </div>
+
+                <div class="mt-6 space-y-4">
+                    <h4 class="text-xs font-bold text-white uppercase">How to use</h4>
+                    <ul class="text-[11px] text-slate-400 space-y-2 list-disc pl-4">
+                        <li><strong>Step 1:</strong> Copy the code above and paste it into your HTML form.</li>
+                        <li><strong>Step 2:</strong> Ensure the <code>validateCaptcha()</code> function is called before form submission.</li>
+                        <li><strong>Note:</strong> This is a client-side implementation (Anti-Spam). For maximum security against targeted attacks, move the logic to your server (Node/PHP/Python) so the secret is never exposed to the browser.</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
+        <footer class="mt-12 pt-8 border-t border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="space-y-2"><h4 class="text-xs font-bold text-white uppercase tracking-tighter">UAX #9</h4><p class="text-[11px] text-slate-500 leading-relaxed">BiDi Isolation prevents context leakage across atom boundaries.</p></div>
+            <div class="space-y-2"><h4 class="text-xs font-bold text-blue-400 uppercase tracking-tighter">Phantom shield</h4><p class="text-[11px] text-slate-500 leading-relaxed">Maximum entropy via CSS injection and DOM poisoning.</p></div>
+            <div class="space-y-2"><h4 class="text-xs font-bold text-red-400 uppercase tracking-tighter">Vision AI</h4><p class="text-[11px] text-slate-500 leading-relaxed">Forcing the transition from cheap string-parsing to expensive rendering.</p></div>
+        </footer>
     </div>
 
-    <!-- 
-      Reusable Obfuscation Script
-      (This is the only JS you need)
-    -->
+    <!-- Feedback Pill -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-8 py-3 rounded-full text-xs font-bold shadow-2xl opacity-0 transition-opacity pointer-events-none uppercase tracking-widest">Copied</div>
+
     <script>
-        // --- Helper function to escape HTML for display in <code> blocks ---
-        function escapeHTML(str) {
-            return str.replace(/&/g, '&amp;')
-                      .replace(/</g, '&lt;')
-                      .replace(/>/g, '&gt;')
-                      .replace(/"/g, '&quot;')
-                      .replace(/'/g, '&#039;');
+        let currentAuthSecret = '';
+
+        function triggerFeedback(el, e) {
+            const originalColor = el.style.color || 'inherit';
+            el.style.transition = 'color 0.1s ease'; 
+            el.style.color = '#c2410c'; 
+            const feedback = document.createElement('div');
+            feedback.textContent = 'Copied!';
+            feedback.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; transform:translate(-50%, -100%); padding:8px 24px; border-radius:9999px; background-color:#f8fafc; color:#0f172a; font-size:14px; font-weight:900; text-transform:uppercase; rgba(0,0,0,0.3); pointer-events:none; opacity:0; transition:all 0.2s ease-out; z-index:9999;`;
+            document.body.appendChild(feedback);
+            requestAnimationFrame(() => { feedback.style.opacity = '1'; feedback.style.transform = 'translate(-50%, -180%)'; });
+            setTimeout(() => { el.style.color = originalColor; }, 250);
+            setTimeout(() => { feedback.remove(); }, 800);
         }
 
-        // --- Helper function to draw on canvas (handles multi-line) ---
-        function drawCanvas(canvas) {
-            const b64text = canvas.dataset.b64Text;
-            const ctx = canvas.getContext('2d');
+        function orchestrate() {
+            const rawText = document.getElementById('payloadInput').value;
+            const entropyLevel = parseInt(document.getElementById('entropy').value);
+            const fragDensity = parseInt(document.getElementById('fragDensity').value);
+            const renderTarget = document.getElementById('renderTarget');
+            const sourceSnippet = document.getElementById('sourceSnippet');
             
-            if (!ctx) return; // Exit if context isn't available
-
-            // --- HiDPI Scaling Fix (Start) ---
-            const dpr = window.devicePixelRatio || 1;
+            // Wrapper configuration
+            const useWrapper = document.getElementById('useWrapper').checked;
+            const twClasses = document.getElementById('twClasses').value;
+            const rawStyles = document.getElementById('rawStyles').value;
+            const exportFormat = document.getElementById('exportFormat').value;
             
-            // 1. Get base styles and calculate logical size
-            const styleFont = canvas.dataset.font || '20px Arial';
-            const fontSize = parseInt(styleFont.split('px')[0], 10) || 16;
-            const lineHeight = fontSize * 1.2;
-            const lines = b64text ? atob(b64text).split('\n') : [];
+            // Mode selection for wrapper
+            const mode = document.querySelector('input[name="styleMode"]:checked').value;
+            const twInput = document.getElementById('twClasses');
+            const cssInput = document.getElementById('rawStyles');
+            const wrapperControls = document.getElementById('wrapperControls');
 
-            // Use logical width from HTML attribute (e.g., 300)
-            // We use canvas.getAttribute to get the HTML value, not canvas.width (which is backing store)
-            const logicalWidth = parseInt(canvas.getAttribute('width'), 10) || 300; 
+            if (mode === 'tailwind') { twInput.classList.remove('opacity-50'); cssInput.classList.add('opacity-50'); }
+            else { twInput.classList.add('opacity-50'); cssInput.classList.remove('opacity-50'); }
             
-            // Calculate logical height
-            // This corrects a min-height inconsistency from the previous file.
-            const logicalHeight = Math.max(lineHeight * lines.length + 20, 40); // +20 padding, min 40px
+            wrapperControls.style.opacity = useWrapper ? "1" : "0.5";
+            wrapperControls.style.pointerEvents = useWrapper ? "auto" : "none";
 
-            // 2. Set backing store size (scaled by DPR)
-            canvas.width = logicalWidth * dpr;
-            canvas.height = logicalHeight * dpr;
+            let fullHtml = "";
 
-            // 3. Set DOM/CSS size (logical size)
-            canvas.style.width = `${logicalWidth}px`;
-            canvas.style.height = `${logicalHeight}px`;
-
-            // 4. Scale the context to match DPR
-            ctx.scale(dpr, dpr);
-            // --- HiDPI Scaling Fix (End) ---
-            
-            // Clear the canvas (now using logical dimensions)
-            ctx.clearRect(0, 0, logicalWidth, logicalHeight);
-
-            if (!b64text) {
-                // Canvas is clear, just return
-                return;
+            // --- Level 4: Extreme (Single Interaction Gate) ---
+            if (entropyLevel === 4) {
+                // 1. Generate a random key (1-255)
+                const xorKey = Math.floor(Math.random() * 254) + 1;
+                
+                // 2. Encrypt: URI Encode -> XOR -> Base64
+                const uriEncoded = encodeURIComponent(rawText);
+                const encrypted = uriEncoded.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ xorKey)).join('');
+                const b64 = btoa(encrypted);
+                
+                // 3. Decrypt Logic
+                const decryptJS = `this.innerHTML=decodeURIComponent(atob('${b64}').split('').map(c=>String.fromCharCode(c.charCodeAt(0)^${xorKey})).join('')); this.style.border='none'; this.style.cursor='default'; this.removeAttribute('onclick');`;
+                
+                fullHtml = `<span style="cursor:pointer; border-bottom:1px dashed #666; color: inherit; white-space: pre-wrap;" onclick="${decryptJS}">[Reveal Sensitive Data]</span>`;
+            } else {
+                rawText.split('\n').forEach((line) => {
+                    fullHtml += (line ? generateObfuscatedLine(line, entropyLevel, fragDensity) : '<div class="bidi-layer"><br></div>') + '\n';
+                });
             }
             
-            // Apply drawing styles (font must be set AFTER scaling)
-            ctx.font = styleFont;
-            ctx.fillStyle = canvas.dataset.color || '#374151';
-            ctx.textAlign = 'center';
+            fullHtml = fullHtml.trim();
+            let rawFinal = fullHtml;
             
-            // Calculate starting Y to vertically center the whole block
-            const totalTextHeight = (lines.length - 1) * lineHeight;
-            let y = (logicalHeight / 2) - (totalTextHeight / 2); // Use logical height
+            let interactionCSS = "";
+            let uniqueId = "obf-" + Math.random().toString(36).substr(2, 6);
 
-            ctx.textBaseline = 'middle'; // Align text vertically from its center
-
-            lines.forEach(line => {
-                ctx.fillText(line, logicalWidth / 2, y); // Use logical width
-                y += lineHeight;
-            });
-        }
-
-        // --- Helper function to create the "Click to Reveal" button ---
-        function createClickButton(b64text) {
-            const button = document.createElement('a');
-            button.href = "#";
-            button.className = "inline-block px-6 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition-colors";
-            button.dataset.obfuscate = "click";
-            button.dataset.b64Text = b64text;
-            button.textContent = "Click to Show Text";
-            
-            // Attach the reveal listener
-            attachClickRevealListener(button);
-            return button;
-        }
-
-        // --- Helper function to attach the "click" listener ---
-        function attachClickRevealListener(target) {
-            target.addEventListener('click', function(e) {
-                e.preventDefault(); 
+            const enableActions = document.getElementById('enableActions').checked;
+            if (enableActions && entropyLevel !== 4) {
+                const activeBtn = document.querySelector('.action-btn.active');
+                const actionType = activeBtn ? activeBtn.dataset.type : 'copy';
                 
-                const b64text = target.dataset.b64Text;
-                if (!b64text) return;
+                // --- XOR Encryption Logic ---
+                // 1. Generate a random key (1-255)
+                const xorKey = Math.floor(Math.random() * 254) + 1;
                 
-                const revealedText = atob(b64text);
+                // 2. URI Encode (to handle UTF-8/Emoji correctly), then XOR every character
+                const uriEncoded = encodeURIComponent(rawText);
+                const encrypted = uriEncoded.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ xorKey)).join('');
                 
-                // Create a new element to hold the text
-                const textSpan = document.createElement('span');
-                textSpan.className = 'text-lg font-medium text-gray-800 whitespace-pre-wrap'; // pre-wrap to respect newlines
-                textSpan.textContent = revealedText;
-                
-                target.parentNode.replaceChild(textSpan, target);
-            });
-        }
+                // 3. Base64 Encode the encrypted binary string
+                const b64 = btoa(encrypted);
 
-        // --- Main Generator Logic ---
-        document.addEventListener('DOMContentLoaded', function() {
-            const rawTextInput = document.getElementById('raw-text');
-            
-            const clickCode = document.getElementById('click-code');
-            const clickDemoContainer = document.getElementById('click-demo-container');
-            
-            const canvasCode = document.getElementById('canvas-code');
-            const canvasDemo = document.getElementById('canvas-demo');
+                // 4. Generate the inline decryption script
+                // Logic: atob -> split -> map(xor) -> join -> decodeURIComponent
+                const decryptJS = `decodeURIComponent(atob('${b64}').split('').map(c=>String.fromCharCode(c.charCodeAt(0)^${xorKey})).join(''))`;
 
-            function updateSnippets() {
-                const rawText = rawTextInput.value;
+                let onclick = "", icon = "";
                 
-                if (!rawText) {
-                    // Reset to default
-                    clickCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
-                    canvasCode.innerHTML = `&lt;!-- Enter text above to generate code --&gt;`;
-                    clickDemoContainer.innerHTML = `<span class="text-gray-400">Preview appears here</span>`;
-                    canvasDemo.dataset.b64Text = "";
-                    drawCanvas(canvasDemo); // Clear canvas
-                    return;
+                // SVG Icons
+                const iconCopy = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>`;
+                const iconMail = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
+                const iconTel = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
+                
+                let ariaLabel = "Click to reveal protected content";
+                if (actionType === 'copy') { 
+                    onclick = `navigator.clipboard.writeText(${decryptJS}); const f=this.querySelector('.feedback'); f.style.opacity='1'; f.style.top='-45px'; setTimeout(()=>{f.style.opacity='0'; f.style.top='-35px'},1000);`; 
+                    icon = iconCopy; // Ensure icon is assigned
+                    ariaLabel = "Click to copy protected content";
+                }
+                else if (actionType === 'mailto') { 
+                    onclick = `window.location.href='mailto:'+${decryptJS}`; icon = iconMail; 
+                    ariaLabel = "Click to send email to protected address";
+                }
+                else if (actionType === 'tel') { 
+                    onclick = `window.location.href='tel:'+${decryptJS}`; icon = iconTel; 
+                    ariaLabel = "Click to call protected phone number";
                 }
 
-                const b64text = btoa(rawText);
-                
-                // --- 1. Update Click-to-Reveal ---
-                const clickSnippet = `&lt;a href="#"
-   class="..."
-   data-obfuscate="click"
-   data-b64-text="${b64text}"&gt;
-   Click to Show Text
-&lt;/a&gt;`;
-                clickCode.innerHTML = escapeHTML(clickSnippet.replace(/^\n|\n$/g, ''));
-                
-                // Update live demo (by replacing it)
-                clickDemoContainer.innerHTML = ''; // Clear
-                clickDemoContainer.appendChild(createClickButton(b64text));
-                
+                // Keyboard support (Enter/Space triggers click)
+                const onkeydown = `if(event.key==='Enter'||event.key===' ') { this.click(); event.preventDefault(); }`;
 
-                // --- 2. Update Canvas ---
-                // Estimate lines to set a reasonable default height in snippet
-                const lines = rawText.split('\n').length;
-                const canvasHeight = Math.max(lines * 20 + 20, 40);
+                // Icon Only Mode Logic
+                const isIconOnly = document.getElementById('iconOnly').checked;
+                const srOnlyStyle = isIconOnly ? 'position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;' : 'flex-grow:1;';
 
-                const canvasSnippet = `&lt;canvas
-    data-obfuscate="canvas"
-    data-b64-text="${b64text}"
-    data-font="18px Arial"
-    data-color="#374151"
-    width="300"
-    height="${canvasHeight}"
-    class="rounded-md"&gt;
-&lt;/canvas&gt;`;
-                canvasCode.innerHTML = escapeHTML(canvasSnippet.replace(/^\n|\n$/g, ''));
-                
-                // Update live demo (by updating data and redrawing)
-                canvasDemo.dataset.b64Text = b64text;
-                canvasDemo.width = 300; // Reset width (in case)
-                drawCanvas(canvasDemo);
+                // Self-contained CSS for hover effects
+                interactionCSS = `<style>
+  .${uniqueId} { cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; position:relative; }
+  .${uniqueId}:hover svg { color: #60a5fa !important; transform: scale(1.1); }
+  .${uniqueId} .icon-box { opacity:${isIconOnly ? '1' : '0'}; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
+  .${uniqueId}:hover .icon-box { opacity:1; }
+  .${uniqueId} .feedback { 
+    position:absolute; top:-35px; left:50%; transform:translateX(-50%); 
+    background:#0f172a; color:white; font-family:sans-serif; font-size:11px; font-weight:800; letter-spacing:0.05em;
+    padding:6px 16px; border-radius:99px; box-shadow:0 4px 12px rgba(0,0,0,0.4);
+    opacity:0; transition:all 0.2s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none; white-space:nowrap; z-index:10;
+  }
+  .${uniqueId} .feedback::after {
+    content:''; position:absolute; bottom:-4px; left:50%; margin-left:-4px;
+    border-width:4px; border-style:solid; border-color:#0f172a transparent transparent transparent;
+  }
+</style>`;
+
+                const wrapStart = `<div class="${uniqueId}" role="button" tabindex="0" aria-label="${ariaLabel}" onclick="${onclick}" onkeydown="${onkeydown}"><div style="${srOnlyStyle}" aria-hidden="true">
+`;
+                // Add feedback pill for copy action (with improved class)
+                const feedbackEl = actionType === 'copy' ? `<div class="feedback">COPIED!</div>` : '';
+                const wrapEnd = `
+</div><div class="icon-box" aria-hidden="true">${icon}</div>${feedbackEl}</div>`;
+
+                rawFinal = wrapStart + rawFinal + wrapEnd;
             }
 
-            // --- Initial State (for page load) ---
-            updateSnippets(); // Run on load
-            rawTextInput.addEventListener('input', updateSnippets); // Run on text change
+            if (useWrapper) {
+                let wrapperTag = '<div';
+                if (mode === 'tailwind' && twClasses.trim()) wrapperTag += ` class="${twClasses}"`;
+                else if (mode === 'css' && rawStyles.trim()) wrapperTag += ` style="${rawStyles.replace(/\n/g, ' ')}"`;
+                wrapperTag += '>';
+                // Add newlines for cleaner source code
+                rawFinal = wrapperTag + '\n' + rawFinal + '\n</div>';
+            }
 
-            // --- Activate all OTHER obfuscated elements on the page ---
-            // (This script will also power any static elements you paste elsewhere)
+            let highlightedFinal = "";
+            let finalOutput = "";
             
-            // Activate static "click" elements
-            document.querySelectorAll('[data-obfuscate="click"]:not([data-b64-text=""])').forEach(attachClickRevealListener);
-            
-            // Activate static "canvas" elements
-            document.querySelectorAll('[data-obfuscate="canvas"]:not([data-b64-text=""])').forEach(drawCanvas);
+            if (exportFormat === 'react') {
+                finalOutput = `import React from 'react';
 
+export default function SecureText() {
+  return (
+    <div dangerouslySetInnerHTML={{ __html: \`
+${interactionCSS ? interactionCSS.replace(/<style>/g, '<style scoped>') : ''}
+${rawFinal.replace(/`/g, '\\`')}
+    \` }} />
+  );
+}`;
+                highlightedFinal = `<span class="text-purple-400">import</span> React <span class="text-purple-400">from</span> <span class="text-green-400">'react'</span>;
 
-            // --- Clipboard Copy Logic ---
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', () => {
-                    const targetId = button.dataset.target;
-                    const codeElement = document.getElementById(targetId);
-                    
-                    // Create a temporary textarea to hold the text
-                    const textArea = document.createElement('textarea');
-                    
-                    // We need to "unescape" the HTML for the clipboard
-                    textArea.innerHTML = codeElement.innerHTML
-                        .replace(/&lt;/g, '<')
-                        .replace(/&gt;/g, '>')
-                        .replace(/&amp;/g, '&');
-                        
-                    textArea.style.position = 'fixed'; // Hide it
-                    textArea.style.opacity = 0;
-                    document.body.appendChild(textArea);
-                    textArea.select();
-                    
-                    try {
-                        // Use execCommand for broader compatibility in iFrames
-                        document.execCommand('copy');
-                        button.textContent = 'Copied!';
-                        button.classList.add('copied');
-                    } catch (err) {
-                        console.error('Failed to copy text: ', err);
-                        button.textContent = 'Error';
-                    }
-                    
-                    document.body.removeChild(textArea);
-                    
-                    // Reset button text
-                    setTimeout(() => {
-                        button.textContent = 'Copy';
-                        button.classList.remove('copied');
-                    }, 2000);
+<span class="text-purple-400">export default function</span> <span class="text-yellow-400">SecureText</span>() {
+  <span class="text-purple-400">return</span> (
+    &lt;<span class="text-blue-400">div</span> <span class="text-purple-400">dangerouslySetInnerHTML</span>={{ __html: \`
+${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/style&gt;</span>\n' : ''}${escapeHtml(rawFinal)}
+    \` }} /&gt;
+  );
+}`;
+            } else {
+                // HTML Format
+                finalOutput = (interactionCSS ? interactionCSS + '\n' : '') + rawFinal;
+                highlightedFinal = (interactionCSS ? `<span class="text-slate-500">${escapeHtml(interactionCSS)}</span>\n` : '') + escapeHtml(rawFinal);
+                
+                // Highlight wrapper if exists
+                if (useWrapper) {
+                   const split = highlightedFinal.split('\n');
+                   if (split.length > 2) {
+                       split[interactionCSS ? 1 : 0] = `<span class="text-purple-400">${split[interactionCSS ? 1 : 0]}</span>`;
+                       split[split.length-1] = `<span class="text-purple-400">${split[split.length-1]}</span>`;
+                       highlightedFinal = split.join('\n');
+                   }
+                }
+            }
+
+            renderTarget.innerHTML = (interactionCSS || "") + rawFinal;
+            sourceSnippet.innerHTML = highlightedFinal;
+            // Store raw text for copy button (since sourceSnippet has HTML coloring)
+            sourceSnippet.dataset.raw = finalOutput;
+
+            // Update Payload Size
+            const sizeInBytes = new Blob([finalOutput]).size;
+            const sizeInKb = (sizeInBytes / 1024).toFixed(2);
+            document.getElementById('payloadSize').textContent = `${sizeInKb} kB`;
+
+            const leak = runScraperSim();
+            updateRatings(leak);
+        }
+
+        function toggleRatingDetails() { document.getElementById('ratingDetails').classList.toggle('hidden'); }
+
+        function updateRatings(leakDetected) {
+            const level = parseInt(document.getElementById('entropy').value);
+            const density = parseInt(document.getElementById('fragDensity').value);
+            const actionsEnabled = document.getElementById('enableActions').checked;
+            const botBar = document.getElementById('botRatingFill'), botText = document.getElementById('botRatingText');
+            const a11yBar = document.getElementById('a11yRatingFill'), a11yText = document.getElementById('a11yRatingText');
+            const botReason = document.getElementById('botReason'), a11yReason = document.getElementById('a11yReason');
+
+            let botW = 25, botT = 'Low', botC = 'bg-red-500', botMsg = "Simple structure.<br><br>Easily scraped by basic bots.";
+            if (level === 2) { botW = 50; botT = 'Medium'; botC = 'bg-yellow-500'; botMsg = "Noise injection disrupts regex.<br><br>DOM order is still preserved."; }
+            if (level === 3) { botW = 85; botT = 'High'; botC = 'bg-teal-500'; botMsg = "BiDi + Homoglyphs confuse parsers.<br><br>Requires layout analysis."; }
+            if (level === 4) { botW = 100; botT = 'Critical'; botC = 'bg-purple-500'; botMsg = "Data hidden behind interaction.<br><br>Invisible without JS events."; }
+            if (level === 5) { botW = 95; botT = 'Fortified'; botC = 'bg-indigo-500'; botMsg = "Phantom Shield.<br><br>Fragmented, poisoned, and partially CSS-rendered."; }
+            if (level !== 4) botW = Math.min(99, botW + (density * 1.5));
+            if (leakDetected && level < 4) { botW = Math.max(10, botW - 40); botT = 'Compromised'; botC = 'bg-red-600'; botMsg = "ALERT: Sim scraper detected keywords!"; }
+            botBar.style.width = `${botW}%`; botBar.className = `h-full ${botC} transition-all duration-500`; botText.textContent = botT; botReason.innerHTML = botMsg;
+
+            let a11yW = '10%', a11yT = 'Unusable', a11yC = 'bg-red-600', a11yMsg = "Screen readers read scrambled DOM order.";
+            if (level === 1) { a11yW = '30%'; a11yT = 'Poor'; a11yC = 'bg-orange-500'; a11yMsg = "Reversed DOM confuses reading order."; }
+            if (level === 4) { a11yW = '90%'; a11yT = 'Good'; a11yC = 'bg-green-500'; a11yMsg = "Revealed text is standard and readable."; }
+            if (actionsEnabled && level !== 4) { 
+                a11yW = '95%'; a11yT = 'Excellent'; a11yC = 'bg-green-500'; 
+                a11yMsg = "ARIA labels + Keyboard support provide perfect Screen Reader experience.<br>Garbage DOM is hidden from A11y tree."; 
+            }
+            a11yBar.style.width = a11yW; a11yBar.className = `h-full ${a11yC} transition-all duration-500`; a11yText.textContent = a11yT; a11yReason.innerHTML = a11yMsg;
+        }
+
+        function updateEntropyLabel() {
+            const level = parseInt(document.getElementById('entropy').value);
+            const label = document.getElementById('entropyLabel');
+            const fragControl = document.getElementById('fragControl');
+            // Disable density for Level 4 (Gate) and Level 5 (Phantom Shield)
+            if (level === 4 || level === 5) { fragControl.style.opacity = "0.3"; fragControl.style.pointerEvents = "none"; }
+            else { fragControl.style.opacity = "1"; fragControl.style.pointerEvents = "auto"; }
+            const texts = ["Low: Standard BiDi", "Medium: BiDi + Noise", "High: BiDi + Homoglyphs", "Extreme: Interaction Gate", "Max: Phantom Shield"];
+            label.textContent = texts[level-1];
+        }
+
+        const homoglyphMaps = { 'o': 'ο', 'a': 'а', 'e': 'е', 'O': 'Ο', 'A': 'А', 'E': 'Е' };
+        const mirrorMap = { '(': ')', ')': '(', '{': '}', '}': '{', '[': ']', ']': '[', '<': '>', '>': '<' };
+
+        function generateObfuscatedLine(str, level, density) {
+            let rawChars = Array.from(str); 
+            if (level === 3) rawChars = rawChars.map(c => mirrorMap[c] || (Math.random() > 0.5 && homoglyphMaps[c] ? homoglyphMaps[c] : c));
+            let atoms = rawChars.map(c => escapeHtml(c));
+
+            // --- Construction Strategies ---
+
+            // Level 5: Phantom Shield (The Crowning Achievement)
+            if (level === 5) {
+                let nodes = [];
+                atoms.forEach((atom, idx) => {
+                    if (Math.random() < 0.3 && atom.length === 1 && !atom.startsWith('&')) nodes.push({ html: `<span class="phantom-atom" style="order:${idx}; --p:'${atom}'; white-space:pre;"></span>` });
+                    else nodes.push({ html: `<span style="order:${idx}; white-space:pre;">${atom}</span>` });
                 });
+                for(let i=0; i<Math.ceil(atoms.length*0.2); i++) nodes.push({ html: `<span style="order:${Math.floor(Math.random()*atoms.length)}; opacity:0; position:absolute; pointer-events:none; font-size:0;">${'XYZ'.charAt(Math.floor(Math.random()*3))}</span>` });
+                nodes.sort(() => Math.random() - 0.5);
+                return `<div style="display:flex; flex-wrap:wrap; position:relative; word-break:break-all;">${nodes.map(n => n.html).join('')}</div>`;
+            }
+
+            if (level === 3) {
+                const noiseProb = density * 0.05; let noisy = [];
+                atoms.forEach(a => { noisy.push(a); if(Math.random() < noiseProb) noisy.push('&#8203;'); });
+                const reversed = noisy.reverse(); const numChunks = Math.max(2, Math.ceil(density / 2));
+                let segments = [], currentPos = 0, base = Math.floor(reversed.length / numChunks);
+                for(let i=0; i<numChunks-1; i++) { segments.push(reversed.slice(currentPos, currentPos + base).join('')); currentPos += base; }
+                segments.push(reversed.slice(currentPos).join(''));
+                return `<div style="unicode-bidi:bidi-override; direction:rtl; text-align:left;">${segments.map(s => `<span style="direction:rtl; white-space:pre;">${s}</span>`).join('')}</div>`;
+            }
+
+            let fragments = [], i = 0;
+            while(i < atoms.length) {
+                const baseSize = Math.max(1, 14 - density);
+                let size = Math.max(1, baseSize + Math.floor(Math.random()*baseSize/2 - baseSize/4));
+                let chunk = atoms.slice(i, i + size);
+                if (level === 2 && Math.random() > 0.7) chunk.push('&#8203;'); 
+                fragments.push(chunk.join('')); i += size;
+            }
+            return `<div class="bidi-layer" style="display:flex; flex-direction:row-reverse; justify-content:flex-end;">${fragments.reverse().map(f => `<span class="weave-atom" style="white-space:pre;">${f}</span>`).join('')}</div>`;
+        }
+
+        function generateOCRNoise(enabled) {
+            if (!enabled) return '';
+            let svg = '', w = 300, h = 100;
+            svg += `<path d="M0 100 L300 0" stroke="rgba(255,255,255,0.3)" stroke-width="2" /><path d="M0 0 L300 100" stroke="rgba(255,255,255,0.3)" stroke-width="2" />`;
+            for(let i=0; i<15; i++) svg += `<path d="M${Math.random()*w} ${Math.random()*h} Q ${Math.random()*w} ${Math.random()*h} ${Math.random()*w} ${Math.random()*h}" stroke="rgba(200,200,200,0.5)" fill="none" stroke-width="1.5" />`;
+            for(let i=0; i<250; i++) svg += `<circle cx="${Math.random()*w}" cy="${Math.random()*h}" r="${Math.random()*2}" fill="rgba(255,255,255,${Math.random()*0.7+0.3})" />`;
+            return `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:0; opacity:1;">${svg}</svg>`;
+        }
+
+        function generateNewSecret() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let res = '';
+            for (let i = 0; i < 5; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+            currentAuthSecret = res;
+            const input = document.getElementById('authInput'), status = document.getElementById('authStatus');
+            if (input) { input.value = ''; input.className = "w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase"; }
+            if (status) status.className = "hidden";
+            renderBidiAuth();
+        }
+
+        function renderBidiAuth() {
+            if(!currentAuthSecret) return;
+            const res = currentAuthSecret, noiseEnabled = document.getElementById('ocrToggle').checked;
+            const phantomChar = res.charAt(res.length - 1), body = res.substring(0, res.length - 1);
+            let chunks = [], i = 0;
+            while(i < body.length) { const len = (Math.random() > 0.5 && (i + 1 < body.length)) ? 2 : 1; chunks.push(body.substr(i, len)); i += len; }
+            let nodes = [];
+            chunks.forEach((chunk, idx) => {
+                const rev = chunk.length > 1 && Math.random() > 0.5;
+                nodes.push({ html: `<span style="order:${idx+1}; unicode-bidi:bidi-override; direction:${rev?'rtl':'ltr'}; white-space:pre;">${rev?chunk.split('').reverse().join(''):chunk}</span>` });
             });
+            nodes.push({ html: `<span class="phantom-atom" style="order:${chunks.length+1}; --p:'${phantomChar}'; white-space:pre;"></span>` });
+            for(let j=0; j<3; j++) nodes.push({ html: `<span style="order:${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none; z-index:-1;">${"ABC".charAt(Math.floor(Math.random()*3))}</span>` });
+            nodes.sort(() => Math.random() - 0.5);
+            document.getElementById('authRender').innerHTML = generateOCRNoise(noiseEnabled) + `<div style="display:flex; justify-content:center; gap:2px; position:relative; z-index:1; width:100%; height:100%; align-items:center;">${nodes.map(n => n.html).join('')}</div>`;
+            document.getElementById('authBotView').textContent = document.getElementById('authRender').innerText;
+            const ocrEl = document.getElementById('authOCRView');
+            if (noiseEnabled) {
+                let sim = "";
+                for (let c of currentAuthSecret) {
+                    const r = Math.random();
+                    if (r < 0.25) continue;
+                    else if (r < 0.8) sim += ['8', 'E', '0', 'X', '5'][Math.floor(Math.random()*5)];
+                    else sim += c;
+                }
+                ocrEl.textContent = sim || "[EMPTY]"; ocrEl.className = "font-mono text-[14px] text-orange-400 opacity-50";
+            } else { ocrEl.textContent = currentAuthSecret; ocrEl.className = "font-mono text-[14px] text-green-400 font-bold"; }
+        }
 
-        });
+        function validateAuth(failureDelay = 1000) {
+            const input = document.getElementById('authInput'), status = document.getElementById('authStatus');
+            const val = input.value.toUpperCase().replace(/\u200B/g, '').trim();
+            status.className = "absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block";
+            if (val === currentAuthSecret) { status.textContent = "Verified"; status.classList.add('text-green-500'); setTimeout(generateNewSecret, 1500); }
+            else { status.textContent = "Invalid"; status.classList.add('text-red-500'); setTimeout(generateNewSecret, failureDelay); }
+        }
+
+        function botAttempt() { document.getElementById('authInput').value = document.getElementById('authRender').innerText; validateAuth(2000); }
+        function manualOverride() { document.getElementById('renderTarget').innerHTML = document.getElementById('sourceSnippet').innerText; updateRatings(runScraperSim()); }
+        
+        function handleTwInput(e) { orchestrate(); }
+        function validateAndSyncCss() { orchestrate(); }
+
+        function runScraperSim() {
+            const extracted = document.getElementById('renderTarget').innerText.trim();
+            document.getElementById('scraperResult').textContent = extracted;
+            const leak = ['admin', 'master', 'restricted'].some(k => extracted.toLowerCase().includes(k));
+            const ind = document.getElementById('matchIndicator'), stat = document.getElementById('matchStatus');
+            ind.className = `w-2 h-2 rounded-full ${leak ? 'bg-red-500 animate-ping' : 'bg-green-500'}`;
+            stat.textContent = leak ? "Leak Detected" : "Obfuscation Clear"; stat.className = leak ? "text-red-500" : "text-green-500";
+            return leak;
+        }
+        function escapeHtml(t) { return t.replace(/[&<>'"`]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;','`':'&#96;'}[m])); }
+        function copySource() { 
+            const text = document.getElementById('sourceSnippet').dataset.raw || document.getElementById('sourceSnippet').innerText;
+            navigator.clipboard.writeText(text); 
+            
+            const btn = document.querySelector('button[onclick="copySource()"]');
+            const originalText = btn.textContent;
+            btn.textContent = "COPIED!";
+            btn.classList.add('bg-blue-500');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-blue-500');
+            }, 2000);
+        }
+        function showToast() { const t = document.getElementById('toast'); t.style.opacity = "1"; setTimeout(() => t.style.opacity = "0", 2000); }
+        function switchView(id) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('view-' + id).classList.remove('hidden');
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                const active = btn.id === 'tab-' + id;
+                btn.className = `tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${active ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
+            });
+        }
+        function toggleActions() { 
+            const en = document.getElementById('enableActions').checked; 
+            document.getElementById('actionControls').style.opacity = en ? "1" : "0.5"; 
+            document.getElementById('actionControls').style.pointerEvents = en ? "auto" : "none"; 
+            
+            const iconCheck = document.getElementById('iconOnly');
+            const iconLabel = document.getElementById('iconOnlyLabel');
+            iconCheck.disabled = !en;
+            iconLabel.style.opacity = en ? "1" : "0.5";
+        }
+        function setAction(type) {
+            document.querySelectorAll('.action-btn').forEach(b => {
+                const active = b.dataset.type === type;
+                b.className = `action-btn text-[10px] font-bold uppercase py-2 rounded transition ${active ? 'bg-blue-600 text-white ring-2 ring-blue-400 active' : 'bg-slate-800 text-slate-400 hover:bg-slate-700'}`;
+            });
+            orchestrate();
+        }
+
+        function generateIntegrationSnippet() {
+            const useNoise = document.getElementById('ocrToggle').checked;
+            const format = document.getElementById('captchaExportFormat').value;
+            
+            let code = "";
+
+            if (format === 'react') {
+                const noiseLogicReact = useNoise 
+                    ? `const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;`
+                    : `const noise = '';`;
+
+                code = `import React, { useState, useEffect, useRef } from 'react';
+
+export default function BiDiCaptcha({ onValidate }) {
+  const [inputVal, setInputVal] = useState('');
+  const [renderHtml, setRenderHtml] = useState('');
+  const secretRef = useRef('');
+
+  const generateCaptcha = () => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const newSecret = Array.from({length:5}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+    secretRef.current = newSecret;
+    
+    const phantom = newSecret.slice(-1);
+    const body = newSecret.slice(0, -1);
+    let nodes = [];
+    
+    let i = 0;
+    while(i < body.length) {
+      const len = (Math.random() > 0.5 && i + 1 < body.length) ? 2 : 1;
+      const chunk = body.substr(i, len);
+      const rev = chunk.length > 1 && Math.random() > 0.5;
+      nodes.push({ html: \`<span style="order:\${i+1}; unicode-bidi:bidi-override; direction:\${rev?'rtl':'ltr'}; white-space:pre;">\${rev?chunk.split('').reverse().join(''):chunk}</span>\` });
+      i += len;
+    }
+    nodes.push({ html: \`<span class="phantom-atom" style="order:100; --p:'\${phantom}'; white-space:pre;"></span>\` });
+    for(let j=0; j<3; j++) nodes.push({ html: \`<span style="order:\${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none;">\${"ABC".charAt(Math.floor(Math.random()*3))}</span>\` });
+    nodes.sort(() => Math.random() - 0.5);
+    
+    ${noiseLogicReact}
+    setRenderHtml(noise + \`<div style="display:flex; justify-content:center; width:100%; gap:2px;">\${nodes.map(n => n.html).join('')}</div>\`);
+    setInputVal('');
+  };
+
+  useEffect(() => { generateCaptcha(); }, []);
+
+  const handleChange = (e) => {
+    const val = e.target.value.toUpperCase();
+    setInputVal(val);
+    if (onValidate) onValidate(val.replace(/\\u200B/g, '').trim() === secretRef.current);
+  };
+
+  return (
+    <div className="p-5 bg-slate-900 border border-slate-700 rounded-lg w-[300px] flex flex-col gap-4 font-mono">
+      <style>{\`.phantom-atom::after { content: var(--p); }\`}</style>
+      <div 
+        className="h-[60px] bg-black/30 border-2 border-slate-600 rounded-md flex items-center justify-center relative overflow-hidden select-none text-white text-2xl tracking-widest"
+        dangerouslySetInnerHTML={{ __html: renderHtml }} 
+      />
+      <input 
+        type="text" 
+        value={inputVal}
+        onChange={handleChange}
+        placeholder="ENTER CODE"
+        className="bg-slate-800 border border-slate-600 text-white p-2 rounded text-center uppercase tracking-widest outline-none focus:border-indigo-500"
+      />
+      <button 
+        type="button"
+        onClick={generateCaptcha}
+        className="bg-slate-700 text-slate-400 hover:bg-slate-600 hover:text-white text-[10px] font-bold py-2 rounded uppercase transition"
+      >
+        Refresh Code
+      </button>
+    </div>
+  );
+}`;
+            } else {
+                // HTML Logic (Default)
+                const noiseCSS = useNoise ? '' : '/* Noise disabled */';
+                const noiseLogic = useNoise 
+                    ? `const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;`
+                    : `const noise = ''; // Anti-OCR Mesh disabled`;
+
+                code = `<!-- BiDi CAPTCHA Container -->
+<style>
+  .bidi-captcha-box { background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; width: 300px; font-family: monospace; }
+  .bidi-render { background: rgba(0,0,0,0.3); border: 2px solid #475569; border-radius: 6px; height: 60px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; user-select: none; color: white; font-size: 24px; letter-spacing: 0.2em; }
+  .bidi-input { background: #1e293b; border: 1px solid #475569; color: white; padding: 10px; border-radius: 6px; text-align: center; text-transform: uppercase; letter-spacing: 0.2em; font-size: 16px; outline: none; }
+  .bidi-input:focus { border-color: #6366f1; }
+  .bidi-refresh { background: #334155; color: #94a3b8; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 10px; text-transform: uppercase; font-weight: bold; }
+  .bidi-refresh:hover { background: #475569; color: white; }
+  .phantom-atom::after { content: var(--p); }
+</style>
+
+<div class="bidi-captcha-box">
+  <div id="captchaRender" class="bidi-render"></div>
+  <input type="text" id="captchaInput" class="bidi-input" placeholder="ENTER CODE">
+  <button type="button" onclick="BiDiCaptcha.init()" class="bidi-refresh">Refresh Code</button>
+</div>
+
+<script>
+  // BiDi CAPTCHA Module (Private Scope)
+  const BiDiCaptcha = (function() {
+    let _secret = ''; // Private variable, not accessible from console
+    
+    function _generate() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      _secret = Array.from({length:5}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+      
+      const phantom = _secret.slice(-1);
+      const body = _secret.slice(0, -1);
+      let nodes = [];
+      
+      // Obfuscation: Chunking, Reversing, Decoys
+      let i = 0;
+      while(i < body.length) {
+        const len = (Math.random() > 0.5 && i + 1 < body.length) ? 2 : 1;
+        const chunk = body.substr(i, len);
+        const rev = chunk.length > 1 && Math.random() > 0.5;
+        nodes.push({ html: \`<span style="order:\${i+1}; unicode-bidi:bidi-override; direction:\${rev?'rtl':'ltr'}; white-space:pre;">\${rev?chunk.split('').reverse().join(''):chunk}</span>\` });
+        i += len;
+      }
+      nodes.push({ html: \`<span class="phantom-atom" style="order:100; --p:'\${phantom}'; white-space:pre;"></span>\` });
+      for(let j=0; j<3; j++) nodes.push({ html: \`<span style="order:\${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none;">\${"ABC".charAt(Math.floor(Math.random()*3))}</span>\` });
+      nodes.sort(() => Math.random() - 0.5);
+      
+      ${noiseLogic}
+      
+      document.getElementById('captchaRender').innerHTML = noise + \`<div style="display:flex; justify-content:center; width:100%; gap:2px;">\${nodes.map(n => n.html).join('')}</div>\`;
+      document.getElementById('captchaInput').value = '';
+    }
+
+    return {
+      init: function() { _generate(); },
+      validate: function() {
+        const val = document.getElementById('captchaInput').value.toUpperCase().replace(/\\u200B/g, '').trim();
+        return val === _secret;
+      }
+    };
+  })();
+  
+  // Initialize
+  BiDiCaptcha.init();
+<\/script>`;
+            }
+            
+            document.getElementById('integrationCode').textContent = code;
+
+            // Update Payload Size
+            const sizeInBytes = new Blob([code]).size;
+            const sizeInKb = (sizeInBytes / 1024).toFixed(2);
+            document.getElementById('captchaPayloadSize').textContent = `${sizeInKb} kB`;
+        }
+
+        function copyIntegration() {
+            navigator.clipboard.writeText(document.getElementById('integrationCode').textContent);
+            const btn = document.querySelector('button[onclick="copyIntegration()"]');
+            const originalText = btn.textContent;
+            btn.textContent = "COPIED!";
+            btn.classList.add('bg-teal-500');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-teal-500');
+            }, 2000);
+        }
+
+        window.onload = () => { updateEntropyLabel(); orchestrate(); generateNewSecret(); generateIntegrationSnippet(); };
     </script>
-
 </body>
 </html>
-
-
