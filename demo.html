@@ -325,7 +325,7 @@ Protocol: BiDi-Override-2025</textarea>
                 <div class="mt-6 space-y-4">
                     <h4 class="text-xs font-bold text-white uppercase">How to use</h4>
                     <ul class="text-[11px] text-slate-400 space-y-2 list-disc pl-4">
-                        <li><strong>Step 1:</strong> Copy the code above and paste it into your HTML form.</li>
+                        <li><strong>Step 1:</strong> Copy the code above and paste it into your HTML form or React App.</li>
                         <li><strong>Step 2:</strong> Call <code>BiDiCaptcha.validate(reason => console.log(reason))</code> on submit.</li>
                         <li><strong>Note:</strong> Returns <code>true</code> if valid. The callback catches 'SPEED' (bot) or 'MISMATCH' errors.</li>
                     </ul>
@@ -555,6 +555,15 @@ Protocol: BiDi-Override-2025</textarea>
             let finalOutput = "";
             
             if (exportFormat === 'react') {
+                let reactWrapperProps = "";
+                if (useWrapper) {
+                    if (mode === 'tailwind' && twClasses) reactWrapperProps = `className="${twClasses}"`;
+                    else if (mode === 'css' && rawStyles) {
+                        const styleObj = rawStyles.replace(/\n/g, ';').split(';').filter(s=>s.trim()).map(s=>{let p=s.split(':');let k=p[0];let v=p.slice(1).join(':');return k&&v?`${k.trim().replace(/-./g,c=>c.toUpperCase()[1])}:'${v.trim()}'`:''}).join(',');
+                        reactWrapperProps = `style={{${styleObj}}}`;
+                    }
+                }
+
                 if (useShadow) {
                     const safeContentString = JSON.stringify(rawFinal); // rawFinal now contains criticalCSS + interactionCSS + HTML
                     
@@ -571,7 +580,7 @@ export default function SecureShadowText() {
   }, []);
 
   // Wrapper logic for React
-  ${useWrapper ? `return (\n    <div ${mode === 'tailwind' && twClasses ? `className="${twClasses}"` : ''} ${mode === 'css' && rawStyles ? `style={{${rawStyles.split(';').filter(s=>s.trim()).map(s=>{let[k,v]=s.split(':');return k&&v?`${k.trim().replace(/-./g,c=>c.toUpperCase()[1])}:'${v.trim()}'`:''}).join(',')}}}` : ''}>\n      <span ref={hostRef} />\n    </div>\n  );` : `return <span ref={hostRef} />;`}
+  ${useWrapper ? `return (\n    <div ${reactWrapperProps}>\n      <span ref={hostRef} />\n    </div>\n  );` : `return <span ref={hostRef} />;`}
 }`;
                     
                     // Simple highlighting for the React return
@@ -587,7 +596,7 @@ export default function SecureShadowText() {
     }
   }, []);
 
-  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    <span class="text-pink-400">&lt;div ${mode === 'tailwind' ? `className="${twClasses}"` : 'style={{...}}'}&gt;</span>\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;\n    <span class="text-pink-400">&lt;/div&gt;</span>\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;;`}
+  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    <span class="text-pink-400">&lt;div ${reactWrapperProps}&gt;</span>\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;\n    <span class="text-pink-400">&lt;/div&gt;</span>\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;;`}
 }`;
                 } else {
                     finalOutput = `import React from 'react';
@@ -611,7 +620,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
 
 export default function SecureText() {
   return (
-    <div ${mode === 'tailwind' && twClasses ? `className="${twClasses}"` : ''} ${mode === 'css' && rawStyles ? `style={{${rawStyles.split(';').filter(s=>s.trim()).map(s=>{let[k,v]=s.split(':');return k&&v?`${k.trim().replace(/-./g,c=>c.toUpperCase()[1])}:'${v.trim()}'`:''}).join(',')}}}` : ''} dangerouslySetInnerHTML={{ __html: \`
+    <div ${reactWrapperProps} dangerouslySetInnerHTML={{ __html: \`
 ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
     \` }} />
   );`;
