@@ -50,6 +50,20 @@ test.describe('Wrapper Styling', () => {
     await expect(wrapper).toHaveAttribute('style', /background: blue/);
   });
 
+  test('should handle font-family with quotes in CSS wrapper', async ({ page }) => {
+    await page.locator('#useWrapper').check();
+    await page.locator('input[value="css"]').check();
+    
+    // User types double quotes: font-family: "Courier New";
+    // If not escaped, this produces style="font-family: "Courier New";" which breaks.
+    await page.fill('#rawStyles', 'font-family: "Courier New";');
+    
+    const wrapper = page.locator('#renderTarget > div');
+    // We expect the style to be applied. If broken, the attribute value stops at "font-family: "
+    // and "Courier New"" becomes garbage attributes.
+    await expect(wrapper).toHaveCSS('font-family', /Courier New/);
+  });
+
   test('should apply wrapper to React export', async ({ page }) => {
     await page.locator('#useWrapper').check();
     await page.fill('#twClasses', 'bg-green-500');
@@ -58,5 +72,18 @@ test.describe('Wrapper Styling', () => {
     const source = page.locator('#sourceSnippet');
     const code = await source.getAttribute('data-raw');
     expect(code).toContain('className="bg-green-500"');
+  });
+
+  test('should disable inactive input based on mode', async ({ page }) => {
+    await page.locator('#useWrapper').check();
+    
+    // Default: Tailwind selected
+    await expect(page.locator('#twClasses')).toBeEnabled();
+    await expect(page.locator('#rawStyles')).toBeDisabled();
+    
+    // Switch to CSS
+    await page.locator('input[value="css"]').check();
+    await expect(page.locator('#twClasses')).toBeDisabled();
+    await expect(page.locator('#rawStyles')).toBeEnabled();
   });
 });

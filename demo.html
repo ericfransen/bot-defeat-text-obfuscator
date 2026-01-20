@@ -379,8 +379,13 @@ Protocol: BiDi-Override-2025</textarea>
             const cssInput = document.getElementById('rawStyles');
             const wrapperControls = document.getElementById('wrapperControls');
 
-            if (mode === 'tailwind') { twInput.classList.remove('opacity-50'); cssInput.classList.add('opacity-50'); }
-            else { twInput.classList.add('opacity-50'); cssInput.classList.remove('opacity-50'); }
+            if (mode === 'tailwind') { 
+                twInput.classList.remove('opacity-50'); cssInput.classList.add('opacity-50'); 
+                twInput.disabled = false; cssInput.disabled = true;
+            } else { 
+                twInput.classList.add('opacity-50'); cssInput.classList.remove('opacity-50'); 
+                twInput.disabled = true; cssInput.disabled = false;
+            }
             
             wrapperControls.style.opacity = useWrapper ? "1" : "0.5";
             wrapperControls.style.pointerEvents = useWrapper ? "auto" : "none";
@@ -540,7 +545,7 @@ Protocol: BiDi-Override-2025</textarea>
             if (useWrapper) { 
                 let wrapperTag = '<div';
                 if (mode === 'tailwind' && twClasses.trim()) wrapperTag += ` class="${twClasses}"`;
-                else if (mode === 'css' && rawStyles.trim()) wrapperTag += ` style="${rawStyles.replace(/\n/g, ' ')}"`;
+                else if (mode === 'css' && rawStyles.trim()) wrapperTag += ` style="${rawStyles.replace(/\n/g, ' ').replace(/"/g, '&quot;')}"`;
                 wrapperTag += '>';
                 // Add newlines for cleaner source code
                 snippetContent = wrapperTag + '\n' + snippetContent + '\n</div>';
