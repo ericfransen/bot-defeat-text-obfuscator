@@ -1,7 +1,7 @@
 # Text-Obfuscator & Client-Side CAPTCHA
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-3.1-teal)
+![Version](https://img.shields.io/badge/version-3.2-teal)
 ![Size](https://img.shields.io/badge/size-2kb-green)
 
 **The lightweight, privacy-first alternative to heavy bot protection.**
