@@ -140,7 +140,7 @@ export default function ContactForm() {
 
 ## ☁️ Why Client-Side? (The Static Site Advantage)
 
-Moving security to the client side offers massive benefits for the modern "JAMstack" web:
+Moving security to the client side offers benefits for the modern "JAMstack" web:
 
 1.  **Unbreakable Uptime:** Your security logic lives in your code. It works offline, on localhost, and during major cloud outages.
 2.  **Privacy Compliance:** No cookies, no IP tracking, no data sent to Google/Cloudflare. GDPR/CCPA friendly by default.

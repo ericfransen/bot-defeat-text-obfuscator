@@ -98,7 +98,18 @@ We occasionally inject Zero-Width Spaces into the DOM.
 
 ---
 
-## 5. Conclusion
+## 5. Temporal Defense: The Speed Bump
+
+In addition to visual and structural defenses, we employ **Timing Analysis** to detect non-human behavior.
+
+*   **Mechanism:** Tracking the delta between CAPTCHA generation and submission.
+*   **Threshold:** `< 1.5 seconds`
+*   **Rationale:** Even for a simple 5-character code, the cognitive load of reading the BiDi-obfuscated text and the physical latency of typing it exceeds 1.5s for even the speediest of humans.
+*   **Outcome:** Submissions that are physically impossible for humans are rejected immediately with a "Too Fast, Bot!" error, preventing brute-force scripts that might bypass visual checks by guessing or using cached OCR results.
+
+---
+
+## 6. Conclusion
 
 BiDi-Auth shifts the cost of attack from **Computation** (cheap) to **Perception** (expensive).
 
