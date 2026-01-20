@@ -8,9 +8,7 @@
 
 Protect your email addresses, phone numbers, short-form data, and forms from 99% of bots, scrapers, and AI crawlers without relying on tracking-heavy third-party services or risking vendor lock-in.
 
-# Check it out here:
-
-[BOT DEFEAT OBFUSCATOR](https://ericfransen.github.io/bot-defeat-text-obfuscator/demo.html)
+**Check it out here:** [BOT DEFEAT OBFUSCATOR](https://ericfransen.github.io/bot-defeat-text-obfuscator/demo.html)
 
 ---
 
