@@ -146,7 +146,7 @@ During R&D, several "advanced" techniques were evaluated and rejected due to poo
 ### B. Mock Data / Decoy Shadow Roots
 *   **Idea:** Inject multiple Shadow Roots, some containing "honeypot" emails (`fake@example.com`) and one containing the real one.
 *   **Verdict:** **Rejected.**
-*   **Reason:** While this effectively confuses bots (forcing them to use visual analysis to see which one is visible), it triples the HTML payload size. For a library focused on "lightweight copy-paste," this overhead is unacceptable. The combination of **Shadow Oubliette (Container)** + **Phantom Shield (Content)** is sufficiently lethal to most scrapers without the bloat.
+*   **Reason:** While this effectively confuses bots (forcing them to use visual analysis to see which one is visible), it triples the HTML payload size. For a library focused on "lightweight copy-paste," this overhead is unacceptable. The combination of **Shadow DOM Wrapper (Container)** + **Phantom Shield (Content)** is sufficiently lethal to most scrapers without the bloat.
 
 ---
 
