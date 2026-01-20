@@ -146,11 +146,32 @@ During R&D, several "advanced" techniques were evaluated and rejected due to poo
 ### B. Mock Data / Decoy Shadow Roots
 *   **Idea:** Inject multiple Shadow Roots, some containing "honeypot" emails (`fake@example.com`) and one containing the real one.
 *   **Verdict:** **Rejected.**
-*   **Reason:** While this effectively confuses bots (forcing them to use visual analysis to see which one is visible), it triples the HTML payload size. For a library focused on "lightweight copy-paste," this overhead is unacceptable. The combination of **Shadow DOM Wrapper (Container)** + **Phantom Shield (Content)** is sufficiently lethal to most scrapers without the bloat.
+*   **Reason:** While this effectively confuses bots (forcing them to use visual analysis to see which one is visible), it triples the HTML payload size. For a library focused on "lightweight copy-paste," this overhead is unacceptable. The combination of **Shadow Oubliette (Container)** + **Phantom Shield (Content)** is sufficiently lethal to most scrapers without the bloat.
 
 ---
 
-## 5. Conclusion
+## 5. Engineering Trade-offs
+
+### A. Atom Density vs. Entropy (The `::before` & `::after` Dilemma)
+*   **Hypothesis:** We could reduce DOM bloat by 50% by using both `::before` and `::after` on every span (2 characters per node).
+*   **The Conflict:** **Flexbox Atomicity.**
+    *   In a Flexbox container, the `order` property applies to the *Host Element* (the `<span>`).
+    *   Pseudo-elements are visually locked to their host. If we set `order: 5` on the span, both the `::before` and `::after` characters move to position 5 together.
+*   **Decision:** We chose **Maximum Entropy** over **DOM Size**.
+    *   By forcing 1 character per DOM node (using only `::after`), we ensure that *every single character* can be independently shuffled to any visual position.
+    *   Using both pseudo-elements would force characters to travel in pairs, significantly reducing the permutation space for the solver to guess.
+
+### B. Canvas Rendering vs. DOM Composition
+*   **Hypothesis:** Rendering text to an HTML `<canvas>` would make it 100% immune to `innerText` scraping.
+*   **Decision:** We chose **DOM Composition** (Phantom Atoms).
+*   **Reason:**
+    1.  **Fidelity:** Canvas text often looks blurry on High-DPI (Retina) screens unless carefully scaled.
+    2.  **Accessibility:** Canvas is a "black box" to screen readers. While Phantom Atoms are also hard for screen readers (without ARIA labels), DOM elements allow for future-proofing with `aria-label` overlays, whereas Canvas requires a completely separate shadow accessibility tree.
+    3.  **Styling:** Users can style Phantom Atoms with standard CSS (color, font, size). Canvas requires passing these styles as JS variables to the rendering context, which is brittle.
+
+---
+
+## 6. Conclusion
 
 The Phantom Shield algorithm does not rely on checking for "bots" (user-agent sniffing). Instead, it relies on the fundamental difference between how **Machines** parse code (linear, structural) and how **Humans** process information (visual, composite).
 
