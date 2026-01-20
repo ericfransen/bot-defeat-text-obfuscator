@@ -1,6 +1,6 @@
 # Technical Deep Dive: The Phantom Shield Obfuscator
 
-This document outlines the engineering principles behind the **Adversarial Weave v3.1** obfuscation engine. It details the specific techniques used to defeat modern scraping vectors (DOM parsing, `innerText` extraction, and Vision AI) while maintaining user accessibility.
+This document outlines the engineering principles behind the **Adversarial Weave** obfuscation engine. It details the specific techniques used to defeat modern scraping vectors (DOM parsing, `innerText` extraction, and Vision AI) while maintaining user accessibility.
 
 ## 1. The Core Philosophy: "Structural Chaos, Visual Order"
 
