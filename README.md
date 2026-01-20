@@ -2,7 +2,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/version-3.3-teal)
-![Size](https://img.shields.io/badge/size-2kb-green)
+![Size](https://img.shields.io/badge/size-<10kb-green)
 
 **The lightweight, privacy-first alternative to heavy bot protection.**
 
