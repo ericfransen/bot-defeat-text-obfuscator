@@ -1,12 +1,16 @@
 # Text-Obfuscator & Client-Side CAPTCHA
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-3.2-teal)
+![Version](https://img.shields.io/badge/version-3.3-teal)
 ![Size](https://img.shields.io/badge/size-2kb-green)
 
 **The lightweight, privacy-first alternative to heavy bot protection.**
 
 Protect your email addresses, phone numbers, short-form data, and forms from 99% of bots, scrapers, and AI crawlers without relying on tracking-heavy third-party services or risking vendor lock-in.
+
+# Check it out here:
+
+[BOT DEFEAT OBFUSCATOR](https://ericfransen.github.io/bot-defeat-text-obfuscator/demo.html)
 
 ---
 
@@ -174,11 +178,10 @@ This library implements **Security by Friction**.
 
 You can view a live demo and generate your own snippets by opening the demo.html here:
 
-https://ericfransen.github.io/js-text-obfuscator/demo.html
+https://ericfransen.github.io/bot-defeat-text-obfuscator/demo.html
 
 ---
 
 ## 📜 License
 
 MIT License. Free to use for personal and commercial projects.
-
