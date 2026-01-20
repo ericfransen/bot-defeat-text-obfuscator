@@ -274,7 +274,7 @@ Protocol: BiDi-Override-2025</textarea>
                 </div>
                 <div class="space-y-6 max-w-md mx-auto">
                     <div class="relative group">
-                        <input type="text" id="authInput" placeholder="ENTER CODE" class="w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase">
+                        <input type="text" id="authInput" oninput="if(!currentAuthStartTime) currentAuthStartTime = Date.now()" placeholder="ENTER CODE" class="w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase">
                         <div id="authStatus" class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold uppercase hidden"></div>
                     </div>
                     <div class="grid grid-cols-2 gap-4">
@@ -345,7 +345,7 @@ Protocol: BiDi-Override-2025</textarea>
 
     <script>
         let currentAuthSecret = '';
-        let currentAuthStartTime = 0;
+        var currentAuthStartTime = null;
 
         function triggerFeedback(el, e) {
             const originalColor = el.style.color || 'inherit';
@@ -768,7 +768,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
             const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let res = '';
             for (let i = 0; i < 5; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
             currentAuthSecret = res;
-            currentAuthStartTime = Date.now();
+            currentAuthStartTime = null;
             const input = document.getElementById('authInput'), status = document.getElementById('authStatus');
             if (input) { input.value = ''; input.className = "w-full bg-[#050810] border border-slate-700 rounded-xl px-6 py-4 text-lg text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all text-center font-mono tracking-[0.3em] uppercase"; }
             if (status) status.className = "hidden";
@@ -837,7 +837,8 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
             status.className = "absolute right-4 top-1/2 -translate-y-1/2 text-[10px] font-bold uppercase block";
             
             const speedBumpEnabled = document.getElementById('speedBumpToggle') ? document.getElementById('speedBumpToggle').checked : false;
-            if (speedBumpEnabled && (Date.now() - currentAuthStartTime < 1500)) {
+            // Reject if timer never started (programmatic fill) or if too fast
+            if (speedBumpEnabled && (!currentAuthStartTime || (Date.now() - currentAuthStartTime < 1500))) {
                 status.textContent = "Too Fast, Bot!";
                 status.classList.add('text-orange-500');
                 setTimeout(() => status.className = "hidden", 2000);

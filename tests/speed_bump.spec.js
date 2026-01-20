@@ -72,7 +72,12 @@ test.describe('CAPTCHA Speed Bump', () => {
     // Get the secret code from the OCR view which shows it in plain text if noise is off (default)
     const secret = await page.locator('#authOCRView').textContent();
     
-    await page.fill('#authInput', secret);
+    // Use type with delay to ensure input events fire and simulation is human-like
+    await page.type('#authInput', secret, { delay: 100 });
+    
+    // Additional wait to ensure total time > 1.5s (Type takes ~0.5s, so 1.6s wait is plenty)
+    await page.waitForTimeout(1600);
+    
     await page.click('button:has-text("Verify CAPTCHA")');
     
     const status = page.locator('#authStatus');
