@@ -33,7 +33,7 @@
 
     <div class="max-w-7xl mx-auto">
         <header class="mb-8 border-b border-slate-800 pb-8">
-            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Adversarial Weave <span class="text-blue-500">v3.1</span></h1>
+            <h1 class="text-4xl font-black text-white tracking-tighter uppercase italic">Adversarial Weave <span class="text-blue-500">v3.2</span></h1>
             <p class="text-slate-500 mt-2 font-mono text-sm tracking-widest uppercase">Multi-line Atomic Fragmentation Engine</p>
         </header>
 
@@ -92,20 +92,31 @@ Protocol: BiDi-Override-2025</textarea>
                             >
                         </div>
 
+                        <!-- Shadow DOM Toggle -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" id="useShadow" onchange="orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-purple-500 focus:ring-purple-500">
+                                <div class="space-y-1">
+                                    <label for="useShadow" class="block text-[10px] uppercase font-bold text-purple-400 cursor-pointer select-none">Wrap Shadow DOM</label>
+                                    <p class="text-[10px] text-slate-600">Cloak in closed root</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Smart Actions -->
                         <div class="pt-6 border-t border-slate-800 space-y-4">
                             <div class="flex items-center justify-between">
-                                <div class="space-y-1">
-                                    <span class="block text-xs text-blue-400 font-bold uppercase tracking-widest">Smart Interactions</span>
-                                    <p class="text-[10px] text-slate-600">Click-to-Action Wrapper</p>
-                                </div>
                                 <div class="flex items-center gap-3">
-                                    <label class="flex items-center gap-2 cursor-pointer opacity-50 transition-opacity mr-8" id="iconOnlyLabel">
-                                        <input type="checkbox" id="iconOnly" onchange="orchestrate()" disabled class="w-3 h-3 rounded border-slate-700 bg-slate-900 text-teal-500 focus:ring-teal-500">
-                                        <span class="text-[px] uppercase font-bold text-slate-500">Icon Only</span>
-                                    </label>
                                     <input type="checkbox" id="enableActions" onchange="toggleActions(); orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
+                                    <div class="space-y-1">
+                                        <span class="block text-xs text-blue-400 font-bold uppercase tracking-widest">Smart Interactions</span>
+                                        <p class="text-[10px] text-slate-600">Click-to-Action Wrapper</p>
+                                    </div>
                                 </div>
+                                <label class="flex items-center gap-2 cursor-pointer opacity-50 transition-opacity" id="iconOnlyLabel">
+                                    <input type="checkbox" id="iconOnly" onchange="orchestrate()" disabled class="w-3 h-3 rounded border-slate-700 bg-slate-900 text-teal-500 focus:ring-teal-500">
+                                    <span class="text-[px] uppercase font-bold text-slate-500">Icon Only</span>
+                                </label>
                             </div>
                             <div id="actionControls" class="grid grid-cols-3 gap-2 opacity-50 pointer-events-none transition-opacity">
                                 <button onclick="setAction('copy')" class="action-btn active text-[10px] font-bold uppercase py-2 bg-blue-600 text-white rounded transition hover:bg-blue-500 ring-2 ring-blue-400" data-type="copy">Copy</button>
@@ -121,7 +132,7 @@ Protocol: BiDi-Override-2025</textarea>
                     <div class="px-6 py-3 bg-slate-800/50 border-b border-slate-800 flex justify-between items-center">
                         <div class="flex items-center gap-3">
                             <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Generated Source</span>
-                            <span id="payloadSize" class="text-[20px] text-slate-500 font-mono bg-slate-900/50 px-2 py-0.5 rounded border border-slate-700/50">0.00 kB</span>
+                                <span id="payloadSize" class="text-[20px] text-slate-500 font-mono bg-slate-900/50 px-2 py-0.5 rounded border border-slate-700/50">0.00 kB</span>
                         </div>
                         <div class="flex gap-2 items-center">
                             <select id="exportFormat" onchange="orchestrate()" class="bg-[#050810] text-[10px] text-blue-400 font-bold uppercase border border-slate-700 rounded px-2 py-1 outline-none focus:border-blue-500">
@@ -233,6 +244,10 @@ Protocol: BiDi-Override-2025</textarea>
                         <div class="flex items-center gap-2 bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-700 cursor-pointer">
                             <input type="checkbox" id="ocrToggle" onchange="renderBidiAuth(); generateIntegrationSnippet()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-indigo-500 focus:ring-indigo-500 accent-indigo-500">
                             <label for="ocrToggle" class="text-[10px] text-slate-400 uppercase font-bold select-none cursor-pointer">Anti-OCR Mesh</label>
+                        </div>
+                        <div class="flex items-center gap-2 bg-slate-900/50 rounded-lg px-3 py-2 border border-slate-700 cursor-pointer">
+                            <input type="checkbox" id="shadowCaptchaToggle" onchange="renderBidiAuth(); generateIntegrationSnippet()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-purple-500 focus:ring-purple-500 accent-purple-500">
+                            <label for="shadowCaptchaToggle" class="text-[10px] text-purple-400 uppercase font-bold select-none cursor-pointer">Shadow DOM</label>
                         </div>
                         <button onclick="generateNewSecret(); generateIntegrationSnippet()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 p-3 rounded-xl transition shadow-lg" title="Generate New Secret">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
@@ -469,57 +484,166 @@ Protocol: BiDi-Override-2025</textarea>
                 rawFinal = wrapStart + rawFinal + wrapEnd;
             }
 
-            if (useWrapper) {
+            // Shadow DOM Logic
+            const useShadow = document.getElementById('useShadow').checked;
+            if (useShadow && entropyLevel !== 4) { // Level 4 (Interaction) doesn't benefit much from Shadow DOM as it's already hidden
+                const shadowId = "shadow-" + Math.random().toString(36).substr(2, 6);
+                
+                // Critical CSS for Level 5 and basic styling to function inside Shadow DOM
+                // Shadow DOM does not inherit global styles.
+                const criticalCSS = `<style>
+    .phantom-atom::after { content: var(--p); }
+    .weave-atom { unicode-bidi: isolate; direction: ltr; white-space: pre; }
+    /* Ensure tailwind-like defaults for the wrapper if needed, or minimal reset */
+    :host { display: inline-block; }
+</style>`;
+
+                // Combine CSS + Interaction Styles + Content
+                // Note: interactionCSS contains <style> tags, so we just append it.
+                const innerContent = criticalCSS + (interactionCSS || "") + rawFinal;
+                
+                // We need to escape backticks for the JS template string
+                // And ensure JSON.stringify is used for React to be safe
+                
+                // FOR HTML SNIPPET:
+                const safeContent = innerContent.replace(/`/g, '\\`').replace(/\${/g, '\\${').replace(/<\/script>/g, '<\\/script>');
+                
+                // The Script that builds the shadow DOM
+                const shadowScript = `<span id="${shadowId}"></span>
+<script>
+  (function(){
+    const h = document.getElementById('${shadowId}');
+    const s = h.attachShadow({mode: 'closed'});
+    s.innerHTML = \`${safeContent}\`;
+  })();
+<\/script>`;
+                
+                // Update rawFinal for the Preview render
+                // We need to pass the FULL innerContent to the preview logic
+                rawFinal = innerContent; // Store the content WITH CSS for the preview logic to use
+                
+                // But wait, the snippet needs 'shadowScript'.
+                // The 'rawFinal' variable is used for both the snippet AND the preview logic below.
+                // We need to separate them.
+                
+                var snippetContent = shadowScript; // This goes to the code block
+            } else {
+                var snippetContent = (interactionCSS || "") + rawFinal;
+            }
+
+            if (useWrapper) { 
                 let wrapperTag = '<div';
                 if (mode === 'tailwind' && twClasses.trim()) wrapperTag += ` class="${twClasses}"`;
                 else if (mode === 'css' && rawStyles.trim()) wrapperTag += ` style="${rawStyles.replace(/\n/g, ' ')}"`;
                 wrapperTag += '>';
                 // Add newlines for cleaner source code
-                rawFinal = wrapperTag + '\n' + rawFinal + '\n</div>';
+                snippetContent = wrapperTag + '\n' + snippetContent + '\n</div>';
             }
 
             let highlightedFinal = "";
             let finalOutput = "";
             
             if (exportFormat === 'react') {
-                finalOutput = `import React from 'react';
+                if (useShadow) {
+                    const safeContentString = JSON.stringify(rawFinal); // rawFinal now contains criticalCSS + interactionCSS + HTML
+                    
+                    finalOutput = `import React, { useLayoutEffect, useRef } from 'react';
+
+export default function SecureShadowText() {
+  const hostRef = useRef(null);
+
+  useLayoutEffect(() => {
+    if (hostRef.current && !hostRef.current.shadowRoot) {
+      const shadow = hostRef.current.attachShadow({ mode: 'closed' });
+      shadow.innerHTML = ${safeContentString};
+    }
+  }, []);
+
+  // Wrapper logic for React
+  ${useWrapper ? `return (\n    <div ${mode === 'tailwind' && twClasses ? `className="${twClasses}"` : ''} ${mode === 'css' && rawStyles ? `style={{${rawStyles.split(';').filter(s=>s.trim()).map(s=>{let[k,v]=s.split(':');return k&&v?`${k.trim().replace(/-./g,c=>c.toUpperCase()[1])}:'${v.trim()}'`:''}).join(',')}}}` : ''}>\n      <span ref={hostRef} />\n    </div>\n  );` : `return <span ref={hostRef} />;`}
+}`;
+                    
+                    // Simple highlighting for the React return
+                    highlightedFinal = `<span class="text-purple-400">import</span> React, { useLayoutEffect, useRef } <span class="text-purple-400">from</span> <span class="text-green-400">'react'</span>;
+
+<span class="text-purple-400">export default function</span> <span class="text-yellow-400">SecureShadowText</span>() {
+  <span class="text-purple-400">const</span> hostRef = useRef(<span class="text-purple-400">null</span>);
+
+  <span class="text-blue-400">useLayoutEffect</span>(() => {
+    <span class="text-purple-400">if</span> (hostRef.current && !hostRef.current.shadowRoot) {
+      <span class="text-purple-400">const</span> shadow = hostRef.current.<span class="text-blue-400">attachShadow</span>({ mode: <span class="text-green-400">'closed'</span> });
+      shadow.innerHTML = ${escapeHtml(safeContentString)};
+    }
+  }, []);
+
+  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    &lt;<span class="text-blue-400">div</span> ${mode === 'tailwind' ? `className="${twClasses}"` : 'style={{...}}'}&gt;\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;\n    &lt;/<span class="text-blue-400">div</span>&gt;\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;;`}
+}`;
+                } else {
+                    finalOutput = `import React from 'react';
 
 export default function SecureText() {
   return (
     <div dangerouslySetInnerHTML={{ __html: \`
-${interactionCSS ? interactionCSS.replace(/<style>/g, '<style scoped>') : ''}
-${rawFinal.replace(/`/g, '\\`')}
+${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
     \` }} />
   );
 }`;
-                highlightedFinal = `<span class="text-purple-400">import</span> React <span class="text-purple-400">from</span> <span class="text-green-400">'react'</span>;
+                    // Re-apply wrapper for non-shadow React if needed (actually standard non-shadow output includes wrapper in rawFinal? No, check logic)
+                    // The standard 'snippetContent' (lines above) ALREADY includes the wrapper for HTML.
+                    // But for React, 'rawFinal' is the INNER html. We need to wrap the container div.
+                    
+                    // Wait, previous React logic used 'rawFinal' inside a div.
+                    // If useWrapper is true, we should apply classes to THAT div.
+                    
+                    if (useWrapper) {
+                         finalOutput = `import React from 'react';
 
-<span class="text-purple-400">export default function</span> <span class="text-yellow-400">SecureText</span>() {
-  <span class="text-purple-400">return</span> (
-    &lt;<span class="text-blue-400">div</span> <span class="text-purple-400">dangerouslySetInnerHTML</span>={{ __html: \`
-${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/style&gt;</span>\n' : ''}${escapeHtml(rawFinal)}
-    \` }} /&gt;
-  );
-}`;
+export default function SecureText() {
+  return (
+    <div ${mode === 'tailwind' && twClasses ? `className="${twClasses}"` : ''} ${mode === 'css' && rawStyles ? `style={{${rawStyles.split(';').filter(s=>s.trim()).map(s=>{let[k,v]=s.split(':');return k&&v?`${k.trim().replace(/-./g,c=>c.toUpperCase()[1])}:'${v.trim()}'`:''}).join(',')}}}` : ''} dangerouslySetInnerHTML={{ __html: \`
+${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
+    \` }} />
+  );`;
+                    }
+                    
+                    highlightedFinal = escapeHtml(finalOutput);
+                }
             } else {
                 // HTML Format
-                finalOutput = (interactionCSS ? interactionCSS + '\n' : '') + rawFinal;
-                highlightedFinal = (interactionCSS ? `<span class="text-slate-500">${escapeHtml(interactionCSS)}</span>\n` : '') + escapeHtml(rawFinal);
+                finalOutput = snippetContent;
+                highlightedFinal = escapeHtml(finalOutput);
                 
-                // Highlight wrapper if exists
-                if (useWrapper) {
-                   const split = highlightedFinal.split('\n');
-                   if (split.length > 2) {
-                       split[interactionCSS ? 1 : 0] = `<span class="text-purple-400">${split[interactionCSS ? 1 : 0]}</span>`;
-                       split[split.length-1] = `<span class="text-purple-400">${split[split.length-1]}</span>`;
-                       highlightedFinal = split.join('\n');
-                   }
+                // Highlight script tags if shadow
+                if (useShadow) {
+                    highlightedFinal = highlightedFinal.replace(/&lt;script&gt;/g, '<span class="text-blue-400">&lt;script&gt;</span>').replace(/&lt;\/script&gt;/g, '<span class="text-blue-400">&lt;/script&gt;</span>');
                 }
             }
 
-            renderTarget.innerHTML = (interactionCSS || "") + rawFinal;
+            // Actual Render Logic (Simulate Shadow DOM in the preview)
+            if (useShadow && entropyLevel !== 4) {
+                renderTarget.innerHTML = ''; // Clear
+                
+                let container = renderTarget;
+                if (useWrapper) {
+                     const wrapper = document.createElement('div');
+                     if (mode === 'tailwind') wrapper.className = twClasses;
+                     else wrapper.style.cssText = rawStyles;
+                     renderTarget.appendChild(wrapper);
+                     container = wrapper;
+                }
+                
+                const host = document.createElement('span');
+                host.style.cssText = "display:inline-block;";
+                host.id = "shadow-preview"; 
+                container.appendChild(host);
+                const shadow = host.attachShadow({mode: 'closed'});
+                shadow.innerHTML = rawFinal; // This now includes criticalCSS
+            } else {
+                renderTarget.innerHTML = snippetContent; // Use the full snippet with wrappers etc
+            }
+
             sourceSnippet.innerHTML = highlightedFinal;
-            // Store raw text for copy button (since sourceSnippet has HTML coloring)
+            // Store raw text for copy button
             sourceSnippet.dataset.raw = finalOutput;
 
             // Update Payload Size
@@ -537,6 +661,7 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
             const level = parseInt(document.getElementById('entropy').value);
             const density = parseInt(document.getElementById('fragDensity').value);
             const actionsEnabled = document.getElementById('enableActions').checked;
+            const shadowEnabled = document.getElementById('useShadow').checked;
             const botBar = document.getElementById('botRatingFill'), botText = document.getElementById('botRatingText');
             const a11yBar = document.getElementById('a11yRatingFill'), a11yText = document.getElementById('a11yRatingText');
             const botReason = document.getElementById('botReason'), a11yReason = document.getElementById('a11yReason');
@@ -546,7 +671,17 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
             if (level === 3) { botW = 85; botT = 'High'; botC = 'bg-teal-500'; botMsg = "BiDi + Homoglyphs confuse parsers.<br><br>Requires layout analysis."; }
             if (level === 4) { botW = 100; botT = 'Critical'; botC = 'bg-purple-500'; botMsg = "Data hidden behind interaction.<br><br>Invisible without JS events."; }
             if (level === 5) { botW = 95; botT = 'Fortified'; botC = 'bg-indigo-500'; botMsg = "Phantom Shield.<br><br>Fragmented, poisoned, and partially CSS-rendered."; }
+            
             if (level !== 4) botW = Math.min(99, botW + (density * 1.5));
+            
+            // Shadow DOM Boost
+            if (shadowEnabled && level !== 4) {
+                botW = Math.min(100, botW + 15);
+                botT = 'Invisible';
+                botC = 'bg-purple-600';
+                botMsg += "<br><br><span class='text-purple-400 font-bold'>SHADOW DOM:</span> Invisible to standard scrapers (innerText/cheerio). Requires CDP piercing.";
+            }
+
             if (leakDetected && level < 4) { botW = Math.max(10, botW - 40); botT = 'Compromised'; botC = 'bg-red-600'; botMsg = "ALERT: Sim scraper detected keywords!"; }
             botBar.style.width = `${botW}%`; botBar.className = `h-full ${botC} transition-all duration-500`; botText.textContent = botT; botReason.innerHTML = botMsg;
 
@@ -635,7 +770,10 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
 
         function renderBidiAuth() {
             if(!currentAuthSecret) return;
-            const res = currentAuthSecret, noiseEnabled = document.getElementById('ocrToggle').checked;
+            const res = currentAuthSecret;
+            const noiseEnabled = document.getElementById('ocrToggle').checked;
+            const shadowEnabled = document.getElementById('shadowCaptchaToggle') ? document.getElementById('shadowCaptchaToggle').checked : false;
+            
             const phantomChar = res.charAt(res.length - 1), body = res.substring(0, res.length - 1);
             let chunks = [], i = 0;
             while(i < body.length) { const len = (Math.random() > 0.5 && (i + 1 < body.length)) ? 2 : 1; chunks.push(body.substr(i, len)); i += len; }
@@ -647,8 +785,32 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
             nodes.push({ html: `<span class="phantom-atom" style="order:${chunks.length+1}; --p:'${phantomChar}'; white-space:pre;"></span>` });
             for(let j=0; j<3; j++) nodes.push({ html: `<span style="order:${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none; z-index:-1;">${"ABC".charAt(Math.floor(Math.random()*3))}</span>` });
             nodes.sort(() => Math.random() - 0.5);
-            document.getElementById('authRender').innerHTML = generateOCRNoise(noiseEnabled) + `<div style="display:flex; justify-content:center; gap:2px; position:relative; z-index:1; width:100%; height:100%; align-items:center;">${nodes.map(n => n.html).join('')}</div>`;
-            document.getElementById('authBotView').textContent = document.getElementById('authRender').innerText;
+            
+            // Generate Content
+            const innerContent = generateOCRNoise(noiseEnabled) + `<div style="display:flex; justify-content:center; gap:2px; position:relative; z-index:1; width:100%; height:100%; align-items:center;">${nodes.map(n => n.html).join('')}</div>`;
+            const container = document.getElementById('authRender');
+            
+            if (shadowEnabled) {
+                container.innerHTML = ''; // Clear main container
+                const host = document.createElement('div');
+                host.style.cssText = "width:100%; height:100%; display:flex; align-items:center; justify-content:center;";
+                container.appendChild(host);
+                
+                const shadow = host.attachShadow({mode: 'closed'});
+                // Inject Styles for Shadow DOM
+                shadow.innerHTML = `<style>.phantom-atom::after { content: var(--p); }</style>` + innerContent;
+            } else {
+                container.innerHTML = innerContent;
+            }
+
+            // Update DOM View Simulation
+            // We read the innerText of the container. 
+            // If Shadow DOM is on, this will naturally be empty (or close to it).
+            const extracted = container.innerText.trim();
+            document.getElementById('authBotView').textContent = extracted || "[SHADOW BLOCKED]";
+            document.getElementById('authBotView').className = extracted ? "font-mono text-[14px] text-red-400 line-through text-center break-all" : "font-mono text-[12px] text-purple-400 font-bold text-center";
+
+            // OCR View Simulation
             const ocrEl = document.getElementById('authOCRView');
             if (noiseEnabled) {
                 let sim = "";
@@ -677,10 +839,37 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
         function validateAndSyncCss() { orchestrate(); }
 
         function runScraperSim() {
-            const extracted = document.getElementById('renderTarget').innerText.trim();
+            // Standard scraper behavior: innerText of the container
+            // If Shadow DOM is used, innerText will be empty or just the host content (which is empty)
+            const renderTarget = document.getElementById('renderTarget');
+            let extracted = renderTarget.innerText.trim();
+            
+            // Check if Shadow DOM is active by looking for our shadow host
+            const shadowHost = renderTarget.querySelector('#shadow-preview'); 
+            // Note: In the 'orchestrate' function for the PREVIEW, we create a span and attach shadow.
+            // But 'renderTarget.innerText' DOES NOT pierce shadow roots.
+            
+            // However, our preview logic wraps the code in a script tag string if using shadow.
+            // Wait, orchestrate() updates renderTarget.innerHTML differently for preview vs source.
+            // Let's check how orchestrate handles preview for shadow:
+            // if (useShadow) { ... renderTarget.appendChild(host); ... shadow.innerHTML = ... }
+            
+            // So 'renderTarget.innerText' should indeed be empty if shadow is used.
+            
+            if (shadowHost && !extracted) { extracted = "[EMPTY STRING] - Content hidden in Shadow Root"; }
+
             document.getElementById('scraperResult').textContent = extracted;
+            
+            // Leak check
             const leak = ['admin', 'master', 'restricted'].some(k => extracted.toLowerCase().includes(k));
             const ind = document.getElementById('matchIndicator'), stat = document.getElementById('matchStatus');
+            
+            if (extracted.includes('[EMPTY STRING]')) {
+                 ind.className = `w-2 h-2 rounded-full bg-purple-500`;
+                 stat.textContent = "Shadow Cloaked"; stat.className = "text-purple-500";
+                 return false; // No leak visible to standard scraper
+            }
+
             ind.className = `w-2 h-2 rounded-full ${leak ? 'bg-red-500 animate-ping' : 'bg-green-500'}`;
             stat.textContent = leak ? "Leak Detected" : "Obfuscation Clear"; stat.className = leak ? "text-red-500" : "text-green-500";
             return leak;
@@ -728,6 +917,7 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
 
         function generateIntegrationSnippet() {
             const useNoise = document.getElementById('ocrToggle').checked;
+            const useShadow = document.getElementById('shadowCaptchaToggle').checked;
             const format = document.getElementById('captchaExportFormat').value;
             
             let code = "";
@@ -737,7 +927,82 @@ ${interactionCSS ? '<span class="text-slate-500">&lt;style scoped&gt;...&lt;/sty
                     ? `const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;`
                     : `const noise = '';`;
 
-                code = `import React, { useState, useEffect, useRef } from 'react';
+                if (useShadow) {
+                    code = `import React, { useState, useEffect, useRef } from 'react';
+
+export default function BiDiCaptcha({ onValidate }) {
+  const hostRef = useRef(null);
+  const rootRef = useRef(null); // Store shadow root access
+  const secretRef = useRef('');
+
+  useEffect(() => {
+    if (hostRef.current && !hostRef.current.shadowRoot) {
+      const shadow = hostRef.current.attachShadow({ mode: 'closed' });
+      rootRef.current = shadow;
+      
+      // Initial render frame
+      shadow.innerHTML = \`
+        <style>
+          .bidi-captcha-box { background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; width: 300px; font-family: monospace; }
+          .bidi-render { background: rgba(0,0,0,0.3); border: 2px solid #475569; border-radius: 6px; height: 60px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; user-select: none; color: white; font-size: 24px; letter-spacing: 0.2em; }
+          .bidi-input { background: #1e293b; border: 1px solid #475569; color: white; padding: 10px; border-radius: 6px; text-align: center; text-transform: uppercase; letter-spacing: 0.2em; font-size: 16px; outline: none; }
+          .bidi-input:focus { border-color: #6366f1; }
+          .bidi-refresh { background: #334155; color: #94a3b8; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 10px; text-transform: uppercase; font-weight: bold; }
+          .bidi-refresh:hover { background: #475569; color: white; }
+          .phantom-atom::after { content: var(--p); }
+        </style>
+        <div class="bidi-captcha-box">
+          <div id="captchaRender" class="bidi-render"></div>
+          <input type="text" id="captchaInput" class="bidi-input" placeholder="ENTER CODE">
+          <button type="button" id="refreshBtn" class="bidi-refresh">Refresh Code</button>
+        </div>
+      \`;
+
+      // Bind events manually since React events don't pierce Shadow DOM easily in this hybrid mode
+      shadow.getElementById('refreshBtn').onclick = generateCaptcha;
+      shadow.getElementById('captchaInput').oninput = (e) => {
+         const val = e.target.value.toUpperCase();
+         if (onValidate) onValidate(val.replace(/\\u200B/g, '').trim() === secretRef.current);
+      };
+      
+      generateCaptcha();
+    }
+  }, []);
+
+  const generateCaptcha = () => {
+    if(!rootRef.current) return;
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    const newSecret = Array.from({length:5}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+    secretRef.current = newSecret;
+    
+    const phantom = newSecret.slice(-1);
+    const body = newSecret.slice(0, -1);
+    let nodes = [];
+    
+    let i = 0;
+    while(i < body.length) {
+      const len = (Math.random() > 0.5 && i + 1 < body.length) ? 2 : 1;
+      const chunk = body.substr(i, len);
+      const rev = chunk.length > 1 && Math.random() > 0.5;
+      nodes.push({ html: \`<span style="order:\${i+1}; unicode-bidi:bidi-override; direction:\${rev?'rtl':'ltr'}; white-space:pre;">\${rev?chunk.split('').reverse().join(''):chunk}</span>\` });
+      i += len;
+    }
+    nodes.push({ html: \`<span class="phantom-atom" style="order:100; --p:'\${phantom}'; white-space:pre;"></span>\` });
+    for(let j=0; j<3; j++) nodes.push({ html: \`<span style="order:\${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none;">\${"ABC".charAt(Math.floor(Math.random()*3))}</span>\` });
+    nodes.sort(() => Math.random() - 0.5);
+    
+    ${noiseLogicReact}
+    const renderEl = rootRef.current.getElementById('captchaRender');
+    const inputEl = rootRef.current.getElementById('captchaInput');
+    if(renderEl) renderEl.innerHTML = noise + \`<div style="display:flex; justify-content:center; width:100%; gap:2px;">\${nodes.map(n => n.html).join('')}</div>\`;
+    if(inputEl) inputEl.value = '';
+  };
+
+  return <div ref={hostRef} />;
+}`;
+                } else {
+                    // Standard React Code (No Shadow)
+                    code = `import React, { useState, useEffect, useRef } from 'react';
 
 export default function BiDiCaptcha({ onValidate }) {
   const [inputVal, setInputVal] = useState('');
@@ -802,14 +1067,89 @@ export default function BiDiCaptcha({ onValidate }) {
     </div>
   );
 }`;
+                }
             } else {
-                // HTML Logic (Default)
+                // HTML Logic
                 const noiseCSS = useNoise ? '' : '/* Noise disabled */';
                 const noiseLogic = useNoise 
                     ? `const noise = \`<svg style="position:absolute; inset:0; pointer-events:none; opacity:0.3" viewBox="0 0 100 50">\${Array.from({length:10}).map(() => \`<path d="M\${Math.random()*100} \${Math.random()*50} Q \${Math.random()*100} \${Math.random()*50} \${Math.random()*100} \${Math.random()*50}" stroke="white" fill="none"/>\`).join('')}</svg>\`;`
                     : `const noise = ''; // Anti-OCR Mesh disabled`;
 
-                code = `<!-- BiDi CAPTCHA Container -->
+                if (useShadow) {
+                    code = `<!-- BiDi Shadow CAPTCHA -->
+<div id="captcha-host"></div>
+<script>
+  const BiDiCaptcha = (function() {
+    let _secret = '';
+    let _root = null; // Store shadow root
+    
+    function _init() {
+      const host = document.getElementById('captcha-host');
+      if(!host) return;
+      _root = host.attachShadow({mode: 'closed'});
+      
+      // Inject CSS + HTML structure
+      _root.innerHTML = \`
+        <style>
+          .bidi-captcha-box { background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; width: 300px; font-family: monospace; }
+          .bidi-render { background: rgba(0,0,0,0.3); border: 2px solid #475569; border-radius: 6px; height: 60px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; user-select: none; color: white; font-size: 24px; letter-spacing: 0.2em; }
+          .bidi-input { background: #1e293b; border: 1px solid #475569; color: white; padding: 10px; border-radius: 6px; text-align: center; text-transform: uppercase; letter-spacing: 0.2em; font-size: 16px; outline: none; }
+          .bidi-input:focus { border-color: #6366f1; }
+          .bidi-refresh { background: #334155; color: #94a3b8; border: none; padding: 8px; border-radius: 4px; cursor: pointer; font-size: 10px; text-transform: uppercase; font-weight: bold; }
+          .bidi-refresh:hover { background: #475569; color: white; }
+          .phantom-atom::after { content: var(--p); }
+        </style>
+        <div class="bidi-captcha-box">
+          <div id="captchaRender" class="bidi-render"></div>
+          <input type="text" id="captchaInput" class="bidi-input" placeholder="ENTER CODE">
+          <button type="button" id="refreshBtn" class="bidi-refresh">Refresh Code</button>
+        </div>
+      \`;
+      
+      _root.getElementById('refreshBtn').onclick = _generate;
+      _generate();
+    }
+    
+    function _generate() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      _secret = Array.from({length:5}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+      
+      const phantom = _secret.slice(-1);
+      const body = _secret.slice(0, -1);
+      let nodes = [];
+      let i = 0;
+      while(i < body.length) {
+        const len = (Math.random() > 0.5 && i + 1 < body.length) ? 2 : 1;
+        const chunk = body.substr(i, len);
+        const rev = chunk.length > 1 && Math.random() > 0.5;
+        nodes.push({ html: \`<span style="order:\${i+1}; unicode-bidi:bidi-override; direction:\${rev?'rtl':'ltr'}; white-space:pre;">\${rev?chunk.split('').reverse().join(''):chunk}</span>\` });
+        i += len;
+      }
+      nodes.push({ html: \`<span class="phantom-atom" style="order:100; --p:'\${phantom}'; white-space:pre;"></span>\` });
+      for(let j=0; j<3; j++) nodes.push({ html: \`<span style="order:\${Math.floor(Math.random()*10)}; opacity:0; position:absolute; pointer-events:none;">\${"ABC".charAt(Math.floor(Math.random()*3))}</span>\` });
+      nodes.sort(() => Math.random() - 0.5);
+      
+      ${noiseLogic}
+      
+      _root.getElementById('captchaRender').innerHTML = noise + \`<div style="display:flex; justify-content:center; width:100%; gap:2px;">\${nodes.map(n => n.html).join('')}</div>\`;
+      _root.getElementById('captchaInput').value = '';
+    }
+
+    return {
+      init: _init,
+      validate: function() {
+        if(!_root) return false;
+        const val = _root.getElementById('captchaInput').value.toUpperCase().replace(/\\u200B/g, '').trim();
+        return val === _secret;
+      }
+    };
+  })();
+  
+  BiDiCaptcha.init();
+<\/script>`;
+                } else {
+                    // Standard HTML (No Shadow)
+                    code = `<!-- BiDi CAPTCHA Container -->
 <style>
   .bidi-captcha-box { background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; width: 300px; font-family: monospace; }
   .bidi-render { background: rgba(0,0,0,0.3); border: 2px solid #475569; border-radius: 6px; height: 60px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; user-select: none; color: white; font-size: 24px; letter-spacing: 0.2em; }
@@ -870,6 +1210,7 @@ export default function BiDiCaptcha({ onValidate }) {
   // Initialize
   BiDiCaptcha.init();
 <\/script>`;
+                }
             }
             
             document.getElementById('integrationCode').textContent = code;

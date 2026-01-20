@@ -1,7 +1,7 @@
 # Text-Obfuscator & Client-Side CAPTCHA
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-3.1-teal)
+![Version](https://img.shields.io/badge/version-3.2-teal)
 ![Size](https://img.shields.io/badge/size-2kb-green)
 
 **The lightweight, privacy-first alternative to heavy bot protection.**
@@ -56,6 +56,11 @@ For the CAPTCHA, we overlay an SVG noise mesh that cuts through characters.
 *   **Human Brain:** Easily ignores the lines and reads the code.
 *   **Traditional OCR:** Fails segmentation, reading an `E` as an `8` or `F`.
 *   **Vision AI:** Can solve it, but costs ~$0.01 per attempt, making spam campaigns bankrupt themselves.
+
+#### 5. Shadow DOM Wrapper
+We wrap the protected content inside a **Closed Shadow DOM Root**.
+*   **Scrapers:** `document.body.innerText` returns an **empty string**. The content is invisible to standard DOM scraping.
+*   **Protection:** Forces attackers to use expensive automation tools (Playwright/[CDP](https://chromedevtools.github.io/devtools-protocol/)) to pierce the shadow boundary.
 
 ---
 

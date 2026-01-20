@@ -69,6 +69,12 @@ We overlay a chemically-generated SVG noise pattern on top of the text.
 *   **Bézier Curves:** Random thin lines that cut through characters (e.g., turning an `F` into an `E` or `P`).
 *   **Stochastic Dots:** High-contrast dots that act as "salt and pepper" noise, confusing the segmentation algorithms of Tesseract and other standard OCR libraries.
 
+### Layer 4: Shadow DOM Wrapper (New in v3.2)
+The entire CAPTCHA widget can be rendered inside a `closed` Shadow DOM Root.
+*   **Effect:** `document.body.innerText` does not see the CAPTCHA text.
+*   **Scraper View:** Empty string.
+*   **Attack Cost:** The bot must specifically query for shadow hosts and pierce them using [CDP](https://chromedevtools.github.io/devtools-protocol/)Puppeteer/Playwright methods, filtering out 90% of basic DOM scrapers.
+
 ---
 
 ## 4. Validation Logic
@@ -96,4 +102,4 @@ We occasionally inject Zero-Width Spaces into the DOM.
 
 BiDi-Auth shifts the cost of attack from **Computation** (cheap) to **Perception** (expensive).
 
-By forcing an attacker to run a headless browser, render CSS, execute JavaScript, and perform advanced computer vision on every attempt, we make spamming a personal blog or contact form economically unviable.
+By forcing an attacker to run a headless browser, render CSS, execute JavaScript, pierce Shadow DOM, and perform advanced computer vision on every attempt, we make spamming a personal blog or contact form economically unviable.
