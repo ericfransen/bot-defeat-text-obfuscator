@@ -326,8 +326,8 @@ Protocol: BiDi-Override-2025</textarea>
                     <h4 class="text-xs font-bold text-white uppercase">How to use</h4>
                     <ul class="text-[11px] text-slate-400 space-y-2 list-disc pl-4">
                         <li><strong>Step 1:</strong> Copy the code above and paste it into your HTML form.</li>
-                        <li><strong>Step 2:</strong> Ensure the <code>validateCaptcha()</code> function is called before form submission.</li>
-                        <li><strong>Note:</strong> This is a client-side implementation (Anti-Spam). For maximum security against targeted attacks, move the logic to your server (Node/PHP/Python) so the secret is never exposed to the browser.</li>
+                        <li><strong>Step 2:</strong> Call <code>BiDiCaptcha.validate(reason => console.log(reason))</code> on submit.</li>
+                        <li><strong>Note:</strong> Returns <code>true</code> if valid. The callback catches 'SPEED' (bot) or 'MISMATCH' errors.</li>
                     </ul>
                 </div>
             </div>
@@ -587,7 +587,7 @@ export default function SecureShadowText() {
     }
   }, []);
 
-  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    &lt;<span class="text-pink-400">div</span> ${mode === 'tailwind' ? `className="${twClasses}"` : 'style={{...}}'}&gt;\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;\n    &lt;/<span class="text-pink-400">div</span>&gt;\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;;`}
+  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    <span class="text-pink-400">&lt;div ${mode === 'tailwind' ? `className="${twClasses}"` : 'style={{...}}'}&gt;</span>\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;\n    <span class="text-pink-400">&lt;/div&gt;</span>\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;;`}
 }`;
                 } else {
                     finalOutput = `import React from 'react';
@@ -620,8 +620,8 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
                     highlightedFinal = escapeHtml(finalOutput);
                     if (useWrapper) {
                         highlightedFinal = highlightedFinal
-                            .replace(/&lt;div (className|style|dangerously)/, '<span class="text-pink-400">&lt;div</span> $1')
-                            .replace(/&lt;\/div&gt;/, '<span class="text-pink-400">&lt;/div&gt;</span>');
+                            .replace(/(&lt;div (?:className|style)=[^&gt;]*)/, '<span class="text-pink-400">$1</span>')
+                            .replace(/(\/&gt;(?=\n  );)/, '<span class="text-pink-400">$1</span>');
                     }
                 }
             } else {
