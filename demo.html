@@ -841,7 +841,10 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
             if (speedBumpEnabled && (!currentAuthStartTime || (Date.now() - currentAuthStartTime < 1500))) {
                 status.textContent = "Too Fast, Bot!";
                 status.classList.add('text-orange-500');
-                setTimeout(() => status.className = "hidden", 2000);
+                setTimeout(() => { 
+                    status.className = "hidden"; 
+                    generateNewSecret(); 
+                }, 2000);
                 return;
             }
 
@@ -941,13 +944,20 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
             let code = "";
 
             // Speed Bump Logic Strings
-            const sbInitReact = useSpeedBump ? `const startTimeRef = useRef(0);` : ``;
-            const sbResetReact = useSpeedBump ? `startTimeRef.current = Date.now();` : ``;
-            const sbCheckReact = useSpeedBump ? `if (Date.now() - startTimeRef.current < 1500) { alert('Too Fast!'); return; }` : ``;
+            const sbInitReact = useSpeedBump ? `const startTimeRef = useRef(null);` : ``;
+            const sbResetReact = useSpeedBump ? `startTimeRef.current = null;` : ``;
+            const sbCheckReact = useSpeedBump ? `if (!startTimeRef.current || Date.now() - startTimeRef.current < 1500) { alert('Too Fast!'); generateCaptcha(); return; }` : ``;
+            const sbStartReact = useSpeedBump ? `if(!startTimeRef.current) startTimeRef.current = Date.now();` : ``;
             
-            const sbInitHTML = useSpeedBump ? `let _startTime = 0;` : ``;
-            const sbResetHTML = useSpeedBump ? `_startTime = Date.now();` : ``;
-            const sbCheckHTML = useSpeedBump ? `if (Date.now() - _startTime < 1500) return false;` : ``;
+            const sbInitHTML = useSpeedBump ? `let _startTime = null;` : ``;
+            const sbResetHTML = useSpeedBump ? `_startTime = null;` : ``;
+            const sbCheckHTML = useSpeedBump ? `if (!_startTime || Date.now() - _startTime < 1500) { _generate(); return false; }` : ``;
+            const sbStartHTML = useSpeedBump ? `if(!_startTime) _startTime = Date.now();` : ``;
+            const sbAttrHTML = useSpeedBump ? `oninput="if(!_startTime) _startTime = Date.now()"` : ``;
+            const standardHtmlListener = useSpeedBump ? `
+    document.getElementById('captchaInput').addEventListener('input', function() {
+      if(!_startTime) _startTime = Date.now();
+    });` : ``;
 
             if (format === 'react') {
                 const noiseLogicReact = useNoise 
@@ -989,6 +999,7 @@ export default function BiDiCaptcha({ onValidate }) {
       // Bind events manually since React events don't pierce Shadow DOM easily in this hybrid mode
       shadow.getElementById('refreshBtn').onclick = generateCaptcha;
       shadow.getElementById('captchaInput').oninput = (e) => {
+         ${sbStartReact}
          ${sbCheckReact}
          const val = e.target.value.toUpperCase();
          if (onValidate) onValidate(val.replace(/\\u200B/g, '').trim() === secretRef.current);
@@ -1070,6 +1081,7 @@ export default function BiDiCaptcha({ onValidate }) {
   useEffect(() => { generateCaptcha(); }, []);
 
   const handleChange = (e) => {
+    ${sbStartReact}
     ${sbCheckReact}
     const val = e.target.value.toUpperCase();
     setInputVal(val);
@@ -1135,7 +1147,7 @@ export default function BiDiCaptcha({ onValidate }) {
         </style>
         <div class="bidi-captcha-box">
           <div id="captchaRender" class="bidi-render"></div>
-          <input type="text" id="captchaInput" class="bidi-input" placeholder="ENTER CODE">
+          <input type="text" id="captchaInput" class="bidi-input" placeholder="ENTER CODE" \${sbAttrHTML}>
           <button type="button" id="refreshBtn" class="bidi-refresh">Refresh Code</button>
         </div>
       \`;
@@ -1207,6 +1219,7 @@ export default function BiDiCaptcha({ onValidate }) {
   const BiDiCaptcha = (function() {
     let _secret = ''; // Private variable, not accessible from console
     ${sbInitHTML}
+    ${standardHtmlListener}
     
     function _generate() {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

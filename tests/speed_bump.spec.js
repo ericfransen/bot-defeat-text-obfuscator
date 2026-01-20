@@ -27,9 +27,9 @@ test.describe('CAPTCHA Speed Bump', () => {
     const codeBox = page.locator('#integrationCode');
     const code = await codeBox.textContent();
     
-    expect(code).toContain('let _startTime = 0;');
-    expect(code).toContain('_startTime = Date.now();');
-    expect(code).toContain('if (Date.now() - _startTime < 1500) return false;');
+    expect(code).toContain('let _startTime = null;');
+    expect(code).toContain('_startTime = null;');
+    expect(code).toContain('_generate(); return false;');
   });
 
   test('should include speed bump logic in generated React code', async ({ page }) => {
@@ -39,27 +39,33 @@ test.describe('CAPTCHA Speed Bump', () => {
     const codeBox = page.locator('#integrationCode');
     const code = await codeBox.textContent();
     
-    expect(code).toContain('const startTimeRef = useRef(0);');
-    expect(code).toContain('startTimeRef.current = Date.now();');
-    expect(code).toContain("if (Date.now() - startTimeRef.current < 1500) { alert('Too Fast!'); return; }");
+    expect(code).toContain('const startTimeRef = useRef(null);');
+    expect(code).toContain('startTimeRef.current = null;');
+    expect(code).toContain("generateCaptcha(); return;");
   });
 
-  test('Demo interaction: should reject fast submissions', async ({ page }) => {
+  test('Demo interaction: should reject fast submissions and regenerate', async ({ page }) => {
     // Enable Speed Bump
     await page.locator('#speedBumpToggle').check();
     
-    // Get the secret code from the DOM or by cheating (since we can read #authInput placeholder or just read the secret logic?)
-    // Actually, getting the secret from the JS variable might be hard in Playwright without evaluating script.
-    // Easier: Just read the text content of #authRender (OCR simulation essentially) or the OCR view since it might be visible.
-    // Or simpler: click "Bot Attack" which fills it instantly.
+    // Get initial secret
+    const initialSecret = await page.locator('#authOCRView').textContent();
     
     await page.click('button:has-text("Bot Attack")');
     // Bot Attack fills input and calls validateAuth(2000)
     
     const status = page.locator('#authStatus');
-    // Should be "Too Fast!" immediately
+    // Should be "Too Fast, Bot!" immediately
     await expect(status).toHaveText('Too Fast, Bot!');
     await expect(status).toHaveClass(/text-orange-500/);
+    
+    // Wait for regeneration (2s delay + buffer)
+    await page.waitForTimeout(2500);
+    
+    // Verify regeneration
+    const newSecret = await page.locator('#authOCRView').textContent();
+    expect(newSecret).not.toBe(initialSecret);
+    expect(newSecret).not.toBe('[EMPTY]');
   });
 
   test('Demo interaction: should allow slow submissions', async ({ page }) => {
