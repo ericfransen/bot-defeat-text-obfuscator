@@ -39,8 +39,6 @@ test.describe('Wrapper Styling', () => {
     
     // Type some styles
     await page.fill('#rawStyles', 'background: blue; padding: 20px;');
-    // Blur to trigger update
-    await page.locator('#rawStyles').blur();
     
     // Check Generated Source
     const source = page.locator('#sourceSnippet');

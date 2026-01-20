@@ -159,35 +159,10 @@ Protocol: BiDi-Override-2025</textarea>
                 <!-- Visual Render Tree -->
                 <div class="glass-panel rounded-3xl overflow-hidden border-2 border-blue-500/20 shadow-2xl">
                     <div class="px-6 py-3 bg-blue-500/10 border-b border-blue-500/20">
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-blue-400">Visual Render (Human View)</span>
+                        <span class="text-[14px] font-bold uppercase tracking-widest text-blue-400">Visual Render (Human View)</span>
                     </div>
                     <div id="renderTarget" class="p-8 bg-slate-900/20 min-h-[160px] text-white leading-relaxed text-lg select-none cursor-default">
                         <!-- Injected -->
-                    </div>
-                </div>
-
-                <!-- Styling Toggle Section -->
-                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-blue-500">
-                    <div class="flex items-center justify-between">
-                        <label class="text-xs font-bold text-white uppercase tracking-widest">Wrapper Styling</label>
-                        <input type="checkbox" id="useWrapper" onchange="orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
-                    </div>
-                    
-                    <div id="wrapperControls" class="space-y-4 opacity-50 pointer-events-none transition-opacity">
-                        <!-- Mode Selection -->
-                        <div class="flex gap-4 mb-2">
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="styleMode" value="tailwind" checked onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
-                                <span class="text-[10px] uppercase font-bold text-slate-400">Tailwind</span>
-                            </label>
-                            <label class="flex items-center gap-2 cursor-pointer">
-                                <input type="radio" name="styleMode" value="css" onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
-                                <span class="text-[10px] uppercase font-bold text-slate-400">CSS</span>
-                            </label>
-                        </div>
-
-                        <input type="text" id="twClasses" placeholder="Tailwind classes..." oninput="handleTwInput(event)" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none focus:border-blue-500">
-                        <textarea id="rawStyles" rows="2" placeholder="Inline CSS..." onblur="validateAndSyncCss()" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none resize-none"></textarea>
                     </div>
                 </div>
 
@@ -221,9 +196,34 @@ Protocol: BiDi-Override-2025</textarea>
                     </div>
                 </div>
 
+                <!-- Styling Toggle Section -->
+                <div class="glass-panel p-6 rounded-3xl shadow-2xl space-y-4 border-blue-500">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-white uppercase tracking-widest">Wrapper Styling</label>
+                        <input type="checkbox" id="useWrapper" onchange="orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
+                    </div>
+                    
+                    <div id="wrapperControls" class="space-y-4 opacity-50 pointer-events-none transition-opacity">
+                        <!-- Mode Selection -->
+                        <div class="flex gap-4 mb-2">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="styleMode" value="tailwind" checked onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">Tailwind</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="styleMode" value="css" onchange="orchestrate()" class="text-blue-500 bg-slate-900 border-slate-700 focus:ring-blue-500">
+                                <span class="text-[10px] uppercase font-bold text-slate-400">CSS</span>
+                            </label>
+                        </div>
+
+                        <input type="text" id="twClasses" placeholder="Tailwind classes..." oninput="handleTwInput(event)" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none focus:border-blue-500">
+                        <textarea id="rawStyles" rows="2" placeholder="Inline CSS..." oninput="validateAndSyncCss()" class="w-full bg-[#050810] border border-slate-700 rounded-lg px-3 py-2 text-xs text-blue-300 outline-none resize-none"></textarea>
+                    </div>
+                </div>
+
                 <!-- Bot Simulation Console -->
                 <div class="glass-panel rounded-3xl overflow-hidden shadow-xl">
-                    <div class="px-6 py-3 bg-red-500/10 border-b border-red-500/20"><span class="text-[10px] font-bold uppercase text-red-400">Scraper Simulation</span></div>
+                    <div class="px-6 py-3 bg-red-500/10 border-b border-red-500/20"><span class="text-[14px] font-bold uppercase text-red-400">Scraper Simulation (Bot View)</span></div>
                     <div class="p-6 font-mono text-[10px] space-y-3 bg-black/20 text-slate-500">
                         <div id="scraperResult" class="text-red-400/80 p-3 bg-red-950/10 rounded border border-red-900/20 break-all whitespace-pre-wrap"></div>
                         <div class="flex items-center gap-2"><div id="matchIndicator" class="w-2 h-2 rounded-full"></div><span id="matchStatus" class="uppercase font-bold"></span></div>
@@ -582,7 +582,7 @@ export default function SecureShadowText() {
     }
   }, []);
 
-  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    &lt;<span class="text-blue-400">div</span> ${mode === 'tailwind' ? `className="${twClasses}"` : 'style={{...}}'}&gt;\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;\n    &lt;/<span class="text-blue-400">div</span>&gt;\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;;`}
+  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    &lt;<span class="text-pink-400">div</span> ${mode === 'tailwind' ? `className="${twClasses}"` : 'style={{...}}'}&gt;\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;\n    &lt;/<span class="text-pink-400">div</span>&gt;\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;;`}
 }`;
                 } else {
                     finalOutput = `import React from 'react';
@@ -613,11 +613,25 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
                     }
                     
                     highlightedFinal = escapeHtml(finalOutput);
+                    if (useWrapper) {
+                        highlightedFinal = highlightedFinal
+                            .replace(/&lt;div (className|style|dangerously)/, '<span class="text-pink-400">&lt;div</span> $1')
+                            .replace(/&lt;\/div&gt;/, '<span class="text-pink-400">&lt;/div&gt;</span>');
+                    }
                 }
             } else {
                 // HTML Format
                 finalOutput = snippetContent;
-                highlightedFinal = escapeHtml(finalOutput);
+                
+                if (useWrapper) {
+                    const lines = finalOutput.split('\n');
+                    const openTag = lines[0];
+                    const closeTag = lines[lines.length - 1];
+                    const inner = lines.slice(1, -1).join('\n');
+                    highlightedFinal = `<span class="text-pink-400">${escapeHtml(openTag)}</span>\n${escapeHtml(inner)}\n<span class="text-pink-400">${escapeHtml(closeTag)}</span>`;
+                } else {
+                    highlightedFinal = escapeHtml(finalOutput);
+                }
                 
                 // Highlight script tags if shadow
                 if (useShadow) {
