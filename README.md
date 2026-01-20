@@ -1,12 +1,16 @@
 # Text-Obfuscator & Client-Side CAPTCHA
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-3.2-teal)
-![Size](https://img.shields.io/badge/size-2kb-green)
+![Version](https://img.shields.io/badge/version-3.3-teal)
+![Size](https://img.shields.io/badge/size-<10kb-green)
 
 **The lightweight, privacy-first alternative to heavy bot protection.**
 
 Protect your email addresses, phone numbers, short-form data, and forms from 99% of bots, scrapers, and AI crawlers without relying on tracking-heavy third-party services or risking vendor lock-in.
+
+# Check it out here:
+
+[BOT DEFEAT OBFUSCATOR](https://ericfransen.github.io/bot-defeat-text-obfuscator/demo.html)
 
 ---
 
@@ -140,7 +144,7 @@ export default function ContactForm() {
 
 ## ☁️ Why Client-Side? (The Static Site Advantage)
 
-Moving security to the client side offers massive benefits for the modern "JAMstack" web:
+Moving security to the client side offers benefits for the modern "JAMstack" web:
 
 1.  **Unbreakable Uptime:** Your security logic lives in your code. It works offline, on localhost, and during major cloud outages.
 2.  **Privacy Compliance:** No cookies, no IP tracking, no data sent to Google/Cloudflare. GDPR/CCPA friendly by default.
@@ -174,11 +178,10 @@ This library implements **Security by Friction**.
 
 You can view a live demo and generate your own snippets by opening the demo.html here:
 
-https://ericfransen.github.io/js-text-obfuscator/demo.html
+https://ericfransen.github.io/bot-defeat-text-obfuscator/demo.html
 
 ---
 
 ## 📜 License
 
 MIT License. Free to use for personal and commercial projects.
-

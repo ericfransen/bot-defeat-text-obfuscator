@@ -2,4 +2,3 @@ _private/
 node_modules/
 .npm-cache/
 test-results/
-package-lock.json
