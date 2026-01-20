@@ -33,5 +33,10 @@ test.describe('React CSS Wrapper', () => {
     const previewText = await source.textContent();
     expect(previewText).toContain("marginLeft:'55px'");
     expect(previewText).not.toContain("{{...}}");
+
+    // Check Highlighting (HTML structure)
+    const previewHtml = await source.evaluate(el => el.innerHTML);
+    // Should wrap the div start and style prop in pink
+    expect(previewHtml).toContain('<span class="text-pink-400">&lt;div style={{marginLeft');
   });
 });

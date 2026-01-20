@@ -629,7 +629,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
                     highlightedFinal = escapeHtml(finalOutput);
                     if (useWrapper) {
                         highlightedFinal = highlightedFinal
-                            .replace(/(&lt;div (?:className|style)=[^&gt;]*)/, '<span class="text-pink-400">$1</span>')
+                            .replace(/(&lt;div (?:className|style)=.*?)(?= dangerouslySetInnerHTML)/, '<span class="text-pink-400">$1</span>')
                             .replace(/(\/&gt;(?=\n  );)/, '<span class="text-pink-400">$1</span>');
                     }
                 }
