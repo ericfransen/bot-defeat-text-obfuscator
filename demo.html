@@ -946,12 +946,12 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
             // Speed Bump Logic Strings
             const sbInitReact = useSpeedBump ? `const startTimeRef = useRef(null);` : ``;
             const sbResetReact = useSpeedBump ? `startTimeRef.current = null;` : ``;
-            const sbCheckReact = useSpeedBump ? `if (!startTimeRef.current || Date.now() - startTimeRef.current < 1500) { alert('Too Fast!'); generateCaptcha(); return; }` : ``;
+            const sbCheckReact = useSpeedBump ? `if (!startTimeRef.current || Date.now() - startTimeRef.current < 1500) { if(onFail) onFail('SPEED'); else alert('Too Fast!'); generateCaptcha(); return; }` : ``;
             const sbStartReact = useSpeedBump ? `if(!startTimeRef.current) startTimeRef.current = Date.now();` : ``;
             
             const sbInitHTML = useSpeedBump ? `let _startTime = null;` : ``;
             const sbResetHTML = useSpeedBump ? `_startTime = null;` : ``;
-            const sbCheckHTML = useSpeedBump ? `if (!_startTime || Date.now() - _startTime < 1500) { _generate(); return false; }` : ``;
+            const sbCheckHTML = useSpeedBump ? `if (!_startTime || Date.now() - _startTime < 1500) { if(onFail) onFail('SPEED'); _generate(); return false; }` : ``;
             const sbStartHTML = useSpeedBump ? `if(!_startTime) _startTime = Date.now();` : ``;
             const sbAttrHTML = useSpeedBump ? `oninput="if(!_startTime) _startTime = Date.now()"` : ``;
             const standardHtmlListener = useSpeedBump ? `
@@ -967,7 +967,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
                 if (useShadow) {
                     code = `import React, { useState, useEffect, useRef } from 'react';
 
-export default function BiDiCaptcha({ onValidate }) {
+export default function BiDiCaptcha({ onValidate, onFail }) {
   const hostRef = useRef(null);
   const rootRef = useRef(null); // Store shadow root access
   const secretRef = useRef('');
@@ -1002,7 +1002,11 @@ export default function BiDiCaptcha({ onValidate }) {
          ${sbStartReact}
          ${sbCheckReact}
          const val = e.target.value.toUpperCase();
-         if (onValidate) onValidate(val.replace(/\\u200B/g, '').trim() === secretRef.current);
+         if (onValidate) {
+             const isValid = val.replace(/\\u200B/g, '').trim() === secretRef.current;
+             onValidate(isValid);
+             if (!isValid && onFail) onFail('MISMATCH');
+         }
       };
       
       generateCaptcha();
@@ -1045,7 +1049,7 @@ export default function BiDiCaptcha({ onValidate }) {
                     // Standard React Code (No Shadow)
                     code = `import React, { useState, useEffect, useRef } from 'react';
 
-export default function BiDiCaptcha({ onValidate }) {
+export default function BiDiCaptcha({ onValidate, onFail }) {
   const [inputVal, setInputVal] = useState('');
   const [renderHtml, setRenderHtml] = useState('');
   const secretRef = useRef('');
@@ -1085,7 +1089,11 @@ export default function BiDiCaptcha({ onValidate }) {
     ${sbCheckReact}
     const val = e.target.value.toUpperCase();
     setInputVal(val);
-    if (onValidate) onValidate(val.replace(/\\u200B/g, '').trim() === secretRef.current);
+    if (onValidate) {
+        const isValid = val.replace(/\\u200B/g, '').trim() === secretRef.current;
+        onValidate(isValid);
+        if (!isValid && onFail) onFail('MISMATCH');
+    }
   };
 
   return (
@@ -1184,12 +1192,13 @@ export default function BiDiCaptcha({ onValidate }) {
 
     return {
       init: _init,
-      validate: function() {
+      validate: function(onFail) {
         if(!_root) return false;
         ${sbCheckHTML}
-        const val = _root.getElementById('captchaInput').value.toUpperCase().replace(/\\u200B/g, '').trim();
-        return val === _secret;
-      }
+                    const val = _root.getElementById('captchaInput').value.toUpperCase().replace(/\\u200B/g, '').trim();
+                    const isValid = val === _secret;
+                    if(!isValid && onFail) onFail('MISMATCH');
+                    return isValid;      }
     };
   })();
   
@@ -1251,11 +1260,12 @@ export default function BiDiCaptcha({ onValidate }) {
 
     return {
       init: function() { _generate(); },
-      validate: function() {
+      validate: function(onFail) {
         ${sbCheckHTML}
-        const val = document.getElementById('captchaInput').value.toUpperCase().replace(/\\u200B/g, '').trim();
-        return val === _secret;
-      }
+                    const val = document.getElementById('captchaInput').value.toUpperCase().replace(/\\u200B/g, '').trim();
+                    const isValid = val === _secret;
+                    if(!isValid && onFail) onFail('MISMATCH');
+                    return isValid;      }
     };
   })();
   
