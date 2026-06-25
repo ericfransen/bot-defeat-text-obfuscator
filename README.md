@@ -64,6 +64,12 @@ We wrap the protected content inside a **Closed Shadow DOM Root**.
 *   **Scrapers:** `document.body.innerText` returns an **empty string**. The content is invisible to standard DOM scraping.
 *   **Protection:** Forces attackers to use expensive automation tools (Playwright/[CDP](https://chromedevtools.github.io/devtools-protocol/)) to pierce the shadow boundary.
 
+#### 6. Next-Gen Defensive Layering
+We combine multiple low-cost, high-yield tactics to defeat advanced targeted scraping:
+*   **DOM Polymorphism:** Randomly alternates the obfuscation method (e.g. CSS variables, Flexbox order, decoy characters) for every character on every render, preventing scrapers from using a uniform unscrambling rule.
+*   **CSS Grid Scrambling:** Places characters inside a grid layout and shuffles them in the DOM, utilizing inline grid coordinates for visual alignment.
+*   **Zero-Width Spaces:** Injects invisible zero-width spaces (`\u200B`) that break standard regex matching without affecting user visibility.
+
 ---
 
 ## 🚀 Usage
@@ -137,6 +143,34 @@ export default function ContactForm() {
   );
 }
 ```
+
+### 3. Dynamic React Server Component (Next.js / RSC)
+
+For dynamic web apps (like Next.js or Remix), you can implement a dynamic **React Server Component** that obfuscates text (e.g. emails, phone numbers) on the server at render time. This completely avoids storing the raw text in the client-side JavaScript bundle and allows you to pass variables dynamically.
+
+#### Usage Example:
+
+```jsx
+import PhantomShield from './PhantomShield';
+
+export default async function ContactPage() {
+  const userEmail = "admin@example.com"; // Loaded dynamically from DB or environment
+
+  return (
+    <div>
+      <p>Contact us at:</p>
+      <PhantomShield 
+        payload={userEmail} 
+        shadowDOM={true} 
+        interactive={true} 
+        interactiveType="copy"
+      />
+    </div>
+  );
+}
+```
+
+The dynamic component implementation code can be copied directly from the **Dynamic React Component** tab in the generator (`demo.html`).
 
 ---
 

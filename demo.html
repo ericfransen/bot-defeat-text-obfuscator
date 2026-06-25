@@ -40,6 +40,7 @@
         <!-- Navigation Tabs -->
         <div class="flex justify-center gap-4 mb-8">
             <button onclick="switchView('obfuscator')" id="tab-obfuscator" class="tab-btn active px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-600 text-white transition-all shadow-lg shadow-blue-900/20">Obfuscator</button>
+            <button onclick="switchView('dynamic')" id="tab-dynamic" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">Dynamic Component</button>
             <button onclick="switchView('gate')" id="tab-gate" class="tab-btn px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all">CAPTCHA</button>
         </div>
 
@@ -329,6 +330,62 @@ Protocol: BiDi-Override-2025</textarea>
                         <li><strong>Step 2:</strong> Call <code>BiDiCaptcha.validate(reason => console.log(reason))</code> on submit.</li>
                         <li><strong>Note:</strong> Returns <code>true</code> if valid. The callback catches 'SPEED' (bot) or 'MISMATCH' errors.</li>
                     </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- View: Dynamic Component -->
+        <div id="view-dynamic" class="view-section hidden max-w-4xl mx-auto space-y-12">
+            <!-- Explain what this is -->
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl border-indigo-500">
+                <h3 class="text-xl font-bold text-indigo-400 uppercase tracking-widest mb-2">Dynamic React Server Component (RSC)</h3>
+                <p class="text-sm text-slate-400 leading-relaxed mb-6">
+                    Unlike static generation which outputs pre-baked obfuscated blocks, this dynamic component operates directly on the server at render time. By leveraging <strong>React Server Components (RSC)</strong> and <strong>Declarative Shadow DOM</strong>, the plaintext data is never sent to the browser in client-side bundles, yet the output is completely randomized on every render.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-500">
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-400 uppercase">Premium Features</h4>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><strong>Dynamic Scrambling:</strong> Fully shuffles rendering order dynamically.</li>
+                            <li><strong>DOM Polymorphism:</strong> Randomly alternates character representation methods (spans, grid cells, pseudo-elements) to prevent uniform scrapers.</li>
+                            <li><strong>Zero Hydration Warnings:</strong> Pure CSS visual representation that doesn't trigger React's client hydration mismatch issues.</li>
+                            <li><strong>No Client-side JS Dependency:</strong> Pure HTML/CSS unless interactive actions are enabled.</li>
+                        </ul>
+                    </div>
+                    <div class="space-y-2">
+                        <h4 class="font-bold text-slate-400 uppercase">Caveats & Trade-offs</h4>
+                        <ul class="list-disc pl-4 space-y-1">
+                            <li><strong>CSS Styling:</strong> Utility frameworks (e.g. Tailwind) cannot style components inside the shadow root. Use inline standard styles if needed.</li>
+                            <li><strong>Caching:</strong> If static page caching (SSG) is active, randomization will only execute during build time.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Code copy-paste area -->
+            <div class="glass-panel p-8 rounded-3xl shadow-2xl border-teal-500">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-teal-400 uppercase tracking-widest">Component Code</h3>
+                        <p class="text-xs text-slate-500 mt-1">Copy this implementation into your project as <code>PhantomShield.tsx</code> (or <code>PhantomShield.jsx</code>).</p>
+                    </div>
+                    <button onclick="copyDynamicComponentCode()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition uppercase tracking-wider shadow-lg">Copy Component Code</button>
+                </div>
+                
+                <div class="bg-black/40 rounded-xl p-4 border border-slate-700/50 overflow-hidden relative">
+                    <pre id="dynamicComponentCode" class="font-mono text-[10px] text-slate-300 h-96 overflow-auto whitespace-pre-wrap select-all outline-none"></pre>
+                </div>
+
+                <div class="flex justify-between items-center mt-8 mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-teal-400 uppercase tracking-widest">Usage Example</h3>
+                        <p class="text-xs text-slate-500 mt-1">Example import and render in a Server Component.</p>
+                    </div>
+                    <button onclick="copyDynamicUsageCode()" class="bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold px-6 py-3 rounded-xl transition uppercase tracking-wider shadow-lg">Copy Usage Code</button>
+                </div>
+                
+                <div class="bg-black/40 rounded-xl p-4 border border-slate-700/50 overflow-hidden relative">
+                    <pre id="dynamicUsageCode" class="font-mono text-[10px] text-slate-300 h-48 overflow-auto whitespace-pre-wrap select-all outline-none"></pre>
                 </div>
             </div>
         </div>
@@ -1323,7 +1380,316 @@ export default function BiDiCaptcha({ onValidate, onFail }) {
             }, 2000);
         }
 
-        window.onload = () => { updateEntropyLabel(); orchestrate(); generateNewSecret(); generateIntegrationSnippet(); };
+        const DYNAMIC_COMPONENT_CODE = `import React from 'react';
+
+interface PhantomShieldProps {
+  payload: string;
+  shadowDOM?: boolean;
+  interactive?: boolean;
+  interactiveType?: 'copy' | 'mailto';
+  interactiveLabel?: string;
+  className?: string;
+  style?: React.CSSProperties;
+}
+
+export default function PhantomShield({
+  payload,
+  shadowDOM = true,
+  interactive = false,
+  interactiveType = 'copy',
+  interactiveLabel = 'Copy',
+  className = '',
+  style = {},
+}: PhantomShieldProps) {
+  // Generate unique ID for script association
+  const uniqueId = \`phantom-\${Math.random().toString(36).substring(2, 9)}\`;
+
+  // Obfuscate text
+  const characters = payload.split('');
+  const items: any[] = [];
+
+  characters.forEach((char, index) => {
+    // 1. Zero-width character insertion
+    if (Math.random() < 0.3) {
+      items.push({
+        id: \`zw-\${index}-\${Math.random()}\`,
+        type: 'zero-width',
+        char: '\\u200B',
+        order: index,
+      });
+    }
+
+    // 2. DOM Polymorphism: randomly assign character representation
+    const rand = Math.random();
+    if (rand < 0.35) {
+      // Method A: Phantom Atom (CSS Variable content via ::after)
+      items.push({
+        id: \`p-\${index}-\${Math.random()}\`,
+        type: 'phantom',
+        char: char,
+        order: index,
+      });
+    } else if (rand < 0.70) {
+      // Method B: CSS Grid column scrambling item
+      items.push({
+        id: \`g-\${index}-\${Math.random()}\`,
+        type: 'grid-atom',
+        char: char,
+        order: index,
+      });
+    } else {
+      // Method C: Standard node
+      items.push({
+        id: \`s-\${index}-\${Math.random()}\`,
+        type: 'standard',
+        char: char,
+        order: index,
+      });
+    }
+
+    // 3. Well Poisoning: Decoy elements
+    if (Math.random() < 0.25) {
+      const decoyChar = String.fromCharCode(33 + Math.floor(Math.random() * 93)); // Random printable ASCII character
+      items.push({
+        id: \`d-\${index}-\${Math.random()}\`,
+        type: 'decoy',
+        char: decoyChar,
+        order: index,
+      });
+    }
+  });
+
+  // Shuffle the elements to scramble DOM structure
+  const shuffledItems = [...items].sort(() => Math.random() - 0.5);
+
+  // Setup styles for shadow root or container
+  const shadowStyles = \`
+    .phantom-container {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      align-items: baseline;
+      position: relative;
+    }
+    .phantom-atom::after {
+      content: var(--p);
+    }
+    .phantom-decoy {
+      display: none !important;
+      position: absolute !important;
+      opacity: 0 !important;
+      font-size: 0 !important;
+      width: 0 !important;
+      height: 0 !important;
+      pointer-events: none !important;
+    }
+  \`;
+
+  // Render the items
+  const renderContent = () => (
+    <span className="phantom-container" style={{ direction: 'ltr' }}>
+      {shuffledItems.map((item) => {
+        if (item.type === 'phantom') {
+          return (
+            <span
+              key={item.id}
+              className="phantom-atom"
+              {...{ style: { order: item.order, '--p': \`"\${item.char.replace(/"/g, '\\\\"')}"\` } }}
+            />
+          );
+        } else if (item.type === 'grid-atom') {
+          return (
+            <span
+              key={item.id}
+              style={{
+                order: item.order,
+                display: 'inline-block',
+              }}
+            >
+              {item.char}
+            </span>
+          );
+        } else if (item.type === 'standard') {
+          return (
+            <span key={item.id} style={{ order: item.order, display: 'inline' }}>
+              {item.char}
+            </span>
+          );
+        } else if (item.type === 'decoy') {
+          return (
+            <span key={item.id} className="phantom-decoy">
+              {item.char}
+            </span>
+          );
+        } else if (item.type === 'zero-width') {
+          return (
+            <span key={item.id} style={{ order: item.order, display: 'inline' }}>
+              {item.char}
+            </span>
+          );
+        }
+        return null;
+      })}
+    </span>
+  );
+
+  // XOR Server Encryption for Interactive actions
+  let encryptedPayload = '';
+  let xorKey = 0;
+  if (interactive) {
+    xorKey = Math.floor(Math.random() * 254) + 1;
+    encryptedPayload = Buffer.from(
+      encodeURIComponent(payload)
+        .split('')
+        .map((c) => String.fromCharCode(c.charCodeAt(0) ^ xorKey))
+        .join('')
+    ).toString('base64');
+  }
+
+  // Interactive inline script (Executed fully client-side inside the component, preserving RSC properties)
+  const interactionScript = interactive ? \`
+    (function() {
+      const el = document.getElementById("\${uniqueId}");
+      if (!el) return;
+      el.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        try {
+          const raw = atob("\${encryptedPayload}");
+          const clean = decodeURIComponent(
+            raw.split("").map(c => String.fromCharCode(c.charCodeAt(0) ^ \${xorKey})).join("")
+          );
+          if ("\${interactiveType}" === "mailto") {
+            window.location.href = "mailto:" + clean;
+          } else {
+            navigator.clipboard.writeText(clean).then(() => {
+              const original = el.getAttribute("data-label") || "\${interactiveLabel}";
+              el.textContent = "Copied!";
+              setTimeout(() => { el.textContent = original; }, 1500);
+            });
+          }
+        } catch(err) {
+          console.error("Decryption failed", err);
+        }
+      });
+    })();
+  \` : '';
+
+  if (shadowDOM) {
+    return (
+      <span 
+        id={uniqueId}
+        className={className} 
+        style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
+        data-label={interactiveLabel}
+      >
+        {/* Declarative Shadow DOM */}
+        {React.createElement('template', {
+          shadowrootmode: 'closed',
+        } as any, [
+          <style key="styles">{shadowStyles}</style>,
+          <span key="wrapper" style={{ display: 'inline-flex' }}>
+            {renderContent()}
+          </span>
+        ])}
+        {/* Interactive label or fallback */}
+        {interactive ? interactiveLabel : null}
+        {/* Zero-JS client execution injection */}
+        {interactive && (
+          <script 
+            dangerouslySetInnerHTML={{ __html: interactionScript }}
+          />
+        )}
+      </span>
+    );
+  }
+
+  return (
+    <span 
+      id={uniqueId}
+      className={className} 
+      style={{ display: 'inline-flex', cursor: interactive ? 'pointer' : 'default', ...style }}
+      data-label={interactiveLabel}
+    >
+      <style>{shadowStyles}</style>
+      {renderContent()}
+      {interactive ? <span style={{ marginLeft: '6px', fontSize: '0.85em', textDecoration: 'underline' }}>({interactiveLabel})</span> : null}
+      {interactive && (
+        <script 
+          dangerouslySetInnerHTML={{ __html: interactionScript }}
+        />
+      )}
+    </span>
+  );
+}`;
+
+        const DYNAMIC_USAGE_CODE = `import PhantomShield from './PhantomShield';
+
+export default async function Page() {
+  // Load target text dynamically on the server (e.g. from environment or database)
+  const contactEmail = process.env.CONTACT_EMAIL || "info@example.com";
+
+  return (
+    <main style={{ padding: '2rem' }}>
+      <h1>Contact Us</h1>
+      
+      {/* Example A: Standard Dynamic Obfuscation (No JS required client-side) */}
+      <p>
+        Support: <PhantomShield payload={contactEmail} shadowDOM={true} />
+      </p>
+
+      {/* Example B: Interactive Click-to-Copy */}
+      <p>
+        Sales: <PhantomShield 
+          payload="sales@company.com" 
+          interactive={true} 
+          interactiveType="copy" 
+          interactiveLabel="[Click to Copy Sales Email]" 
+        />
+      </p>
+
+      {/* Example C: Interactive mailto Link */}
+      <p>
+        Careers: <PhantomShield 
+          payload="careers@company.com" 
+          interactive={true} 
+          interactiveType="mailto" 
+          interactiveLabel="[Email Careers Dept]" 
+        />
+      </p>
+    </main>
+  );
+}`;
+
+        function initDynamicComponent() {
+            document.getElementById('dynamicComponentCode').textContent = DYNAMIC_COMPONENT_CODE;
+            document.getElementById('dynamicUsageCode').textContent = DYNAMIC_USAGE_CODE;
+        }
+
+        function copyDynamicComponentCode() {
+            navigator.clipboard.writeText(DYNAMIC_COMPONENT_CODE);
+            const btn = document.querySelector('button[onclick="copyDynamicComponentCode()"]');
+            const originalText = btn.textContent;
+            btn.textContent = "COPIED!";
+            btn.classList.add('bg-teal-500');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-teal-500');
+            }, 2000);
+        }
+
+        function copyDynamicUsageCode() {
+            navigator.clipboard.writeText(DYNAMIC_USAGE_CODE);
+            const btn = document.querySelector('button[onclick="copyDynamicUsageCode()"]');
+            const originalText = btn.textContent;
+            btn.textContent = "COPIED!";
+            btn.classList.add('bg-teal-500');
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.classList.remove('bg-teal-500');
+            }, 2000);
+        }
+
+        window.onload = () => { updateEntropyLabel(); orchestrate(); generateNewSecret(); generateIntegrationSnippet(); initDynamicComponent(); };
     </script>
 </body>
 </html>

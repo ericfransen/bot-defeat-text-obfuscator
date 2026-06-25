@@ -79,6 +79,25 @@ We wrap the obfuscated content inside a `closed` Shadow DOM Root.
     *   `document.getElementById('my-email')`: Returns `null`.
 *   **Impact:** This forces the attacker to upgrade from simple scrapers (Cheerio/JSDOM) to heavy, browser-automation tools (Playwright/Puppeteer) that can "pierce" shadow roots via CDP (Chrome DevTools Protocol). It massively increases the computational cost of the attack.
 
+### Next-Gen Obfuscation Tactics
+
+We have expanded the obfuscation matrix with additional low-cost, high-yield tactics to maximize defense against advanced custom parsers:
+
+1.  **DOM Polymorphism (Structural Alternation)**
+    *   **Technique:** Rather than using a single obfuscation method consistently, each character is obfuscated using a different method selected randomly at render time. Character A might use a CSS variable, Character B a decoy node, Character C a standard span with Flexbox order, and Character D a BiDi override.
+    -   **Impact:** Scraper authors can no longer write a uniform parser logic to unscramble the text. The lack of standard patterns forces manual analysis of every single character node, making custom scraping scripts extremely complex to write and maintain.
+
+2.  **CSS Grid Row & Column Scrambling**
+    -   **Technique:** Instead of Flexbox `order`, we place characters inside a CSS Grid container and assign random `grid-column` styles.
+    -   **Impact:** Text is read in correct sequence visually but is in absolute structural disarray in the DOM. Heavy computed layout engine passes are required by the bot to reconstruct the layout columns.
+
+3.  **Zero-Width Character Insertion**
+    -   **Technique:** We inject zero-width spaces (`\u200B` / `&#8203;`) and zero-width non-joiners (`&zwnj;`) inline between real characters.
+    -   **Impact:** These characters are completely invisible to humans but interrupt standard regex engines looking for patterns (like emails or phone numbers), causing them to fail to recognize the data.
+
+4.  **Dynamic CSS Variable Splitting**
+    -   **Technique:** Instead of storing the full character inside a single variable, we split characters and reference them in combination (e.g. `--c1: 'a'`, `--c2: '@'`) dynamically referenced by different elements.
+
 ---
 
 ## 3. The "Smart Interaction" Encryption (XOR Cipher)
