@@ -443,15 +443,51 @@ Protocol: BiDi-Override-2025</textarea>
 
         function triggerFeedback(el, e) {
             const originalColor = el.style.color || 'inherit';
-            el.style.transition = 'color 0.1s ease'; 
-            el.style.color = '#c2410c'; 
+            
+            // Snappy instant color flash (60ms duration)
+            el.style.transition = 'none';
+            el.style.color = '#10b981'; // Emerald green
+            
             const feedback = document.createElement('div');
             feedback.textContent = 'Copied!';
-            feedback.style.cssText = `position:fixed; left:${e.clientX}px; top:${e.clientY}px; transform:translate(-50%, -100%); padding:8px 24px; border-radius:9999px; background-color:#f8fafc; color:#0f172a; font-size:14px; font-weight:900; text-transform:uppercase; rgba(0,0,0,0.3); pointer-events:none; opacity:0; transition:all 0.2s ease-out; z-index:9999;`;
+            feedback.style.cssText = `
+                position: fixed;
+                left: ${e.clientX}px;
+                top: ${e.clientY}px;
+                transform: translate(-50%, -100%);
+                padding: 8px 24px;
+                border-radius: 9999px;
+                background-color: #ffffff;
+                color: #000000;
+                font-family: sans-serif;
+                font-size: 11px;
+                font-weight: 900;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                border: 1px solid #e2e8f0;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                pointer-events: none;
+                opacity: 0;
+                transition: all 0.2s ease-out;
+                z-index: 9999;
+            `;
             document.body.appendChild(feedback);
-            requestAnimationFrame(() => { feedback.style.opacity = '1'; feedback.style.transform = 'translate(-50%, -180%)'; });
-            setTimeout(() => { el.style.color = originalColor; }, 250);
-            setTimeout(() => { feedback.remove(); }, 800);
+            
+            requestAnimationFrame(() => { 
+                feedback.style.opacity = '1'; 
+                feedback.style.transform = 'translate(-50%, -180%)'; 
+            });
+            
+            // Revert color smoothly after 60ms
+            setTimeout(() => { 
+                el.style.transition = 'color 0.15s ease-out';
+                el.style.color = originalColor; 
+            }, 60);
+            
+            // Remove tooltip instantly after 800ms (no fade out transition)
+            setTimeout(() => { 
+                feedback.remove(); 
+            }, 800);
         }
 
         function orchestrate() {
