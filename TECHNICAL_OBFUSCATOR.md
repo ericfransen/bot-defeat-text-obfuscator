@@ -188,6 +188,18 @@ During R&D, several "advanced" techniques were evaluated and rejected due to poo
     2.  **Accessibility:** Canvas is a "black box" to screen readers. While Phantom Atoms are also hard for screen readers (without ARIA labels), DOM elements allow for future-proofing with `aria-label` overlays, whereas Canvas requires a completely separate shadow accessibility tree.
     3.  **Styling:** Users can style Phantom Atoms with standard CSS (color, font, size). Canvas requires passing these styles as JS variables to the rendering context, which is brittle.
 
+### C. Search Indexing Protection (`data-nosnippet`)
+*   **The Problem:** Standard web crawlers (like Googlebot) may still attempt to index visual strings or run rendering engines to parse page layouts. This can lead to protected details (like personal emails or phones) being indexed and displayed directly in search engine snippets.
+*   **The Mitigation:** We automatically apply the `data-nosnippet` attribute to the outer elements of all obfuscated components and wrappers. This is an official HTML attribute supported by Google, instructing search engines never to include this section of text in the search result snippet.
+
+### D. Interactive Gate vs. Static Obfuscation (Accessibility Strategy)
+*   **The Conflict:** Scrambling visual layout order in the DOM breaks standard screen readers, as they read elements in linear DOM order. Injecting an `aria-label` with the clean text resolves the screen reader issue but leaks the plaintext inside the HTML attributes to any scraper parsing attributes.
+*   **The Solution:** Rather than using `aria-label` and compromising security, we default the component to `interactive={true}`. In this mode:
+    1. The DOM contains a clean, localized visual button label (e.g., "Copy").
+    2. Screen readers read this label instead of scrambled DOM nodes, meaning the control makes complete sense to users.
+    3. The payload is encrypted with a random server-generated XOR key and decrypted in-memory only when clicked.
+    4. Upon interaction, the decrypted payload is copied to the user's clipboard or triggers a `mailto:` redirection, providing a highly accessible flow without ever exposing the raw string inside the DOM tree.
+
 ---
 
 ## 6. Conclusion

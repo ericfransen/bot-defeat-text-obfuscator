@@ -146,7 +146,10 @@ export default function ContactForm() {
 
 ### 3. Dynamic React Server Component (Next.js / RSC)
 
-For dynamic web apps (like Next.js or Remix), you can implement a dynamic **React Server Component** that obfuscates text (e.g. emails, phone numbers) on the server at render time. This completely avoids storing the raw text in the client-side JavaScript bundle and allows you to pass variables dynamically.
+For dynamic web apps (like Next.js or Remix), you can implement a dynamic **React Server Component** (`PhantomShield`) that obfuscates text (e.g. emails, phone numbers) on the server at render time. This completely avoids storing the raw text in the client-side JavaScript bundle.
+
+* **Snippet Protection (`data-nosnippet`):** The output is automatically enclosed in a `data-nosnippet` container to prevent search engines (like Google) from indexing the obfuscated content in search results.
+* **Interactive by Default (`interactive={true}`):** By default, the component is interactive (click-to-copy or mailto link). This delivers high accessibility (users see clear visual buttons and can use keyboard navigation) without exposing raw plaintext to standard screen reader parsers. To use static non-interactive text layout scrambling, explicitly pass `interactive={false}`.
 
 #### Usage Example:
 
@@ -162,7 +165,7 @@ export default async function ContactPage() {
       <PhantomShield 
         payload={userEmail} 
         shadowDOM={true} 
-        interactive={true} 
+        interactive={true} // Default is true. Copy on click.
         interactiveType="copy"
       />
     </div>

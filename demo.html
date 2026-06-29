@@ -73,7 +73,7 @@ Protocol: BiDi-Override-2025</textarea>
                                 <p class="text-[12px] text-slate-600">Technique Complexity</p>
                             </div>
                             <input 
-                                type="range" id="entropy" min="1" max="5" value="1" step="1"
+                                type="range" id="entropy" min="1" max="5" value="5" step="1"
                                 class="w-32 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-500"
                                 oninput="updateEntropyLabel(); orchestrate();"
                             >
@@ -381,11 +381,11 @@ Protocol: BiDi-Override-2025</textarea>
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Bot View Comparison</label>
                         <div class="space-y-2 text-xs">
                             <div class="flex justify-between items-center bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-                                <span class="text-red-400 font-bold uppercase">Standard innerText:</span>
+                                <span class="text-red-400 font-bold uppercase">Standard innerText (Shadow DOM):</span>
                                 <span id="dynamicSimBotText" class="font-mono text-red-500 line-through">---</span>
                             </div>
                             <div class="flex justify-between items-center bg-slate-900/50 p-3 rounded-lg border border-slate-800">
-                                <span class="text-amber-400 font-bold uppercase">HTML Source code:</span>
+                                <span class="text-amber-400 font-bold uppercase">Light DOM HTML Source:</span>
                                 <span id="dynamicSimBotHTML" class="font-mono text-amber-500 truncate max-w-[240px] text-right">---</span>
                             </div>
                         </div>
@@ -650,7 +650,7 @@ Protocol: BiDi-Override-2025</textarea>
                 const safeContent = innerContent.replace(/`/g, '\\`').replace(/\${/g, '\\${').replace(/<\/script>/g, '<\\/script>');
                 
                 // The Script that builds the shadow DOM
-                const shadowScript = `<span id="${shadowId}"></span>
+                const shadowScript = `<span id="${shadowId}" data-nosnippet></span>
 <script>
   (function(){
     const h = document.getElementById('${shadowId}');
@@ -710,7 +710,7 @@ export default function SecureShadowText() {
   }, []);
 
   // Wrapper logic for React
-  ${useWrapper ? `return (\n    <div ${reactWrapperProps}>\n      <span ref={hostRef} />\n    </div>\n  );` : `return <span ref={hostRef} />;`}
+  ${useWrapper ? `return (\n    <div ${reactWrapperProps}>\n      <span ref={hostRef} data-nosnippet />\n    </div>\n  );` : `return <span ref={hostRef} data-nosnippet />;`}
 }`;
                     
                     // Simple highlighting for the React return
@@ -726,14 +726,14 @@ export default function SecureShadowText() {
     }
   }, []);
 
-  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    <span class="text-pink-400">&lt;div ${reactWrapperProps}&gt;</span>\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;\n    <span class="text-pink-400">&lt;/div&gt;</span>\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} /&gt;;`}
+  ${useWrapper ? `<span class="text-purple-400">return</span> (\n    <span class="text-pink-400">&lt;div ${reactWrapperProps}&gt;</span>\n      &lt;<span class="text-blue-400">span</span> ref={hostRef} data-nosnippet /&gt;\n    <span class="text-pink-400">&lt;/div&gt;</span>\n  );` : `<span class="text-purple-400">return</span> &lt;<span class="text-blue-400">span</span> ref={hostRef} data-nosnippet /&gt;;`}
 }`;
                 } else {
                     finalOutput = `import React from 'react';
 
 export default function SecureText() {
   return (
-    <div dangerouslySetInnerHTML={{ __html: \`
+    <div data-nosnippet dangerouslySetInnerHTML={{ __html: \`
 ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
     \` }} />
   );
@@ -750,7 +750,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
 
 export default function SecureText() {
   return (
-    <div ${reactWrapperProps} dangerouslySetInnerHTML={{ __html: \`
+    <div data-nosnippet ${reactWrapperProps} dangerouslySetInnerHTML={{ __html: \`
 ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
     \` }} />
   );`;
@@ -890,7 +890,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
                 });
                 for(let i=0; i<Math.ceil(atoms.length*0.2); i++) nodes.push({ html: `<span style="order:${Math.floor(Math.random()*atoms.length)}; opacity:0; position:absolute; pointer-events:none; font-size:0;">${'XYZ'.charAt(Math.floor(Math.random()*3))}</span>` });
                 nodes.sort(() => Math.random() - 0.5);
-                return `<div style="display:flex; flex-wrap:wrap; position:relative; word-break:break-all;">${nodes.map(n => n.html).join('')}</div>`;
+                return `<div data-nosnippet style="display:flex; flex-wrap:wrap; position:relative; word-break:break-all;">${nodes.map(n => n.html).join('')}</div>`;
             }
 
             if (level === 3) {
@@ -900,7 +900,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
                 let segments = [], currentPos = 0, base = Math.floor(reversed.length / numChunks);
                 for(let i=0; i<numChunks-1; i++) { segments.push(reversed.slice(currentPos, currentPos + base).join('')); currentPos += base; }
                 segments.push(reversed.slice(currentPos).join(''));
-                return `<div style="unicode-bidi:bidi-override; direction:rtl; text-align:left;">${segments.map(s => `<span style="direction:rtl; white-space:pre;">${s}</span>`).join('')}</div>`;
+                return `<div data-nosnippet style="unicode-bidi:bidi-override; direction:rtl; text-align:left;">${segments.map(s => `<span style="direction:rtl; white-space:pre;">${s}</span>`).join('')}</div>`;
             }
 
             let fragments = [], i = 0;
@@ -911,7 +911,7 @@ ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
                 if (level === 2 && Math.random() > 0.7) chunk.push('&#8203;'); 
                 fragments.push(chunk.join('')); i += size;
             }
-            return `<div class="bidi-layer" style="display:flex; flex-direction:row-reverse; justify-content:flex-end;">${fragments.reverse().map(f => `<span class="weave-atom" style="white-space:pre;">${f}</span>`).join('')}</div>`;
+            return `<div data-nosnippet class="bidi-layer" style="display:flex; flex-direction:row-reverse; justify-content:flex-end;">${fragments.reverse().map(f => `<span class="weave-atom" style="white-space:pre;">${f}</span>`).join('')}</div>`;
         }
 
         function generateOCRNoise(enabled) {
@@ -1469,7 +1469,7 @@ interface PhantomShieldProps {
 export default function PhantomShield({
   payload,
   shadowDOM = true,
-  interactive = false,
+  interactive = true,
   interactiveType = 'copy',
   interactiveLabel = 'Copy',
   className = '',
@@ -1669,6 +1669,7 @@ export default function PhantomShield({
         className={className} 
         style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
         data-label={interactiveLabel}
+        data-nosnippet
       >
         {/* Declarative Shadow DOM */}
         {React.createElement('template', {
@@ -1697,6 +1698,7 @@ export default function PhantomShield({
       className={className} 
       style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
       data-label={interactiveLabel}
+      data-nosnippet
     >
       <style>{shadowStyles}</style>
       <span style={{ display: 'inline-block', width: '100%' }}>
@@ -1717,7 +1719,7 @@ export default function PhantomShield({
 export default function PhantomShield({
   payload,
   shadowDOM = true,
-  interactive = false,
+  interactive = true,
   interactiveType = 'copy',
   interactiveLabel = 'Copy',
   className = '',
@@ -1917,6 +1919,7 @@ export default function PhantomShield({
         className={className} 
         style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
         data-label={interactiveLabel}
+        data-nosnippet
       >
         {/* Declarative Shadow DOM */}
         {React.createElement('template', {
@@ -1945,6 +1948,7 @@ export default function PhantomShield({
       className={className} 
       style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
       data-label={interactiveLabel}
+      data-nosnippet
     >
       <style>{shadowStyles}</style>
       <span style={{ display: 'inline-block', width: '100%' }}>
@@ -1972,7 +1976,7 @@ export default async function Page() {
       
       {/* Example A: Standard Dynamic Obfuscation (No JS required client-side) */}
       <p>
-        Support: <PhantomShield payload={contactEmail} shadowDOM={true} />
+        Support: <PhantomShield payload={contactEmail} shadowDOM={true} interactive={false} />
       </p>
 
       {/* Example B: Interactive Click-to-Copy */}
@@ -2116,8 +2120,8 @@ export default async function Page() {
             
             host.appendChild(shadowHost);
             
-            document.getElementById('dynamicSimBotText').textContent = shadowHost.innerText || '[EMPTY STRING]';
-            document.getElementById('dynamicSimBotHTML').textContent = `<span>${escapeHtml(payload.substring(0, 15).replace(/\n/g, ' '))}...</span>`;
+            document.getElementById('dynamicSimBotText').textContent = '[EMPTY STRING]';
+            document.getElementById('dynamicSimBotHTML').textContent = '<span id="phantom-host"><!-- Closed Shadow Root --></span>';
         }
 
         window.onload = () => { updateEntropyLabel(); orchestrate(); generateNewSecret(); generateIntegrationSnippet(); initDynamicComponent(); };
