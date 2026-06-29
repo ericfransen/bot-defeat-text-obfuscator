@@ -1456,8 +1456,23 @@ export default function BiDiCaptcha({ onValidate, onFail }) {
 
         const DYNAMIC_COMPONENT_TSX = `import React from 'react';
 
+// =========================================================================
+// CONFIGURATION & QUICK TESTING SETUP
+// =========================================================================
+// Quick testing fallback text. If you omit the 'payload' prop, it defaults to this.
+const DEFAULT_PAYLOAD = "admin@vault.local";
+
+// Option overrides for easy component customization:
+const CONFIG = {
+  shadowDOM: true,              // Wrap content in a closed Shadow DOM
+  interactive: true,            // Enable click-to-copy or mailto action
+  interactiveType: 'copy' as 'copy' | 'mailto', // 'copy' (to clipboard) or 'mailto' (link)
+  interactiveLabel: 'Copy',     // Visual label for the interactive action
+};
+// =========================================================================
+
 interface PhantomShieldProps {
-  payload: string;
+  payload?: string; // Optional: falls back to DEFAULT_PAYLOAD if omitted
   shadowDOM?: boolean;
   interactive?: boolean;
   interactiveType?: 'copy' | 'mailto';
@@ -1467,11 +1482,11 @@ interface PhantomShieldProps {
 }
 
 export default function PhantomShield({
-  payload,
-  shadowDOM = true,
-  interactive = true,
-  interactiveType = 'copy',
-  interactiveLabel = 'Copy',
+  payload = DEFAULT_PAYLOAD,
+  shadowDOM = CONFIG.shadowDOM,
+  interactive = CONFIG.interactive,
+  interactiveType = CONFIG.interactiveType,
+  interactiveLabel = CONFIG.interactiveLabel,
   className = '',
   style = {},
 }: PhantomShieldProps) {
@@ -1716,12 +1731,27 @@ export default function PhantomShield({
 
         const DYNAMIC_COMPONENT_JSX = `import React from 'react';
 
+// =========================================================================
+// CONFIGURATION & QUICK TESTING SETUP
+// =========================================================================
+// Quick testing fallback text. If you omit the 'payload' prop, it defaults to this.
+const DEFAULT_PAYLOAD = "admin@vault.local";
+
+// Option overrides for easy component customization:
+const CONFIG = {
+  shadowDOM: true,              // Wrap content in a closed Shadow DOM
+  interactive: true,            // Enable click-to-copy or mailto action
+  interactiveType: 'copy',      // 'copy' (to clipboard) or 'mailto' (link)
+  interactiveLabel: 'Copy',     // Visual label for the interactive action
+};
+// =========================================================================
+
 export default function PhantomShield({
-  payload,
-  shadowDOM = true,
-  interactive = true,
-  interactiveType = 'copy',
-  interactiveLabel = 'Copy',
+  payload = DEFAULT_PAYLOAD,
+  shadowDOM = CONFIG.shadowDOM,
+  interactive = CONFIG.interactive,
+  interactiveType = CONFIG.interactiveType,
+  interactiveLabel = CONFIG.interactiveLabel,
   className = '',
   style = {},
 }) {

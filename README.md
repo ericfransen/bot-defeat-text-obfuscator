@@ -149,7 +149,8 @@ export default function ContactForm() {
 For dynamic web apps (like Next.js or Remix), you can implement a dynamic **React Server Component** (`PhantomShield`) that obfuscates text (e.g. emails, phone numbers) on the server at render time. This completely avoids storing the raw text in the client-side JavaScript bundle.
 
 * **Snippet Protection (`data-nosnippet`):** The output is automatically enclosed in a `data-nosnippet` container to prevent search engines (like Google) from indexing the obfuscated content in search results.
-* **Interactive by Default (`interactive={true}`):** By default, the component is interactive (click-to-copy or mailto link). This delivers high accessibility (users see clear visual buttons and can use keyboard navigation) without exposing raw plaintext to standard screen reader parsers. To use static non-interactive text layout scrambling, explicitly pass `interactive={false}`.
+* **Interactive by Default (`interactive={true}`):** By default, the component is interactive (click-to-copy or mailto link). This delivers high accessibility (visual label buttons and keyboard navigation) without exposing raw plaintext. To use static non-interactive text layout scrambling, explicitly pass `interactive={false}`.
+* **Easy Configuration & Testing:** The top of the `PhantomShield` file contains a dedicated config block (`DEFAULT_PAYLOAD` and `CONFIG` objects). This acts as a fallback default when props are omitted, making it easy to test and adjust defaults project-wide.
 
 #### Usage Example:
 
