@@ -107,7 +107,7 @@ Protocol: BiDi-Override-2025</textarea>
                         <div class="pt-6 border-t border-slate-800 space-y-4">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center gap-3">
-                                    <input type="checkbox" id="enableActions" onchange="toggleActions(); orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
+                                    <input type="checkbox" id="enableActions" checked onchange="toggleActions(); orchestrate()" class="w-4 h-4 rounded border-slate-700 bg-slate-900 text-blue-500 focus:ring-blue-500">
                                     <div class="space-y-1">
                                         <span class="block text-xs text-blue-400 font-bold uppercase tracking-widest">Smart Interactions</span>
                                         <p class="text-[12px] text-slate-600">Click-to-Action Wrapper</p>
@@ -753,13 +753,14 @@ export default function SecureText() {
     <div data-nosnippet ${reactWrapperProps} dangerouslySetInnerHTML={{ __html: \`
 ${(interactionCSS||"") + rawFinal.replace(/`/g, '\\`')}
     \` }} />
-  );`;
+  );
+}`;
                     }
                     
                     highlightedFinal = escapeHtml(finalOutput);
                     if (useWrapper) {
                         highlightedFinal = highlightedFinal
-                            .replace(/(&lt;div (?:className|style)=.*?)(?= dangerouslySetInnerHTML)/, '<span class="text-pink-400">$1</span>')
+                            .replace(/(&lt;div data-nosnippet (?:className|style)=.*?)(?= dangerouslySetInnerHTML)/, '<span class="text-pink-400">$1</span>')
                             .replace(/(\/&gt;(?=\n  );)/, '<span class="text-pink-400">$1</span>');
                     }
                 }
@@ -2154,7 +2155,7 @@ export default async function Page() {
             document.getElementById('dynamicSimBotHTML').textContent = '<span id="phantom-host"><!-- Closed Shadow Root --></span>';
         }
 
-        window.onload = () => { updateEntropyLabel(); orchestrate(); generateNewSecret(); generateIntegrationSnippet(); initDynamicComponent(); };
+        window.onload = () => { updateEntropyLabel(); toggleActions(); orchestrate(); generateNewSecret(); generateIntegrationSnippet(); initDynamicComponent(); };
     </script>
 </body>
 </html>
