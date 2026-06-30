@@ -1652,7 +1652,7 @@ export default function PhantomShield({
   const interactionScript = interactive ? \`
     (function() {
       // Escape HTML-safe selector query for IDs containing special chars (like :useId:)
-      const el = document.getElementById("\${uniqueId}") || document.querySelector('[id*="\${uniqueId.replace(/:/g, "\\\\:")}"]');
+      const el = document.getElementById("\${uniqueId}") || document.querySelector('[id*="\${uniqueId.replace(/:/g, "\\\\\\\\:")}"]');
       if (!el) return;
       el.addEventListener("click", function(e) {
         e.preventDefault();
@@ -1728,7 +1728,8 @@ export default function PhantomShield({
       )}
     </span>
   );
-}`;
+}
+`;
 
         const DYNAMIC_COMPONENT_JSX = `import React from 'react';
 
@@ -1917,7 +1918,7 @@ export default function PhantomShield({
   const interactionScript = interactive ? \`
     (function() {
       // Escape HTML-safe selector query for IDs containing special chars (like :useId:)
-      const el = document.getElementById("\${uniqueId}") || document.querySelector('[id*="\${uniqueId.replace(/:/g, "\\\\:")}"]');
+      const el = document.getElementById("\${uniqueId}") || document.querySelector('[id*="\${uniqueId.replace(/:/g, "\\\\\\\\:")}"]');
       if (!el) return;
       el.addEventListener("click", function(e) {
         e.preventDefault();
@@ -1993,7 +1994,8 @@ export default function PhantomShield({
       )}
     </span>
   );
-}`;
+}
+`;
 
         const DYNAMIC_USAGE_CODE = `import PhantomShield from './PhantomShield';
 
