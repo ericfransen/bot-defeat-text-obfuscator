@@ -4,10 +4,9 @@ import React from 'react';
 // OPTION OVERRIDES FOR EASY CUSTOMIZATION
 // =========================================================================
 const CONFIG = {
-  shadowDOM: true,              // Wrap content in a closed Shadow DOM
+  shadowDOM: false,             // Set to false by default for broad React client compatibility
   interactive: true,            // Enable click-to-copy or mailto action
-  interactiveType: 'copy',      // 'copy' (to clipboard) or 'mailto' (link)
-  interactiveLabel: 'Copy',     // Visual label for the interactive action (DO NOT USE SECURE TEXT IN LABEL, IT WILL BE VISIBLE IN THE DOM)
+  interactiveType: 'copy',      // 'copy' (to clipboard) or 'mailto' (link) or 'tel' (phone call)
 };
 // =========================================================================
 
@@ -16,9 +15,9 @@ export default function PhantomShield({
   shadowDOM = CONFIG.shadowDOM,
   interactive = CONFIG.interactive,
   interactiveType = CONFIG.interactiveType,
-  interactiveLabel = CONFIG.interactiveLabel,
   className = '',
   style = {},
+  ...props
 }) {
   // Fail fast in development, render nothing in production if no content is provided
   if (!children) {
@@ -187,12 +186,44 @@ export default function PhantomShield({
     encryptedPayload = btoa(unescape(encodeURIComponent(xorStr)));
   }
 
+  // SVG Icons
+  const iconCopy = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>`;
+  const iconMail = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>`;
+  const iconTel = `<svg style="width:16px; height:16px; color:#64748b; transition:color 0.2s;" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>`;
+
+  let svgIcon = iconCopy;
+  if (interactiveType === 'mailto') svgIcon = iconMail;
+  if (interactiveType === 'tel') svgIcon = iconTel;
+
+  const interactionStyles = interactive ? `
+    .ps-wrap-${uniqueId} { cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; position:relative; }
+    .ps-wrap-${uniqueId}:hover svg { color: #60a5fa !important; transform: scale(1.1); }
+    .ps-wrap-${uniqueId} .icon-box { opacity:0; transition:opacity 0.2s; display:flex; align-items:center; justify-content:center; }
+    .ps-wrap-${uniqueId}:hover .icon-box { opacity:1; }
+    .ps-wrap-${uniqueId} .feedback { 
+      position:absolute; top:-35px; left:50%; transform:translateX(-50%); 
+      background:#0f172a; color:white; font-family:sans-serif; font-size:11px; font-weight:800; letter-spacing:0.05em;
+      padding:6px 16px; border-radius:99px; box-shadow:0 4px 12px rgba(0,0,0,0.4);
+      opacity:0; transition:all 0.2s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none; white-space:nowrap; z-index:10;
+    }
+    .ps-wrap-${uniqueId} .feedback::after {
+      content:''; position:absolute; bottom:-4px; left:50%; margin-left:-4px;
+      border-width:4px; border-style:solid; border-color:#0f172a transparent transparent transparent;
+    }
+  ` : '';
+
   // Interactive inline script (Executed fully client-side inside the component, preserving RSC properties)
   const interactionScript = interactive ? `
     (function() {
       // Escape HTML-safe selector query for IDs containing special chars (like :useId:)
       const el = document.getElementById("${uniqueId}") || document.querySelector('[id*="${uniqueId.replace(/:/g, "\\\\:")}"]');
       if (!el) return;
+      
+      // Keyboard support (Enter/Space)
+      el.addEventListener("keydown", function(e) {
+        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+      });
+
       el.addEventListener("click", function(e) {
         e.preventDefault();
         e.stopPropagation();
@@ -203,11 +234,16 @@ export default function PhantomShield({
           );
           if ("${interactiveType}" === "mailto") {
             window.location.href = "mailto:" + clean;
+          } else if ("${interactiveType}" === "tel") {
+            window.location.href = "tel:" + clean;
           } else {
             navigator.clipboard.writeText(clean).then(() => {
-              const original = el.getAttribute("data-label") || "${interactiveLabel}";
-              el.textContent = "Copied!";
-              setTimeout(() => { el.textContent = original; }, 1500);
+              const f = el.querySelector('.feedback');
+              if (f) {
+                f.style.opacity = '1';
+                f.style.top = '-45px';
+                setTimeout(() => { f.style.opacity = '0'; f.style.top = '-35px'; }, 1500);
+              }
             });
           }
         } catch(err) {
@@ -217,15 +253,24 @@ export default function PhantomShield({
     })();
   ` : '';
 
+  const iconElements = interactive ? (
+    <>
+      <span className="icon-box" dangerouslySetInnerHTML={{ __html: svgIcon }} />
+      <span className="feedback">Copied!</span>
+    </>
+  ) : null;
+
   if (shadowDOM) {
     return (
       <span 
         id={uniqueId}
-        className={className} 
+        className={`ps-wrap-${uniqueId} ${className}`} 
         style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
-        data-label={interactiveLabel}
         data-nosnippet
         suppressHydrationWarning
+        role={interactive ? "button" : undefined}
+        tabIndex={interactive ? 0 : undefined}
+        {...props}
       >
         {/* Declarative Shadow DOM */}
         {React.createElement('template', {
@@ -236,8 +281,8 @@ export default function PhantomShield({
             {lines.map((line, idx) => renderLine(line, idx))}
           </span>
         ])}
-        {/* Interactive label or fallback */}
-        {interactive ? interactiveLabel : null}
+        {interactive && <style>{interactionStyles}</style>}
+        {iconElements}
         {/* Zero-JS client execution injection */}
         {interactive && (
           <script 
@@ -251,17 +296,20 @@ export default function PhantomShield({
   return (
     <span 
       id={uniqueId}
-      className={className} 
+      className={`ps-wrap-${uniqueId} ${className}`} 
       style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
-      data-label={interactiveLabel}
       data-nosnippet
       suppressHydrationWarning
+      role={interactive ? "button" : undefined}
+      tabIndex={interactive ? 0 : undefined}
+      {...props}
     >
       <style>{shadowStyles}</style>
+      {interactive && <style>{interactionStyles}</style>}
       <span style={{ display: 'inline-block', width: '100%' }}>
         {lines.map((line, idx) => renderLine(line, idx))}
       </span>
-      {interactive ? <span style={{ marginLeft: '6px', fontSize: '0.85em', textDecoration: 'underline' }}>({interactiveLabel})</span> : null}
+      {iconElements}
       {interactive && (
         <script 
           dangerouslySetInnerHTML={{ __html: interactionScript }}

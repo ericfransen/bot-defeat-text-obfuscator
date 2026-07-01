@@ -164,11 +164,13 @@ export default async function ContactPage() {
     <div>
       <p>Contact us at:</p>
       <PhantomShield 
-        payload={userEmail} 
         shadowDOM={true} 
         interactive={true} // Default is true. Copy on click.
         interactiveType="copy"
-      />
+        aria-label="Click to copy email"
+      >
+        {userEmail}
+      </PhantomShield>
     </div>
   );
 }
