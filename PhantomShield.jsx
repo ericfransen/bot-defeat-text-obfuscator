@@ -1,12 +1,8 @@
 import React from 'react';
 
 // =========================================================================
-// CONFIGURATION & QUICK TESTING SETUP
+// OPTION OVERRIDES FOR EASY CUSTOMIZATION
 // =========================================================================
-// Quick testing fallback text. If you omit the 'payload' prop, it defaults to this.
-const DEFAULT_PAYLOAD = "admin@vault.local";
-
-// Option overrides for easy component customization:
 const CONFIG = {
   shadowDOM: true,              // Wrap content in a closed Shadow DOM
   interactive: true,            // Enable click-to-copy or mailto action
@@ -16,7 +12,7 @@ const CONFIG = {
 // =========================================================================
 
 export default function PhantomShield({
-  payload = DEFAULT_PAYLOAD,
+  children,
   shadowDOM = CONFIG.shadowDOM,
   interactive = CONFIG.interactive,
   interactiveType = CONFIG.interactiveType,
@@ -24,6 +20,16 @@ export default function PhantomShield({
   className = '',
   style = {},
 }) {
+  // Fail fast in development, render nothing in production if no content is provided
+  if (!children) {
+    if (process.env.NODE_ENV !== 'production') {
+      console.warn(
+        'PhantomShield Warning: No text content provided. Please pass a string inside the component tags.'
+      );
+    }
+    return null;
+  }
+
   // Use React.useId for stable server/client IDs. Fallback to random string if not supported.
   const uniqueId = React.useId ? React.useId() : `phantom-${Math.random().toString(36).substring(2, 9)}`;
 
@@ -57,7 +63,7 @@ export default function PhantomShield({
   `;
 
   // Split lines to preserve layout
-  const lines = payload.split('\n');
+  const lines = children.split('\n');
 
   // Render a single line's content
   const renderLine = (line, lineIdx) => {
@@ -173,7 +179,7 @@ export default function PhantomShield({
   if (interactive) {
     xorKey = Math.floor(Math.random() * 254) + 1;
     // Edge-friendly, standard base64 encoding (replaces Node Buffer to work globally in edge workers)
-    const rawPayload = encodeURIComponent(payload);
+    const rawPayload = encodeURIComponent(children);
     const xorStr = rawPayload
       .split('')
       .map((c) => String.fromCharCode(c.charCodeAt(0) ^ xorKey))
@@ -219,6 +225,7 @@ export default function PhantomShield({
         style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
         data-label={interactiveLabel}
         data-nosnippet
+        suppressHydrationWarning
       >
         {/* Declarative Shadow DOM */}
         {React.createElement('template', {
@@ -248,6 +255,7 @@ export default function PhantomShield({
       style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
       data-label={interactiveLabel}
       data-nosnippet
+      suppressHydrationWarning
     >
       <style>{shadowStyles}</style>
       <span style={{ display: 'inline-block', width: '100%' }}>
