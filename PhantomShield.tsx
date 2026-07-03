@@ -38,6 +38,7 @@ export default function PhantomShield({
 
   // Use React.useId for stable server/client IDs. Fallback to random string if not supported.
   const uniqueId = React.useId ? React.useId() : `phantom-${Math.random().toString(36).substring(2, 9)}`;
+  const safeId = uniqueId.replace(/[^a-zA-Z0-9-]/g, '');
 
   // Setup styles for shadow root or container
   const shadowStyles = `
@@ -203,17 +204,17 @@ export default function PhantomShield({
   if (interactiveType === 'tel') svgIcon = iconTel;
 
   const interactionStyles = interactive ? `
-    .ps-wrap-${uniqueId} { cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; position:relative; }
-    .ps-wrap-${uniqueId}:hover svg { color: #60a5fa !important; transform: scale(1.1); }
-    .ps-wrap-${uniqueId} .icon-box { opacity:0; transition:opacity 0.2s; display:flex; align-items:center; justify-content:center; }
-    .ps-wrap-${uniqueId}:hover .icon-box { opacity:1; }
-    .ps-wrap-${uniqueId} .feedback { 
+    .ps-wrap-${safeId} { cursor:pointer; display:inline-flex; align-items:center; gap:0.5rem; position:relative; }
+    .ps-wrap-${safeId}:hover svg { color: #60a5fa !important; transform: scale(1.1); }
+    .ps-wrap-${safeId} .icon-box { opacity:0; transition:opacity 0.2s; display:flex; align-items:center; justify-content:center; }
+    .ps-wrap-${safeId}:hover .icon-box { opacity:1; }
+    .ps-wrap-${safeId} .feedback { 
       position:absolute; top:-35px; left:50%; transform:translateX(-50%); 
       background:#0f172a; color:white; font-family:sans-serif; font-size:11px; font-weight:800; letter-spacing:0.05em;
       padding:6px 16px; border-radius:99px; box-shadow:0 4px 12px rgba(0,0,0,0.4);
-      opacity:0; transition:all 0.2s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none; white-space:nowrap; z-index:10;
+      opacity:0; transition:all 0.2s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none; white-space:nowrap; z-index:50;
     }
-    .ps-wrap-${uniqueId} .feedback::after {
+    .ps-wrap-${safeId} .feedback::after {
       content:''; position:absolute; bottom:-4px; left:50%; margin-left:-4px;
       border-width:4px; border-style:solid; border-color:#0f172a transparent transparent transparent;
     }
@@ -244,14 +245,29 @@ export default function PhantomShield({
           } else if ("${interactiveType}" === "tel") {
             window.location.href = "tel:" + clean;
           } else {
-            navigator.clipboard.writeText(clean).then(() => {
+            const showTooltip = () => {
               const f = el.querySelector('.feedback');
               if (f) {
                 f.style.opacity = '1';
                 f.style.top = '-45px';
                 setTimeout(() => { f.style.opacity = '0'; f.style.top = '-35px'; }, 1500);
               }
-            });
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+              navigator.clipboard.writeText(clean).then(showTooltip).catch(() => {});
+            } else {
+              const ta = document.createElement("textarea");
+              ta.value = clean;
+              ta.style.position = "fixed";
+              ta.style.top = "0";
+              ta.style.left = "0";
+              ta.style.opacity = "0";
+              document.body.appendChild(ta);
+              ta.focus();
+              ta.select();
+              try { document.execCommand("copy"); showTooltip(); } catch(e) {}
+              document.body.removeChild(ta);
+            }
           }
         } catch(err) {
           console.error("Decryption failed", err);
@@ -271,8 +287,15 @@ export default function PhantomShield({
     return (
       <span 
         id={uniqueId}
-        className={`ps-wrap-${uniqueId} ${className}`} 
-        style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
+        className={`ps-wrap-${safeId} ${className}`} 
+        style={{
+          display: interactive ? 'inline-flex' : 'inline-block',
+          alignItems: interactive ? 'center' : undefined,
+          gap: interactive ? '0.5rem' : undefined,
+          position: interactive ? 'relative' : undefined,
+          cursor: interactive ? 'pointer' : 'default',
+          ...style
+        }}
         data-nosnippet
         suppressHydrationWarning
         role={interactive ? "button" : undefined}
@@ -284,7 +307,7 @@ export default function PhantomShield({
           shadowrootmode: 'closed',
         } as any, [
           <style key="styles">{shadowStyles}</style>,
-          <span key="wrapper" style={{ display: 'inline-block', width: '100%' }}>
+          <span key="wrapper" style={{ display: 'inline-block' }}>
             {lines.map((line, idx) => renderLine(line, idx))}
           </span>
         ])}
@@ -303,8 +326,15 @@ export default function PhantomShield({
   return (
     <span 
       id={uniqueId}
-      className={`ps-wrap-${uniqueId} ${className}`} 
-      style={{ display: 'inline-block', cursor: interactive ? 'pointer' : 'default', ...style }}
+      className={`ps-wrap-${safeId} ${className}`} 
+      style={{
+        display: interactive ? 'inline-flex' : 'inline-block',
+        alignItems: interactive ? 'center' : undefined,
+        gap: interactive ? '0.5rem' : undefined,
+        position: interactive ? 'relative' : undefined,
+        cursor: interactive ? 'pointer' : 'default',
+        ...style
+      }}
       data-nosnippet
       suppressHydrationWarning
       role={interactive ? "button" : undefined}
@@ -313,7 +343,7 @@ export default function PhantomShield({
     >
       <style>{shadowStyles}</style>
       {interactive && <style>{interactionStyles}</style>}
-      <span style={{ display: 'inline-block', width: '100%' }}>
+      <span style={{ display: 'inline-block' }}>
         {lines.map((line, idx) => renderLine(line, idx))}
       </span>
       {iconElements}
