@@ -1,5 +1,18 @@
 import React from 'react';
 
+function createPRNG(seedString) {
+  let hash = 0;
+  for (let i = 0; i < seedString.length; i++) {
+    hash = seedString.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  let seed = Math.abs(hash) || 1;
+  return () => {
+    seed = (seed * 1664525 + 1013904223) % 4294967296;
+    return seed / 4294967296;
+  };
+}
+
+
 // =========================================================================
 // OPTION OVERRIDES FOR EASY CUSTOMIZATION
 // =========================================================================
@@ -29,8 +42,10 @@ export default function PhantomShield({
     return null;
   }
 
+  const prng = React.useMemo(() => createPRNG(children || ''), [children]);
+
   // Use React.useId for stable server/client IDs. Fallback to random string if not supported.
-  const uniqueId = React.useId ? React.useId() : `phantom-${Math.random().toString(36).substring(2, 9)}`;
+  const uniqueId = React.useId ? React.useId() : `phantom-${prng().toString(36).substring(2, 9)}`;
   const safeId = uniqueId.replace(/[^a-zA-Z0-9-]/g, '');
 
   // Setup styles for shadow root or container
@@ -76,9 +91,9 @@ export default function PhantomShield({
 
     characters.forEach((char, index) => {
       // 1. Zero-width character insertion
-      if (Math.random() < 0.3) {
+      if (prng() < 0.3) {
         items.push({
-          id: `zw-${lineIdx}-${index}-${Math.random()}`,
+          id: `zw-${lineIdx}-${index}-${prng()}`,
           type: 'zero-width',
           char: '\u200B',
           order: index,
@@ -86,11 +101,11 @@ export default function PhantomShield({
       }
 
       // 2. DOM Polymorphism: randomly assign character representation
-      const rand = Math.random();
+      const rand = prng();
       if (rand < 0.35) {
         // Method A: Phantom Atom (CSS Variable content via ::after)
         items.push({
-          id: `p-${lineIdx}-${index}-${Math.random()}`,
+          id: `p-${lineIdx}-${index}-${prng()}`,
           type: 'phantom',
           char: char,
           order: index,
@@ -98,7 +113,7 @@ export default function PhantomShield({
       } else if (rand < 0.70) {
         // Method B: CSS Grid column scrambling item
         items.push({
-          id: `g-${lineIdx}-${index}-${Math.random()}`,
+          id: `g-${lineIdx}-${index}-${prng()}`,
           type: 'grid-atom',
           char: char,
           order: index,
@@ -106,7 +121,7 @@ export default function PhantomShield({
       } else {
         // Method C: Standard node
         items.push({
-          id: `s-${lineIdx}-${index}-${Math.random()}`,
+          id: `s-${lineIdx}-${index}-${prng()}`,
           type: 'standard',
           char: char,
           order: index,
@@ -114,10 +129,10 @@ export default function PhantomShield({
       }
 
       // 3. Well Poisoning: Decoy elements
-      if (Math.random() < 0.25) {
-        const decoyChar = String.fromCharCode(33 + Math.floor(Math.random() * 93)); // Random printable ASCII character
+      if (prng() < 0.25) {
+        const decoyChar = String.fromCharCode(33 + Math.floor(prng() * 93)); // Random printable ASCII character
         items.push({
-          id: `d-${lineIdx}-${index}-${Math.random()}`,
+          id: `d-${lineIdx}-${index}-${prng()}`,
           type: 'decoy',
           char: decoyChar,
           order: index,
@@ -125,7 +140,7 @@ export default function PhantomShield({
       }
     });
 
-    const shuffledItems = [...items].sort(() => Math.random() - 0.5);
+    const shuffledItems = [...items].sort(() => prng() - 0.5);
 
     return (
       <div key={lineIdx} className="phantom-line">
@@ -135,7 +150,7 @@ export default function PhantomShield({
               <span
                 key={item.id}
                 className="phantom-atom"
-                {...{ style: { order: item.order, '--p': `"${item.char.replace(/"/g, '\\"')}"` } }}
+                style={{ order: item.order, '--p': `"${item.char.replace(/"/g, '\\"')}"` }}
               />
             );
           } else if (item.type === 'grid-atom') {
@@ -177,7 +192,7 @@ export default function PhantomShield({
   let encryptedPayload = '';
   let xorKey = 0;
   if (interactive) {
-    xorKey = Math.floor(Math.random() * 254) + 1;
+    xorKey = Math.floor(prng() * 254) + 1;
     // Edge-friendly, standard base64 encoding (replaces Node Buffer to work globally in edge workers)
     const rawPayload = encodeURIComponent(children);
     const xorStr = rawPayload
@@ -213,67 +228,55 @@ export default function PhantomShield({
     }
   ` : '';
 
-  // Interactive inline script (Executed fully client-side inside the component, preserving RSC properties)
-  const interactionScript = interactive ? `
-    (function() {
-      // Escape HTML-safe selector query for IDs containing special chars (like :useId:)
-      const el = document.getElementById("${uniqueId}") || document.querySelector('[id*="${uniqueId.replace(/:/g, "\\\\:")}"]');
-      if (!el) return;
-      
-      // Keyboard support (Enter/Space)
-      el.addEventListener("keydown", function(e) {
-        if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
-      });
-
-      el.addEventListener("click", function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        try {
-          const raw = atob("${encryptedPayload}");
-          const clean = decodeURIComponent(
-            raw.split("").map(c => String.fromCharCode(c.charCodeAt(0) ^ ${xorKey})).join("")
-          );
-          if ("${interactiveType}" === "mailto") {
-            window.location.href = "mailto:" + clean;
-          } else if ("${interactiveType}" === "tel") {
-            window.location.href = "tel:" + clean;
-          } else {
-            const showTooltip = () => {
-              const f = el.querySelector('.feedback');
-              if (f) {
-                f.style.opacity = '1';
-                f.style.top = '-45px';
-                setTimeout(() => { f.style.opacity = '0'; f.style.top = '-35px'; }, 1500);
-              }
-            };
-            if (navigator.clipboard && window.isSecureContext) {
-              navigator.clipboard.writeText(clean).then(showTooltip).catch(() => {});
-            } else {
-              const ta = document.createElement("textarea");
-              ta.value = clean;
-              ta.style.position = "fixed";
-              ta.style.top = "0";
-              ta.style.left = "0";
-              ta.style.opacity = "0";
-              document.body.appendChild(ta);
-              ta.focus();
-              ta.select();
-              try { document.execCommand("copy"); showTooltip(); } catch(e) {}
-              document.body.removeChild(ta);
-            }
-          }
-        } catch(err) {
-          console.error("Decryption failed", err);
-        }
-      });
-    })();
-  ` : '';
-
   const iconElements = interactive ? (
-    <>
-      <span className="icon-box" dangerouslySetInnerHTML={{ __html: svgIcon }} />
-      <span className="feedback">Copied!</span>
-    </>
+    <span dangerouslySetInnerHTML={{
+      __html: `
+        <span class="icon-box">${svgIcon}</span>
+        <span class="feedback">Copied!</span>
+        <span 
+          style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:40; cursor:pointer;"
+          onclick="(function(e, el) {
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+              const raw = decodeURIComponent(escape(atob('${encryptedPayload}')));
+              const clean = decodeURIComponent(
+                raw.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ ${xorKey})).join('')
+              );
+              if ('${interactiveType}' === 'mailto') {
+                window.location.href = 'mailto:' + clean;
+              } else if ('${interactiveType}' === 'tel') {
+                window.location.href = 'tel:' + clean;
+              } else {
+                const showTooltip = () => {
+                  const f = el.querySelector('.feedback');
+                  if (f) {
+                    f.style.opacity = '1';
+                    f.style.top = '-45px';
+                    setTimeout(() => { f.style.opacity = '0'; f.style.top = '-35px'; }, 1500);
+                  }
+                };
+                if (navigator.clipboard && window.isSecureContext) {
+                  navigator.clipboard.writeText(clean).then(showTooltip).catch(() => {});
+                } else {
+                  const ta = document.createElement('textarea');
+                  ta.value = clean;
+                  ta.style.position = 'fixed';
+                  ta.style.opacity = '0';
+                  document.body.appendChild(ta);
+                  ta.focus();
+                  ta.select();
+                  try { document.execCommand('copy'); showTooltip(); } catch(err) {}
+                  document.body.removeChild(ta);
+                }
+              }
+            } catch(err) {
+              console.error('Decryption failed', err);
+            }
+          })(event, this.parentElement)"
+        ></span>
+      `
+    }} />
   ) : null;
 
   if (shadowDOM) {
@@ -306,12 +309,6 @@ export default function PhantomShield({
         ])}
         {interactive && <style>{interactionStyles}</style>}
         {iconElements}
-        {/* Zero-JS client execution injection */}
-        {interactive && (
-          <script 
-            dangerouslySetInnerHTML={{ __html: interactionScript }}
-          />
-        )}
       </span>
     );
   }
@@ -340,11 +337,6 @@ export default function PhantomShield({
         {lines.map((line, idx) => renderLine(line, idx))}
       </span>
       {iconElements}
-      {interactive && (
-        <script 
-          dangerouslySetInnerHTML={{ __html: interactionScript }}
-        />
-      )}
     </span>
   );
 }
