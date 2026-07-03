@@ -235,26 +235,14 @@ export default function PhantomShield({
     }
   ` : '';
 
-  const iconElements = interactive ? (
-    <span dangerouslySetInnerHTML={{
-      __html: `
-        <span class="icon-box">${svgIcon}</span>
-        <span class="feedback">Copied!</span>
-        <span 
-          style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:40; cursor:pointer;"
-          onclick="(function(e, el) {
-            e.preventDefault();
-            e.stopPropagation();
-            try {
-              const raw = decodeURIComponent(escape(atob('${encryptedPayload}')));
-              const clean = decodeURIComponent(
-                raw.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ ${xorKey})).join('')
-              );
-              if ('${interactiveType}' === 'mailto') {
-                window.location.href = 'mailto:' + clean;
-              } else if ('${interactiveType}' === 'tel') {
-                window.location.href = 'tel:' + clean;
-              } else {
+  let interactionLogic = '';
+  if (interactive) {
+    if (interactiveType === 'mailto') {
+      interactionLogic = `window['loca' + 'tion']['hr' + 'ef'] = String.fromCharCode(109,97,105,108,116,111,58) + clean;`;
+    } else if (interactiveType === 'tel') {
+      interactionLogic = `window['loca' + 'tion']['hr' + 'ef'] = String.fromCharCode(116,101,108,58) + clean;`;
+    } else {
+      interactionLogic = `
                 const showTooltip = () => {
                   const f = el.querySelector('.feedback');
                   if (f) {
@@ -276,10 +264,27 @@ export default function PhantomShield({
                   try { document.execCommand('copy'); showTooltip(); } catch(err) {}
                   document.body.removeChild(ta);
                 }
-              }
-            } catch(err) {
-              console.error('Decryption failed', err);
-            }
+      `;
+    }
+  }
+
+  const iconElements = interactive ? (
+    <span dangerouslySetInnerHTML={{
+      __html: `
+        <span class="icon-box">${svgIcon}</span>
+        <span class="feedback">Copied!</span>
+        <span 
+          style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:40; cursor:pointer;"
+          onclick="(function(e, el) {
+            e.preventDefault();
+            e.stopPropagation();
+            try {
+              const raw = decodeURIComponent(escape(atob('${encryptedPayload}')));
+              const clean = decodeURIComponent(
+                raw.split('').map(c => String.fromCharCode(c.charCodeAt(0) ^ (${xorKey + 11} - 11))).join('')
+              );
+              ${interactionLogic}
+            } catch(err) {}
           })(event, this.parentElement)"
         ></span>
       `
