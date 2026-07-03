@@ -17,9 +17,9 @@ function createPRNG(seedString: string) {
 // OPTION OVERRIDES FOR EASY CUSTOMIZATION
 // =========================================================================
 const CONFIG = {
-  shadowDOM: false,             // Set to false by default for broad React client compatibility
-  interactive: true,            // Enable click-to-copy or mailto action
-  interactiveType: 'copy' as 'copy' | 'mailto' | 'tel', // 'copy' (to clipboard) or 'mailto' (link)
+  shadowDOM: false,                                     // Set to false by default for broad React client compatibility
+  interactive: true,                                    // Enable click-to-copy or mailto action
+  interactiveType: 'copy' as 'copy' | 'mailto' | 'tel', // 'copy' (to clipboard), 'tel' (phone call), or 'mailto' (email client)
 };
 // =========================================================================
 
@@ -49,7 +49,7 @@ export default function PhantomShield({
     return null;
   }
 
-  const prng = React.useMemo(() => createPRNG(children || ''), [children]);
+  const prng = createPRNG(children || '');
 
   // Use React.useId for stable server/client IDs. Fallback to random string if not supported.
   const uniqueId = React.useId ? React.useId() : `phantom-${prng().toString(36).substring(2, 9)}`;
