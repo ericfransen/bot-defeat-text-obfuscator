@@ -36,7 +36,7 @@ export default function PhantomShield({
 }) {
   // Fail fast in development, render nothing in production if no content is provided
   if (!children) {
-    if (process.env.NODE_ENV !== 'production') {
+    if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
       console.warn(
         'PhantomShield Warning: No text content provided. Please pass a string inside the component tags.'
       );
@@ -305,14 +305,15 @@ export default function PhantomShield({
         tabIndex={interactive ? 0 : undefined}
         {...props}
       >
-        {/* Declarative Shadow DOM */}
         {React.createElement('template', {
           shadowrootmode: 'closed',
         }, [
           <style key="styles">{shadowStyles}</style>,
-          <span key="wrapper" style={{ display: 'inline-block' }}>
-            {lines.map((line, idx) => renderLine(line, idx))}
-          </span>
+          !iconOnly ? (
+            <span key="wrapper" style={{ display: 'inline-block' }}>
+              {lines.map((line, idx) => renderLine(line, idx))}
+            </span>
+          ) : null
         ])}
         {interactive && <style>{interactionStyles}</style>}
         {iconElements}
@@ -340,9 +341,11 @@ export default function PhantomShield({
     >
       <style>{shadowStyles}</style>
       {interactive && <style>{interactionStyles}</style>}
-      <span style={{ display: 'inline-block' }}>
-        {lines.map((line, idx) => renderLine(line, idx))}
-      </span>
+      {!iconOnly && (
+        <span style={{ display: 'inline-block' }}>
+          {lines.map((line, idx) => renderLine(line, idx))}
+        </span>
+      )}
       {iconElements}
     </span>
   );
