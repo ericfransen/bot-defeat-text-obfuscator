@@ -21,6 +21,7 @@ In 2026, the web is overrun by automated actors, BOTS!
 3.  **Vision AI:** New-age bots that use OCR (Optical Character Recognition) to "read" images of text.
 
 ### The "Big Tech" Solution & Its Flaws
+
 Traditionally, you would reach for **Google reCAPTCHA** or **Cloudflare Turnstile**. While effective, they come with significant downsides for personal sites, portfolios, and privacy-conscious projects:
 
 *   **Vendor Lock-in & Outages:** If Cloudflare goes down (a seemingly growing common occurrence), your forms break. You are at the mercy of their uptime.
@@ -30,7 +31,7 @@ Traditionally, you would reach for **Google reCAPTCHA** or **Cloudflare Turnstil
 
 ---
 
-## 🛡️ The Solution: BiDi & Phantom Obfuscation
+## 🛡️ The Solution: Phantom Obfuscation
 
 **Text-Obfuscator** sits in the "Goldilocks Zone" of security: **Low Cost, High Friction.**
 
@@ -39,32 +40,38 @@ We don't try to outsmart the Bots. We aim to make scraping your site **economica
 ### Core Technologies
 
 #### 1. Adversarial Weave (Visual Obfuscation)
+
 We use **Bi-Directional (BiDi)** overrides to decouple the *Visual Order* from the *Logical (DOM) Order*.
 *   **The User Sees:** `admin@example.com`
 *   **The DOM Contains:** `moc.elpmaxe@nimda` (or a scrambled mess of spans).
 *   **The Scraper Sees:** Garbage. Even if they extract the text, it is linguistically incorrect.
 
 #### 2. Phantom Atoms
+
 We inject characters using CSS `::after { content: 'a' }`.
 *   These characters **do not exist** in the DOM text node.
 *   `innerText` scrapers will see gaps in the words (e.g., "dmin@xample.co"), rendering the data useless for spam lists.
 
 #### 3. Well Poisoning & Structural Chaos
+
 We inject invisible "decoy" elements with `opacity: 0` that human users never see, but bots scrape as valid text.
 *   **Result:** A scraped email looks like `adQmin@exZampPle.cRom`, which bounces when they try to email it.
 
 #### 4. Anti-OCR Mesh (Visual Noise)
+
 For the CAPTCHA, we overlay an SVG noise mesh that cuts through characters.
 *   **Human Brain:** Easily ignores the lines and reads the code.
 *   **Traditional OCR:** Fails segmentation, reading an `E` as an `8` or `F`.
 *   **Vision AI:** Can solve it, but costs ~$0.01 per attempt, making spam campaigns bankrupt themselves.
 
 #### 5. Shadow DOM Wrapper
+
 We wrap the protected content inside a **Closed Shadow DOM Root**.
 *   **Scrapers:** `document.body.innerText` returns an **empty string**. The content is invisible to standard DOM scraping.
 *   **Protection:** Forces attackers to use expensive automation tools (Playwright/[CDP](https://chromedevtools.github.io/devtools-protocol/)) to pierce the shadow boundary.
 
 #### 6. Next-Gen Defensive Layering
+
 We combine multiple low-cost, high-yield tactics to defeat advanced targeted scraping:
 *   **DOM Polymorphism:** Randomly alternates the obfuscation method (e.g. CSS variables, Flexbox order, decoy characters) for every character on every render, preventing scrapers from using a uniform unscrambling rule.
 *   **CSS Grid Scrambling:** Places characters inside a grid layout and shuffles them in the DOM, utilizing inline grid coordinates for visual alignment.
@@ -77,6 +84,7 @@ We combine multiple low-cost, high-yield tactics to defeat advanced targeted scr
 This tool is a **Client-Side Generator**. You use the generator (the `demo.html` file) to create the code snippets, then paste them into your static site (Next.js, Hugo, Jekyll, plain HTML).
 
 ### 1. The Obfuscator (For Static Text)
+
 Use this for **Emails**, **Phone Numbers**, **Public API Keys**, etc.
 
 1.  Open `demo.html` in your browser.
@@ -89,6 +97,7 @@ Use this for **Emails**, **Phone Numbers**, **Public API Keys**, etc.
 **Zero Dependencies:** The generated HTML/CSS is self-contained. It works anywhere.
 
 ### 2. The BiDi CAPTCHA (For Forms)
+
 Use this for **Contact Forms**, **Comments**, or **Signups**.
 
 1.  Open `demo.html` and switch to the **CAPTCHA** tab.
@@ -98,9 +107,11 @@ Use this for **Contact Forms**, **Comments**, or **Signups**.
 5.  Paste it into your project.
 
 #### Integration Logic
+
 The CAPTCHA runs entirely in the client's browser using a **Closure Pattern** (IIFE) to hide the secret key from the global scope.
 
 **Vanilla JS Example:**
+
 ```html
 <form onsubmit="return validateForm()">
   <!-- Paste generated CAPTCHA code here -->
@@ -120,6 +131,7 @@ The CAPTCHA runs entirely in the client's browser using a **Closure Pattern** (I
 ```
 
 **React Example:**
+
 ```jsx
 import BiDiCaptcha from './BiDiCaptcha';
 
@@ -169,7 +181,7 @@ export default async function ContactPage() {
         shadowDOM={true} 
         interactive={true} // Default is true. Copy on click.
         interactiveType="copy"
-        aria-label="Click to copy email"
+        aria-label="Copy email"
       >
         {userEmail}
       </PhantomShield>
@@ -193,7 +205,7 @@ Moving security to the client side offers benefits for the modern "JAMstack" web
 
 ---
 
-## 🔬 How it Works (The Science)
+## 🔬 How it Works
 
 We utilize advanced browser mechanics to create a "Phantom Shield" that separates what humans see from what bots read.
 
