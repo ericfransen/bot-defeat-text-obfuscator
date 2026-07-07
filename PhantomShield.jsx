@@ -19,7 +19,8 @@ function createPRNG(seedString) {
 const CONFIG = {
   shadowDOM: false,                                     // Set to false by default for broad React client compatibility
   interactive: true,                                    // Enable click-to-copy or mailto action
-  interactiveType: 'copy' as 'copy' | 'mailto' | 'tel', // 'copy' (to clipboard), 'tel' (phone call), or 'mailto' (email client)
+  interactiveType: 'copy',                              // 'copy' (to clipboard), 'tel' (phone call), or 'mailto' (email client)
+  iconOnly: false,                                      // If true, hide scrambled text entirely & only render interactive icon
 };
 // =========================================================================
 
@@ -28,6 +29,7 @@ export default function PhantomShield({
   shadowDOM = CONFIG.shadowDOM,
   interactive = CONFIG.interactive,
   interactiveType = CONFIG.interactiveType,
+  iconOnly = CONFIG.iconOnly,
   className = '',
   style = {},
   ...props

@@ -6,6 +6,7 @@
     "test": "node scripts/build-demo.js && playwright test"
   },
   "devDependencies": {
-    "@playwright/test": "^1.40.0"
+    "@playwright/test": "^1.40.0",
+    "@types/react": "^19.2.17"
   }
 }
