@@ -79,6 +79,25 @@ We wrap the obfuscated content inside a `closed` Shadow DOM Root.
     *   `document.getElementById('my-email')`: Returns `null`.
 *   **Impact:** This forces the attacker to upgrade from simple scrapers (Cheerio/JSDOM) to heavy, browser-automation tools (Playwright/Puppeteer) that can "pierce" shadow roots via CDP (Chrome DevTools Protocol). It massively increases the computational cost of the attack.
 
+### Next-Gen Obfuscation Tactics
+
+We have expanded the obfuscation matrix with additional low-cost, high-yield tactics to maximize defense against advanced custom parsers:
+
+1.  **DOM Polymorphism (Structural Alternation)**
+    *   **Technique:** Rather than using a single obfuscation method consistently, each character is obfuscated using a different method selected randomly at render time. Character A might use a CSS variable, Character B a decoy node, Character C a standard span with Flexbox order, and Character D a BiDi override.
+    -   **Impact:** Scraper authors can no longer write a uniform parser logic to unscramble the text. The lack of standard patterns forces manual analysis of every single character node, making custom scraping scripts extremely complex to write and maintain.
+
+2.  **CSS Grid Row & Column Scrambling**
+    -   **Technique:** Instead of Flexbox `order`, we place characters inside a CSS Grid container and assign random `grid-column` styles.
+    -   **Impact:** Text is read in correct sequence visually but is in absolute structural disarray in the DOM. Heavy computed layout engine passes are required by the bot to reconstruct the layout columns.
+
+3.  **Zero-Width Character Insertion**
+    -   **Technique:** We inject zero-width spaces (`\u200B` / `&#8203;`) and zero-width non-joiners (`&zwnj;`) inline between real characters.
+    -   **Impact:** These characters are completely invisible to humans but interrupt standard regex engines looking for patterns (like emails or phone numbers), causing them to fail to recognize the data.
+
+4.  **Dynamic CSS Variable Splitting**
+    -   **Technique:** Instead of storing the full character inside a single variable, we split characters and reference them in combination (e.g. `--c1: 'a'`, `--c2: '@'`) dynamically referenced by different elements.
+
 ---
 
 ## 3. The "Smart Interaction" Encryption (XOR Cipher)
@@ -168,6 +187,18 @@ During R&D, several "advanced" techniques were evaluated and rejected due to poo
     1.  **Fidelity:** Canvas text often looks blurry on High-DPI (Retina) screens unless carefully scaled.
     2.  **Accessibility:** Canvas is a "black box" to screen readers. While Phantom Atoms are also hard for screen readers (without ARIA labels), DOM elements allow for future-proofing with `aria-label` overlays, whereas Canvas requires a completely separate shadow accessibility tree.
     3.  **Styling:** Users can style Phantom Atoms with standard CSS (color, font, size). Canvas requires passing these styles as JS variables to the rendering context, which is brittle.
+
+### C. Search Indexing Protection (`data-nosnippet`)
+*   **The Problem:** Standard web crawlers (like Googlebot) may still attempt to index visual strings or run rendering engines to parse page layouts. This can lead to protected details (like personal emails or phones) being indexed and displayed directly in search engine snippets.
+*   **The Mitigation:** We automatically apply the `data-nosnippet` attribute to the outer elements of all obfuscated components and wrappers. This is an official HTML attribute supported by Google, instructing search engines never to include this section of text in the search result snippet.
+
+### D. Interactive Gate vs. Static Obfuscation (Accessibility Strategy)
+*   **The Conflict:** Scrambling visual layout order in the DOM breaks standard screen readers, as they read elements in linear DOM order. Injecting an `aria-label` with the clean text resolves the screen reader issue but leaks the plaintext inside the HTML attributes to any scraper parsing attributes.
+*   **The Solution:** Rather than using `aria-label` and compromising security, we default the component to `interactive={true}`. In this mode:
+    1. The DOM contains a clean, localized visual button label (e.g., "Copy").
+    2. Screen readers read this label instead of scrambled DOM nodes, meaning the control makes complete sense to users.
+    3. The payload is encrypted with a random server-generated XOR key and decrypted in-memory only when clicked.
+    4. Upon interaction, the decrypted payload is copied to the user's clipboard or triggers a `mailto:` redirection, providing a highly accessible flow without ever exposing the raw string inside the DOM tree.
 
 ---
 

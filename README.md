@@ -64,6 +64,12 @@ We wrap the protected content inside a **Closed Shadow DOM Root**.
 *   **Scrapers:** `document.body.innerText` returns an **empty string**. The content is invisible to standard DOM scraping.
 *   **Protection:** Forces attackers to use expensive automation tools (Playwright/[CDP](https://chromedevtools.github.io/devtools-protocol/)) to pierce the shadow boundary.
 
+#### 6. Next-Gen Defensive Layering
+We combine multiple low-cost, high-yield tactics to defeat advanced targeted scraping:
+*   **DOM Polymorphism:** Randomly alternates the obfuscation method (e.g. CSS variables, Flexbox order, decoy characters) for every character on every render, preventing scrapers from using a uniform unscrambling rule.
+*   **CSS Grid Scrambling:** Places characters inside a grid layout and shuffles them in the DOM, utilizing inline grid coordinates for visual alignment.
+*   **Zero-Width Spaces:** Injects invisible zero-width spaces (`\u200B`) that break standard regex matching without affecting user visibility.
+
 ---
 
 ## 🚀 Usage
@@ -137,6 +143,42 @@ export default function ContactForm() {
   );
 }
 ```
+
+### 3. Dynamic React Server Component (Next.js / RSC)
+
+For dynamic web apps (like Next.js or Remix), you can implement a dynamic **React Server Component** (`PhantomShield`) that obfuscates text (e.g. emails, phone numbers) on the server at render time. This completely avoids storing the raw text in the client-side JavaScript bundle.
+
+* **Snippet Protection (`data-nosnippet`):** The output is automatically enclosed in a `data-nosnippet` container to prevent search engines (like Google) from indexing the obfuscated content in search results.
+* **Interactive by Default (`interactive={true}`):** By default, the component is interactive (click-to-copy or mailto link). This delivers high accessibility (visual label buttons and keyboard navigation) without exposing raw plaintext. To use static non-interactive text layout scrambling, explicitly pass `interactive={false}`.
+* **Stable Hydration (Idempotent):** The component uses a fully deterministic pseudo-random number generator (LCG) seeded by the payload. This guarantees that server-side generation exactly matches client-side hydration passes (crucial for React Strict Mode).
+* **Production-Grade Hardening:** The component dynamically applies dead-code elimination (only shipping JS needed for the specific action), arithmetic masking for XOR keys, and character-code assembly for protocol signatures (like `mailto:`) to prevent static regex analysis.
+* **Easy Configuration & Testing:** The top of the `PhantomShield` file contains a dedicated config block (`DEFAULT_PAYLOAD` and `CONFIG` objects). This acts as a fallback default when props are omitted, making it easy to test and adjust defaults project-wide.
+
+#### Usage Example:
+
+```jsx
+import PhantomShield from './PhantomShield';
+
+export default async function ContactPage() {
+  const userEmail = "admin@example.com"; // Loaded dynamically from DB or environment
+
+  return (
+    <div>
+      <p>Contact us at:</p>
+      <PhantomShield 
+        shadowDOM={true} 
+        interactive={true} // Default is true. Copy on click.
+        interactiveType="copy"
+        aria-label="Click to copy email"
+      >
+        {userEmail}
+      </PhantomShield>
+    </div>
+  );
+}
+```
+
+The dynamic component implementation code can be copied directly from the **Dynamic React Component** tab in the generator (`demo.html`).
 
 ---
 
